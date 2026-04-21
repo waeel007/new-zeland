@@ -116,3 +116,23 @@
     left: 16px;
   }
 }
+/* Register Button - Make smaller on mobile */
+@media (max-width: 768px) {
+  .register-btn {
+    padding: 5px 12px !important;
+    font-size: 11px !important;
+    border-radius: 15px !important;
+    transform: scale(0.75);
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-btn {
+    padding: 4px 10px !important;
+    font-size: 15px !important;
+    border-radius: 12px !important;
+    transform: scale(0.75);
+    margin-bottom: 10px;
+  }
+}
