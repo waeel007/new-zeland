@@ -182,7 +182,7 @@
 }
 
 .login-error-message::before {
-  content: '⚠️';
+
   font-size: 11px;
 }
 
@@ -195,4 +195,43 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Error Message - Styled like the register popup */
+.login-error-message {
+  color: #e53e3e !important;
+  font-size: 13px;
+  margin-top: 6px;
+  padding: 10px 14px;
+  background: #fff5f5;
+  border-left: 4px solid #e53e3e;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: slideIn 0.3s ease-out;
+  font-weight: 400;
+}
+
+.login-error-message::before {
+  
+  font-size: 14px;
+  margin-right: 4px;
+}
+
+/* Animation for error message */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Also style the input field with red border when error */
+.login-screen .form-group input.input-error {
+  border-bottom-color: #e53e3e !important;
 }
