@@ -5,234 +5,203 @@ let firstKeyPressTime = null;
 let keyPressCount = 0;
 let mouseMovements = 0;
 let suspiciousPatterns = 0;
-let keyPressTimes = []; // Track timing between each key
-let mousePositions = []; // Track mouse movement variety
 
+// Start timer when page loads
 const startTimer = () => {
   loginStartTime = Date.now();
   firstKeyPressTime = null;
   keyPressCount = 0;
   mouseMovements = 0;
   suspiciousPatterns = 0;
-  keyPressTimes = [];
-  mousePositions = [];
-  console.log('⏰ Timer started');
+  console.log('⏰ Timer started at:', loginStartTime);
 };
 
+// Track typing with better metrics
 const trackTyping = () => {
-  const now = Date.now();
   keyPressCount++;
-  
   if (firstKeyPressTime === null) {
-    firstKeyPressTime = now;
-  } else {
-    // Track time between keystrokes
-    const lastKeyTime = keyPressTimes[keyPressTimes.length - 1] || firstKeyPressTime;
-    const timeDiff = now - lastKeyTime;
-    keyPressTimes.push(now);
-    
-    // Bots have VERY consistent timing
-    if (keyPressTimes.length > 5) {
-      const times = keyPressTimes.slice(-5).map((t, i, arr) => 
-        i === 0 ? 0 : t - arr[i-1]
-      ).slice(1);
-      
-      // Check if timing is too consistent (bots)
-      const avgTime = times.reduce((a, b) => a + b, 0) / times.length;
-      const variance = times.map(t => Math.abs(t - avgTime)).reduce((a, b) => a + b, 0) / times.length;
-      
-      if (variance < 5) {
-        suspiciousPatterns += 5;
-        console.log('🚫 BOT: Keystroke timing too consistent!');
-      }
-    }
-    
-    // INSTANT typing detection
-    if (timeDiff < 30) {
-      suspiciousPatterns += 2;
-      console.log('⚠️ Suspicious: Keys pressed too fast!');
-    }
+    firstKeyPressTime = Date.now();
+    console.log('⌨️ First key press at:', firstKeyPressTime);
   }
   
-  // Check overall speed
-  if (keyPressCount > 3) {
-    const timeSpent = (now - firstKeyPressTime) / 1000;
-    const speed = keyPressCount / timeSpent;
-    
-    if (speed > 5) {
-      suspiciousPatterns += 3;
-      console.log('⚠️ Suspicious: Typing speed > 5 keys/sec');
-    }
+  // Detect suspicious patterns
+  if (keyPressCount > 50 && (Date.now() - firstKeyPressTime) < 2000) {
+    suspiciousPatterns++;
+    console.log('⚠️ Suspicious: Too many keys in short time');
   }
+  
+  console.log('⌨️ Key press count:', keyPressCount);
 };
 
-const trackInteraction = (e) => {
+// Track mouse movements (humans move mouse, bots often don't)
+const trackInteraction = () => {
   mouseMovements++;
   
-  // Track mouse positions to detect lack of variety
-  if (e) {
-    mousePositions.push({ x: e.clientX, y: e.clientY });
-    
-    // Keep only last 20 positions
-    if (mousePositions.length > 20) {
-      mousePositions.shift();
-    }
+  // Humans typically have mouse movements before typing
+  if (mouseMovements === 1 && keyPressCount === 0) {
+    console.log('🖱️ Mouse movement detected before typing');
   }
 };
 
-// Check if mouse movement is natural
-const checkMouseNatural = () => {
-  if (mousePositions.length < 5) return false;
-  
-  // Check if mouse moved in straight line (bot-like)
-  let straightLineCount = 0;
-  for (let i = 2; i < mousePositions.length; i++) {
-    const p1 = mousePositions[i-2];
-    const p2 = mousePositions[i-1];
-    const p3 = mousePositions[i];
-    
-    // Check if points are collinear (straight line)
-    const area = Math.abs((p2.x - p1.x) * (p3.y - p1.y) - (p3.x - p1.x) * (p2.y - p1.y));
-    if (area < 100) {
-      straightLineCount++;
-    }
+// Track page visibility (bots often run in background)
+const trackVisibility = () => {
+  if (document.hidden) {
+    console.log('👁️ Page hidden - possible human behavior');
   }
-  
-  return straightLineCount < 5; // Less than 5 straight line segments = natural
 };
 
+// Add visibility change listener
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', trackVisibility);
+}
+
+// Check for browser automation
 const detectAutomation = () => {
   const automationIndicators = [];
   
-  // Check webdriver
-  if (navigator.webdriver) automationIndicators.push('webdriver');
-  
-  // Check for headless
-  if (navigator.userAgent.includes('Headless')) automationIndicators.push('headless');
-  
-  // Check languages
-  if (!navigator.languages || navigator.languages.length === 0) {
-    automationIndicators.push('no_languages');
+  // Check for common automation properties
+  if (typeof navigator !== 'undefined' && navigator.webdriver === true) automationIndicators.push('webdriver');
+  if (typeof window !== 'undefined') {
+    if (window.callPhantom || window._phantom) automationIndicators.push('phantomjs');
+    if (window.__webdriver_evaluate) automationIndicators.push('webdriver_evaluate');
+    if (window.__selenium_evaluate) automationIndicators.push('selenium_evaluate');
+    if (window.__webdriver_script_function) automationIndicators.push('webdriver_script');
+    if (window.__webdriver_script_func) automationIndicators.push('webdriver_script_func');
+    if (window.__webdriver_script_fn) automationIndicators.push('webdriver_script_fn');
+    if (window.__fxdriver_evaluate) automationIndicators.push('fxdriver_evaluate');
+    if (window.__driver_unwrapped) automationIndicators.push('driver_unwrapped');
+    if (window.__webdriver_unwrapped) automationIndicators.push('webdriver_unwrapped');
+    if (window.__selenium_unwrapped) automationIndicators.push('selenium_unwrapped');
+    if (window.__webdriver_wdcb) automationIndicators.push('webdriver_wdcb');
   }
-  
-  // Check plugins
-  if (!navigator.plugins || navigator.plugins.length === 0) {
-    automationIndicators.push('no_plugins');
-  }
-  
-  // Check screen size
-  if (window.screen.width < 800 || window.screen.height < 600) {
-    automationIndicators.push('small_screen');
-  }
-  
-  // Check if inner dimensions match screen (bot behavior)
-  if (window.innerWidth === window.screen.width && window.innerHeight === window.screen.height) {
-    automationIndicators.push('fullscreen_match');
-  }
-  
-  // Check for missing features
-  if (!window.chrome) automationIndicators.push('no_chrome');
-  if (!navigator.mediaDevices) automationIndicators.push('no_media');
   
   return automationIndicators;
 };
 
+// Check typing speed with human limits
+const checkTypingSpeed = () => {
+  if (keyPressCount === 0) return true; // No typing is fine
+  
+  const timeSpent = (Date.now() - firstKeyPressTime) / 1000;
+  if (timeSpent === 0) return false;
+  
+  const speed = keyPressCount / timeSpent;
+  
+  // Human typing speeds:
+  // Slow: 2-3 keys/sec (hunt and peck)
+  // Average: 4-6 keys/sec (typical typist)
+  // Fast: 7-9 keys/sec (expert typist)
+  // Superhuman: 10+ keys/sec (bot or cheating)
+  
+  const isHumanSpeed = speed <= 12; // INCREASED from 9.5 to 12 (allows very fast typists)
+  const isMinimumTyping = keyPressCount >= 3 ? speed > 0.5 : true; // At least half a key per second if typed
+  
+  console.log(`⚡ Typing speed: ${speed.toFixed(1)} keys/sec - ${isHumanSpeed ? 'HUMAN' : 'BOT'}`);
+  
+  return isHumanSpeed && isMinimumTyping;
+};
+
+// Main check - Multi-factor bot detection (MODIFIED - NO TIME-ON-PAGE BLOCKING)
 const checkAntiBot = () => {
+  // Check if timer was started
   if (loginStartTime === null) {
+    console.log('⚠️ Anti-bot timer not started, starting now...');
     startTimer();
   }
   
-  console.log('🔍 Anti-Bot Check Results:');
-  console.log('  - Key presses:', keyPressCount);
-  console.log('  - Mouse moves:', mouseMovements);
-  console.log('  - Suspicious patterns:', suspiciousPatterns);
-  
-  // 1. Automation check
+  // Check for automation tools
   const automationIndicators = detectAutomation();
   if (automationIndicators.length > 0) {
-    console.log('🚫 BLOCKED: Automation detected:', automationIndicators);
+    console.log('🚫 BOT DETECTED: Automation indicators found:', automationIndicators);
     return { 
       passed: false, 
-      reason: `Automation: ${automationIndicators.join(', ')}` 
+      reason: `Automation detected: ${automationIndicators.join(', ')}`,
+      isBot: true 
     };
   }
   
-  // 2. Suspicious patterns check (AGGRESSIVE)
-  if (suspiciousPatterns >= 2) {
-    console.log('🚫 BLOCKED: Too many suspicious patterns:', suspiciousPatterns);
+  // Check for suspicious patterns
+  if (suspiciousPatterns > 2) {
+    console.log('🚫 BOT DETECTED: Multiple suspicious typing patterns');
     return { 
       passed: false, 
-      reason: `Suspicious patterns: ${suspiciousPatterns}` 
+      reason: 'Suspicious typing patterns detected',
+      isBot: true 
     };
   }
   
-  // 3. No mouse movement = BOT
-  if (keyPressCount > 0 && mouseMovements === 0) {
-    console.log('🚫 BLOCKED: No mouse movement detected');
+  // If user never typed anything, ALWAYS PASS (don't block just for looking at page)
+  if (keyPressCount === 0) {
+    console.log('✅ No typing detected - PASS (user just viewing page)');
+    return { passed: true, reason: 'No typing required' };
+  }
+  
+  // Check typing speed (ONLY block if typing is inhumanly fast)
+  const hasReasonableSpeed = checkTypingSpeed();
+  if (!hasReasonableSpeed && keyPressCount >= 3) {
+    console.log('🚫 BOT DETECTED: Unreasonable typing speed');
+    const timeSpent = (Date.now() - firstKeyPressTime) / 1000;
+    const speed = keyPressCount / timeSpent;
     return { 
       passed: false, 
-      reason: 'No mouse movement' 
+      reason: `Typing speed too fast: ${speed.toFixed(1)} keys/sec`,
+      isBot: true 
     };
   }
   
-  // 4. Unnatural mouse movement
-  if (mousePositions.length > 5 && !checkMouseNatural()) {
-    console.log('🚫 BLOCKED: Unnatural mouse movement');
+  // If they typed but had mouse movement, they're human
+  if (keyPressCount > 0 && mouseMovements > 0) {
+    console.log('✅ Human confirmed: Typing + Mouse movement detected');
     return { 
-      passed: false, 
-      reason: 'Unnatural mouse movement' 
+      passed: true, 
+      reason: `Human verified - ${keyPressCount} keys, ${mouseMovements} mouse movements`,
+      isBot: false 
     };
   }
   
-  // 5. Typed too fast with no pause
-  if (keyPressCount > 10) {
-    const totalTime = (Date.now() - firstKeyPressTime) / 1000;
-    if (totalTime < 1.5) {
-      console.log('🚫 BLOCKED: Typed too fast:', totalTime.toFixed(1) + 's');
-      return { 
-        passed: false, 
-        reason: `Typed 10+ chars in ${totalTime.toFixed(1)}s` 
-      };
-    }
-  }
-  
-  // 6. Too few mouse movements for amount of typing
-  if (keyPressCount > 5 && mouseMovements < 3) {
-    console.log('🚫 BLOCKED: Not enough mouse movement');
+  // If they typed and took reasonable time (not instant)
+  const timeFromFirstKey = (Date.now() - firstKeyPressTime) / 1000;
+  if (keyPressCount > 0 && timeFromFirstKey >= 1.5) {
+    console.log('✅ Human confirmed: Reasonable typing time');
     return { 
-      passed: false, 
-      reason: 'Insufficient mouse activity' 
+      passed: true, 
+      reason: `Human verified - took ${timeFromFirstKey.toFixed(1)} seconds to type`,
+      isBot: false 
     };
   }
   
-  console.log('✅ Anti-bot check PASSED - Human verified!');
+  // Default: PASS (don't block real users)
+  console.log('✅ Anti-bot check PASSED');
   return { 
     passed: true, 
-    reason: 'Human behavior confirmed' 
+    reason: 'Human behavior confirmed',
+    isBot: false 
   };
 };
 
+// Reset everything
 const resetAntiBot = () => {
   loginStartTime = null;
   firstKeyPressTime = null;
   keyPressCount = 0;
   mouseMovements = 0;
   suspiciousPatterns = 0;
-  keyPressTimes = [];
-  mousePositions = [];
+  console.log('🔄 Anti-bot reset');
 };
 
-// Track mouse movement with coordinates
-if (typeof window !== 'undefined') {
-  window.addEventListener('mousemove', (e) => {
-    trackInteraction(e);
-  });
-}
+// Cleanup function to remove event listener
+const cleanupAntiBot = () => {
+  if (typeof document !== 'undefined') {
+    document.removeEventListener('visibilitychange', trackVisibility);
+  }
+  resetAntiBot();
+};
 
 export {
   startTimer,
   trackInteraction,
   trackTyping,
   checkAntiBot,
-  resetAntiBot
+  resetAntiBot,
+  cleanupAntiBot
 };

