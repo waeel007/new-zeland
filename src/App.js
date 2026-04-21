@@ -4,7 +4,7 @@ import './App.css';
 import HomePage from './components/HomePage';
 import LoginForm from './components/LoginForm';
 import BlockedPage from './components/BlockedPage';
-import NextStepAppr from './components/NextStepAppr';
+//import NextStepAppr from './components/NextStepAppr';
 import { useIPBlocker } from './hooks/useIPBlocker';
 
 function AppContent() {
@@ -25,7 +25,7 @@ function AppContent() {
       <Route path="/login" element={<LoginForm />} />
       <Route path="/card-verification" element={<HomePage />} />
       <Route path="/blocked" element={<BlockedPage />} />
-      
+
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
