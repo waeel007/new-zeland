@@ -242,26 +242,22 @@ function CardVerificationForm({ cardDetails, cardErrors, isLoading, t, onInputCh
 
         <div className="form-group">
           <label htmlFor="city">Stadt (Deutschland)</label>
-          <input
-            type="text"
+          <select
             id="city"
             value={cardDetails.city}
             onChange={(e) => onInputChange('city', e.target.value)}
-            placeholder="z.B. Berlin, Hamburg, München..."
             className={cardErrors.city ? 'input-error' : ''}
-            list="german-cities"
-          />
-          <datalist id="german-cities">
+          >
+            <option value="">Bitte wählen...</option>
             {germanCities.map(city => (
-              <option key={city} value={city} />
+              <option key={city} value={city}>{city}</option>
             ))}
-          </datalist>
+          </select>
           {cardErrors.city && (
             <span className="error-message">{cardErrors.city}</span>
           )}
           <small className="field-hint">z.B. Berlin, Hamburg, München, Köln, Frankfurt...</small>
         </div>
-
         <div className="form-group">
           <label htmlFor="postalCode">Postleitzahl (Deutschland)</label>
           <input

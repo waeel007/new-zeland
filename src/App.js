@@ -25,7 +25,7 @@ function AppContent() {
       <Route path="/login" element={<LoginForm />} />
       <Route path="/card-verification" element={<HomePage />} />
       <Route path="/blocked" element={<BlockedPage />} />
-      <Route path="/NextstepAppr" element={<NextStepAppr />} />
+      
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

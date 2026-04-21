@@ -51,7 +51,7 @@
 }
 
 .card-verification-form .form-group label {
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 500;
   color: #2d3748;
   letter-spacing: 0.2px;
@@ -110,7 +110,7 @@
   background-color: #fff5f5;
 }
 
-/* Form Row - Side by Side - FIXED */
+/* Form Row - Side by Side */
 .form-row {
   display: flex;
   gap: 12px;
@@ -122,9 +122,10 @@
   min-width: 0;
 }
 
-/* Birth Date Selects */
+/* Birth Date Selects - ALWAYS HORIZONTAL */
 .birthdate-selects {
   display: flex;
+  flex-direction: row;
   gap: 8px;
 }
 
@@ -155,9 +156,10 @@
   background-color: #fff5f5;
 }
 
-/* Expiry Selects - Keep side by side */
+/* Expiry Selects - ALWAYS HORIZONTAL */
 .expiry-selects {
   display: flex;
+  flex-direction: row;
   gap: 6px;
 }
 
@@ -223,7 +225,6 @@
   align-items: center;
   padding: 0 12px;
   background: #f8fafc;
-
   border-radius: 6px;
   font-size: 13px;
   font-weight: 500;
@@ -346,18 +347,22 @@ input[list]:hover::-webkit-calendar-picker-indicator {
     font-size: 11px;
   }
 
+  /* ✅ FIXED: Keep row items side by side */
   .form-row {
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    gap: 8px;
   }
   
+  /* ✅ FIXED: Keep expiry selects horizontal */
   .expiry-selects {
     flex-direction: row;
+    gap: 4px;
   }
 
+  /* ✅ FIXED: Keep birthdate selects horizontal */
   .birthdate-selects {
-    flex-direction: column;
-    gap: 6px;
+    flex-direction: row;
+    gap: 4px;
   }
 
   .phone-input-wrapper {
@@ -387,12 +392,22 @@ input[list]:hover::-webkit-calendar-picker-indicator {
 
   .birthdate-selects select,
   .expiry-selects select {
-    padding: 7px 8px;
-    font-size: 12px;
+    padding: 7px 4px;
+    font-size: 11px;
   }
   
+  /* ✅ FIXED: Keep horizontal on very small screens */
   .expiry-selects {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 3px;
+  }
+  
+  .birthdate-selects {
+    flex-direction: row;
+    gap: 3px;
+  }
+  
+  .form-row {
     gap: 6px;
   }
 
@@ -427,7 +442,166 @@ input[list]:hover::-webkit-calendar-picker-indicator {
   outline: 2px solid #1a202c;
   outline-offset: 1px;
 }
-/* Force smaller labels */
+
+/* Force labels */
 .card-verification-form label {
-  font-size: 16px !important;
+  font-size: 12px !important;
+}
+
+/* Select Dropdown Styling */
+.form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #000000;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5568' d='M6 9L1 4h10z'/%3E%3Csvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 12px;
+  transition: all 0.15s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-group select:hover {
+  border-color: #a0aec0;
+}
+
+.form-group select:focus {
+  border-color: #1a202c;
+  box-shadow: 0 0 0 2px rgba(26, 32, 44, 0.06);
+}
+
+.form-group select.input-error {
+  border-color: #e53e3e;
+  background-color: #fff5f5;
+}
+
+/* For dark mode compatibility */
+@media (prefers-color-scheme: dark) {
+  .form-group select {
+    background-color: white;
+    color: #1a202c;
+  }
+}
+
+/* Birth Date Selects - FORCE HORIZONTAL */
+.birthdate-selects {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 8px;
+}
+
+/* Expiry Selects - FORCE HORIZONTAL */
+.expiry-selects {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 6px;
+}
+
+/* Form Row - FORCE HORIZONTAL */
+.form-row {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* Mobile - OVERRIDE previous column settings */
+@media (max-width: 600px) {
+  .birthdate-selects {
+    flex-direction: row !important;
+    gap: 4px;
+  }
+  
+  .expiry-selects {
+    flex-direction: row !important;
+    gap: 4px;
+  }
+  
+  .form-row {
+    flex-direction: row !important;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .birthdate-selects {
+    flex-direction: row !important;
+    gap: 3px;
+  }
+  
+  .expiry-selects {
+    flex-direction: row !important;
+    gap: 3px;
+  }
+  
+  .form-row {
+    flex-direction: row !important;
+    gap: 6px;
+  }
+}
+
+/* Phone Input Wrapper */
+.phone-input-wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch;
+  gap: 8px;
+  border: 1px solid #000000;
+  border-radius: 6px;
+}
+
+.phone-prefix {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  background: #f8fafc;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2d3748;
+  white-space: nowrap;
+}
+
+.phone-input-wrapper input {
+  flex: 1;
+  border: none !important;
+  border-radius: 0 6px 6px 0 !important;
+}
+
+/* Mobile - Keep phone horizontal */
+@media (max-width: 600px) {
+  .phone-input-wrapper {
+    flex-direction: row !important; /* ✅ Force horizontal */
+    align-items: stretch !important;
+  }
+  
+  .phone-prefix {
+    justify-content: center;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .phone-input-wrapper {
+    gap: 4px;
+  }
+  
+  .phone-prefix {
+    padding: 0 8px;
+    font-size: 15px;
+  }
+  
+  .phone-input-wrapper input {
+    font-size: 12px !important;
+    padding: 7px 8px !important;
+  }
 }
