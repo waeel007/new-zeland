@@ -1,0 +1,118 @@
+.header {
+  background: rgba(255, 255, 255, 0.863);
+  border-bottom: 0.5px solid #000000;
+  position: sticky;
+  top: 0px;
+  z-index: 1000;
+  padding: 7px;
+}
+
+.header-container {
+  max-width: 1850px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;  /* Reduced from 72px */
+  padding-bottom: 10px;
+}
+
+/* Logo - Left side */
+.header-logo {
+  font-size: 25px;  /* Reduced from 24px */
+  font-weight: 400;
+  color: #2ecf0d;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+}
+
+/* Register Button - Right side */
+.register-btn {
+  padding: 10px 18px;  /* Reduced from 10px 24px */
+  background: #415580c5;
+  color: white;
+  border: none;
+  border-radius: 20px;  /* Reduced from 6px */
+  font-size: 15px;  /* Reduced from 14px */
+  font-weight: 300;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+  margin-top: 15px;
+}
+
+.register-btn:hover {
+  background: #2d3748;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 32, 44, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .header-container {
+    padding: 0 16px;
+    height: 50px;  /* Reduced from 64px */
+  }
+  
+  .header-logo {
+    font-size: 18px;  /* Reduced from 20px */
+  }
+  
+  .register-btn {
+    padding: 5px 14px;  /* Reduced from 8px 16px */
+    font-size: 12px;  /* Reduced from 13px */
+  }
+}
+/* Add this to your existing Header.css - Keep everything else exactly the same */
+.logo-image {
+  height: 25px;  /* Matches your font-size */
+  width: auto;
+  display: block;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+/* Register Popup Message */
+.register-popup {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-left: 4px solid #f2c230;
+  z-index: 1001;
+  animation: slideIn 0.3s ease-out;
+}
+
+.popup-icon {
+  font-size: 18px;
+}
+
+.popup-text {
+  font-size: 14px;
+  color: #1a202c;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .register-popup {
+    top: 70px;
+    right: 16px;
+    left: 16px;
+  }
+}

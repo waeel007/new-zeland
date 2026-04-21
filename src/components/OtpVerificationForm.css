@@ -1,0 +1,115 @@
+/* ======================================== */
+/* OTP VERIFICATION FORM STYLES             */
+/* ======================================== */
+
+.otp-verification-form {
+  margin-top: 20px;
+}
+
+.otp-verification-form h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.otp-verification-form .verification-message {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f0f8ff;
+  border-radius: 4px;
+  border-left: 3px solid #007bff;
+}
+
+.otp-verification-form .form-group {
+  margin-bottom: 15px;
+}
+
+.otp-verification-form .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.otp-verification-form .form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.otp-verification-form .form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.otp-verification-form .form-group input.input-error {
+  border-color: #dc3545;
+}
+
+.otp-verification-form .error-message {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
+.otp-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.back-btn {
+  flex: 1;
+  padding: 10px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.back-btn:hover {
+  background-color: #5a6268;
+}
+
+.verify-btn {
+  flex: 1;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.verify-btn:hover {
+  background-color: #0056b3;
+}
+
+.verify-btn:disabled {
+  background-color: #6c757d;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .otp-verification-form {
+    margin-top: 15px;
+  }
+  
+  .otp-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

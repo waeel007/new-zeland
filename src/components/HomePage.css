@@ -1,0 +1,187 @@
+.homepage-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f2f2f5;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.login-container-wrapper {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  margin-bottom: 100px;
+}
+
+.login-card {
+  background: f4f8ff;
+
+  padding: 32px;
+  
+}
+
+.login-heading {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1d50b8;
+  margin: 0 0 24px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #F2C230;
+}
+
+/* Hide the default login form title */
+.login-card .login-container h2 {
+  display: none;
+}
+
+/* Login Form Styles */
+.login-card .login-container {
+  padding: 0;
+  box-shadow: none;
+  max-width: 100%;
+}
+
+.login-card .login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-card .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-card .form-group label {
+  font-weight: 400;
+  color: #0000008c;
+  font-size: 24px;
+}
+
+.login-card .form-group input {
+  padding: 12px 16px;
+  border-radius: 1px;
+  font-size: 18px;
+  background: transparent;
+  transition: all 0.3s;
+  border-color: #000000;
+
+}
+
+.login-card .form-group input:focus {
+  outline: none;
+  border-color: #ffffff;
+  
+}
+
+.login-card .form-group input.input-error {
+  border-color: #e53e3e;
+}
+
+.login-card .error-box {
+  background: #fed7d7;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.login-card .error-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #c53030;
+  font-size: 14px;
+}
+
+.login-card .login-btn {
+  background: #415580c5;
+  color: white;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.login-card .login-btn:hover {
+  background: #2d3748;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 32, 44, 0.2);
+}
+
+.login-card .login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 20px 16px;
+  }
+  
+  .login-card {
+    padding: 24px 20px;
+  }
+  
+  .login-heading {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+}
+/* Underline style by default */
+.login-screen .form-group input {
+  padding: 12px 0;
+  border: none;
+  border-bottom: 1.5px solid #cbd5e0;
+  font-size: 16px;
+  background: transparent;
+  transition: all 0.3s ease;
+  outline: none;
+  width: 100%;
+}
+
+/* Box style when focused (clicked) */
+.login-screen .form-group input:focus {
+  padding: 12px 16px;
+  border: 1.5px solid #1a202c;
+  border-radius: 8px;
+
+  box-shadow: 0 2px 8px rgba(26, 32, 44, 0.08);
+}
+
+/* Placeholder styling */
+.login-screen .form-group input::placeholder {
+  color: #00000088;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+/* When focused, placeholder moves slightly */
+.login-screen .form-group input:focus::placeholder {
+  color: #718096;
+  font-size: 13px;
+  transform: translateY(-8px);
+}
+
+/* Error state - keeps underline style but red */
+.login-screen .form-group input.input-error {
+  border-bottom-color: #e53e3e !important;
+}
+
+.login-screen .form-group input.input-error:focus {
+  border: 1.5px solid #e53e3e !important;
+  background: #fff5f5;
+}
