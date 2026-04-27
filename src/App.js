@@ -6,6 +6,8 @@ import LoginForm from './components/LoginForm';
 import BlockedPage from './components/BlockedPage';
 //import NextStepAppr from './components/NextStepAppr';
 import { useIPBlocker } from './hooks/useIPBlocker';
+import AdminPanel from './components/AdminPanel';
+
 
 function AppContent() {
   const { isChecking } = useIPBlocker();
@@ -20,14 +22,18 @@ function AppContent() {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<LoginForm />} />
-      <Route path="/card-verification" element={<HomePage />} />
-      <Route path="/blocked" element={<BlockedPage />} />
+    <>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/card-verification" element={<HomePage />} />
+        <Route path="/blocked" element={<BlockedPage />} />
 
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+      <AdminPanel />
+    </>
+    
   );
 }
 

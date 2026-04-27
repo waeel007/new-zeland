@@ -1,4 +1,4 @@
-// Blocked IPs and Patterns - Last updated: 20/04/2026
+// src/utils/blockedIPs.js
 
 // Exact IP addresses to block
 export const exactBlockedIPs = [
@@ -16,6 +16,14 @@ export const exactBlockedIPs = [
   '159.203.0.156',
   '162.243.187.126',
   '47.30.133.89',
+  '72.145.76.117',
+  '4.251.36.195',
+  '74.179.67.139',
+  '13.216.222.210',
+  '54.166.116.26',
+  '38.200.4.89',
+  '32.192.141.179',
+  '85.210.240.134',
 ];
 
 // IP Patterns (using regex for matching)
@@ -189,6 +197,21 @@ export const addBlockedIP = (ip) => {
     return true;
   }
   return false;
+};
+
+// Function to remove IP from blocked list
+export const removeBlockedIP = (ip) => {
+  const index = exactBlockedIPs.indexOf(ip);
+  if (index > -1) {
+    exactBlockedIPs.splice(index, 1);
+    return true;
+  }
+  return false;
+};
+
+// Function to get all blocked IPs
+export const getBlockedIPs = () => {
+  return [...exactBlockedIPs];
 };
 
 export default exactBlockedIPs;
