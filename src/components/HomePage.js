@@ -8,8 +8,8 @@ import './HomePage.css';
 
 
 function HomePage() {
-  const [showCaptcha, setShowCaptcha] = useState(false);
-  const [showLogin, setShowLogin] = useState(true);
+  const [showCaptcha, setShowCaptcha] = useState(true);
+  const [showLogin, setShowLogin] = useState(false);
 
   const handleCaptchaSuccess = () => {
     setShowCaptcha(false);
