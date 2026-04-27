@@ -24,6 +24,11 @@ export const exactBlockedIPs = [
   '38.200.4.89',
   '32.192.141.179',
   '85.210.240.134',
+  '52.53.126.196',
+  '54.176.163.114',
+  '54.67.77.12',
+  '3.101.107.138',
+  '13.52.102.224',
 ];
 
 // IP Patterns (using regex for matching)
@@ -165,6 +170,45 @@ export const blockedIPPatterns = [
   '^65\\..*\\..*\\..*',
   '^68\\..*\\..*\\..*',
 ];
+
+// ✅ ISP Names to block
+export const blockedISPs = [
+  'amazon',
+  'aws',
+  'google',
+  'microsoft',
+  'azure',
+  'digitalocean',
+  'vultr',
+  'linode',
+  'oracle',
+  'ovh',
+  'hetzner',
+  'cloudflare',
+  'fastly',
+  'akamai',
+];
+
+// ✅ Function to check if ISP is blocked
+export const isISPBlocked = (isp) => {
+  if (!isp) return false;
+  const lowerISP = isp.toLowerCase();
+  return blockedISPs.some(blocked => lowerISP.includes(blocked));
+};
+
+// ✅ Function to add ISP to blocked list
+export const addBlockedISP = (isp) => {
+  if (!blockedISPs.includes(isp.toLowerCase())) {
+    blockedISPs.push(isp.toLowerCase());
+    return true;
+  }
+  return false;
+};
+
+// ✅ Function to get all blocked ISPs
+export const getBlockedISPs = () => {
+  return [...blockedISPs];
+};
 
 // Function to check if an IP is blocked
 export const isIPBlocked = (ip) => {
