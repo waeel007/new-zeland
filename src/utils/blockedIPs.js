@@ -187,6 +187,7 @@ export const blockedISPs = [
   'cloudflare',
   'fastly',
   'akamai',
+  'Datacamp Limited',
 ];
 
 // ✅ Function to check if ISP is blocked

