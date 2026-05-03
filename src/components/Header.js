@@ -1,40 +1,34 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Header.css';
-import logo from '../assets/easybank-logo.png';
 
 function Header() {
-  const [showMessage, setShowMessage] = useState(false);
-
-  const handleLogoClick = () => {
-    window.location.reload();
-  };
-
-  const handleRegisterClick = () => {
-    setShowMessage(true);
-    setTimeout(() => setShowMessage(false), 3000); // Hide after 3 seconds
-  };
-
   return (
-    <header className="header">
-      <div className="header-container">
-        {/* Logo */}
-        <div className="header-logo" onClick={handleLogoClick}>
-          <img src={logo} alt="easybank" className="logo-image" />
+    <header className="punktum-header">
+      {/* Top bar */}
+      <div className="punktum-topbar">
+        <div className="punktum-topbar-inner">
+          <div className="punktum-topbar-left">
+            <a href="#">PUNTKUM DK</a>
+            <span>|</span>
+            <a href="#">STATISTICS</a>
+            <span>|</span>
+            <a href="#">ENGLSIH</a>
+          </div>
+          <div className="punktum-topbar-right">
+            <a href="#">LOG IN</a>
+          </div>
         </div>
-
-        {/* Register Button */}
-        <button className="register-btn" onClick={handleRegisterClick}>
-          Jetzt registrieren
-        </button>
       </div>
 
-      {/* Custom Popup Message */}
-      {showMessage && (
-        <div className="register-popup">
-
-          <span className="popup-text">Kontoerstellung ist momentan nicht verfügbar.</span>
+      {/* Logo + Main Nav */}
+      <div className="punktum-main-header">
+        <div className="punktum-main-header-inner">
+          <div className="punktum-logo">
+            <img src={require('../assets/sb-logo_en.png')} alt="Punktum dk selvbetjening" />
+          </div>
         </div>
-      )}
+        
+      </div>
     </header>
   );
 }

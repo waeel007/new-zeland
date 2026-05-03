@@ -1,105 +1,127 @@
 /* ======================================== */
-/* OTP VERIFICATION FORM STYLES             */
+/* OTP VERIFICATION FORM - SPOTIFY THEME    */
 /* ======================================== */
 
 .otp-verification-form {
   margin-top: 20px;
+  text-align: center;
 }
 
 .otp-verification-form h3 {
-  color: #333;
+  color: white;
   margin-bottom: 10px;
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .otp-verification-form .verification-message {
-  color: #666;
+  color: #b3b3b3;
   font-size: 14px;
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #f0f8ff;
+  margin-bottom: 24px;
+  padding: 12px 14px;
+  background: #1a1a1a;
   border-radius: 4px;
-  border-left: 3px solid #007bff;
+  border-left: 3px solid #1ed760;
 }
 
 .otp-verification-form .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  text-align: left;
 }
 
 .otp-verification-form .form-group label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
-  color: #333;
-  font-size: 0.9rem;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: white;
+  font-size: 13px;
 }
 
 .otp-verification-form .form-group input {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
+  padding: 14px 16px;
+  border: 1px solid #727272;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 16px;
   box-sizing: border-box;
+  background: #121212;
+  color: white;
+  text-align: center;
+  letter-spacing: 4px;
+  outline: none;
 }
 
 .otp-verification-form .form-group input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+  border-color: white;
+  box-shadow: 0 0 0 1px white;
+}
+
+.otp-verification-form .form-group input::placeholder {
+  color: #6a6a6a;
+  letter-spacing: 2px;
 }
 
 .otp-verification-form .form-group input.input-error {
-  border-color: #dc3545;
+  border-color: #e74c3c;
+  background: #1a0a0a;
 }
 
 .otp-verification-form .error-message {
-  color: #dc3545;
+  color: #e74c3c;
   font-size: 12px;
-  margin-top: 5px;
+  margin-top: 6px;
   display: block;
 }
 
 .otp-buttons {
   display: flex;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .back-btn {
   flex: 1;
-  padding: 10px;
-  background-color: #6c757d;
+  padding: 12px;
+  background: transparent;
   color: white;
-  border: none;
-  border-radius: 4px;
+  border: 1px solid #727272;
+  border-radius: 500px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
 .back-btn:hover {
-  background-color: #5a6268;
+  border-color: white;
+  background: #1a1a1a;
 }
 
 .verify-btn {
   flex: 1;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
+  padding: 12px;
+  background: #1ed760;
+  color: #000;
   border: none;
-  border-radius: 4px;
+  border-radius: 500px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 700;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
 }
 
 .verify-btn:hover {
-  background-color: #0056b3;
+  background: #1fdf64;
+  transform: scale(1.02);
 }
 
 .verify-btn:disabled {
-  background-color: #6c757d;
-  opacity: 0.6;
+  background: #333;
+  color: #666;
+  opacity: 1;
   cursor: not-allowed;
+  transform: none;
 }
 
 /* Responsive */

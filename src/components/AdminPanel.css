@@ -1,0 +1,172 @@
+.admin-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+
+.admin-panel {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.admin-header h2 {
+  font-size: 18px;
+  color: #1a202c;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #718096;
+  padding: 0 4px;
+}
+
+.close-btn:hover {
+  color: #1a202c;
+}
+
+.admin-input-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.admin-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.admin-input:focus {
+  border-color: #1a202c;
+}
+
+.admin-btn {
+  padding: 10px 16px;
+  background: #1a202c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-btn:hover {
+  background: #2d3748;
+}
+
+.block-btn {
+  background: #e53e3e;
+}
+
+.block-btn:hover {
+  background: #c53030;
+}
+
+.admin-message {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.admin-message.success {
+  background: #f0fff4;
+  color: #22543d;
+}
+
+.admin-message.error {
+  background: #fff5f5;
+  color: #c53030;
+}
+
+.blocked-list {
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 12px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.blocked-list h3 {
+  font-size: 14px;
+  color: #2d3748;
+  margin: 0 0 8px 0;
+}
+
+.empty-list {
+  color: #a0aec0;
+  font-size: 13px;
+  text-align: center;
+  padding: 12px;
+}
+
+.blocked-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.blocked-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.blocked-list li:last-child {
+  border-bottom: none;
+}
+
+.blocked-ip {
+  font-size: 13px;
+  color: #e53e3e;
+  font-family: monospace;
+}
+
+.unblock-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

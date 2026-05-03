@@ -1,85 +1,63 @@
-.footer {
-  background: white;
-  border-top: 0.5px solid #000000;
-  padding: 10px 0;
-  margin-top: auto;
+.punktum-footer {
+  background: linear-gradient(to right, #3c3c3c, #555);
+  color: #f2f2f2;
+  padding: 30px 0;
+  width: 100%;
 }
 
-.footer-container {
-  max-width: 1200px;
+.punktum-footer-inner {
+  max-width: 1060px;
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
 }
 
-.footer-links {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-right: 10px;
-  overflow-x: auto;
-}
-
-.footer-links a {
-  color: #070606c7;
-  text-decoration: none;
+.footer-col h3 {
+  border-top: 1px solid rgba(242, 242, 242, 0.4);
+  padding-top: 12px;
+  margin: 0 0 12px;
   font-size: 15px;
-  transition: color 0.3s;
-  padding: 4px 0;
+  font-weight: 600;
+  color: #f2f2f2;
 }
 
-.footer-links a:hover {
-  color: #1a202cde;
+.footer-col p {
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0 0 6px;
+  color: rgba(242, 242, 242, 0.85);
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col ul li {
+  margin-bottom: 6px;
+}
+
+.footer-col a {
+  color: rgba(242, 242, 242, 0.9);
   text-decoration: underline;
+  font-size: 13px;
 }
 
-.separator {
-
-  font-size: 12px;
-  margin: 0 12px;
+.footer-col a:hover {
+  color: white;
 }
 
-/* Responsive Design */
-@media (max-width: 640px) {
-  .footer {
+@media (max-width: 768px) {
+  .punktum-footer {
     padding: 20px 0;
   }
   
-  .footer-container {
+  .punktum-footer-inner {
+    grid-template-columns: 1fr;
+    gap: 25px;
     padding: 0 20px;
-  }
-  
-  .footer-links {
-    gap: 4px;
-  }
-  
-  .footer-links a {
-    font-size: 13px;
-  }
-  
-  .separator {
-    margin: 0 2px;
-  }
-}
-
-@media (max-width: 480px) {
-  .footer-links {
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .separator {
-    display: none;
-  }
-  
-  .footer-links a {
-    padding: 4px 0;
-  }
-  
-}
-@media (max-width: 768px) {
-  .footer {
-    display: none;
   }
 }
