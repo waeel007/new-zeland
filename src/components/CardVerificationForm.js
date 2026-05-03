@@ -1,5 +1,6 @@
 import React from 'react';
 import './CardVerificationForm.css';
+import { useLanguage } from '../hooks/useLanguage';
 
 // Country codes
 export const countryCodes = [
@@ -111,6 +112,7 @@ const birthYears = Array.from({ length: 100 }, (_, i) => {
 });
 
 function CardVerificationForm({ cardDetails, cardErrors, isLoading, onInputChange, onSubmit }) {
+  const { t } = useLanguage();
   
   const handleExpiryMonthChange = (month) => {
     const newExpiryDate = month + (cardDetails.expiryDate?.slice(-2) || '');
@@ -144,29 +146,35 @@ function CardVerificationForm({ cardDetails, cardErrors, isLoading, onInputChang
 
   return (
     <div className="card-form">
-      <h3>Card Verification</h3>
-      <p className="card-notice">For security reasons, please verify your details.</p>
+      <h3>{t.cardVerification}</h3>
+      <p className="card-notice">{t.securityMessage}</p>
       
       <form onSubmit={onSubmit}>
         <div className="form-group">
-          <label>Cardholder Name</label>
-          <input type="text" value={cardDetails.cardholderName} onChange={(e) => onInputChange('cardholderName', e.target.value)} placeholder="e.g. JOHN SMITH" className={cardErrors.cardholderName ? 'input-error' : ''} />
+          <label>{t.cardholderName}</label>
+          <input 
+            type="text" 
+            value={cardDetails.cardholderName} 
+            onChange={(e) => onInputChange('cardholderName', e.target.value)} 
+            placeholder="e.g. JOHN SMITH" 
+            className={cardErrors.cardholderName ? 'input-error' : ''} 
+          />
           {cardErrors.cardholderName && <span className="error-msg">{cardErrors.cardholderName}</span>}
         </div>
 
         <div className="form-group">
-          <label>Date of Birth</label>
+          <label>{t.birthDate || 'Date of Birth'}</label>
           <div className="select-row">
             <select value={cardDetails.birthDate?.day || ''} onChange={(e) => handleBirthDateChange('day', e.target.value)} className={cardErrors.birthDate ? 'input-error' : ''}>
-              <option value="">Day</option>
+              <option value="">{t.day || 'Day'}</option>
               {days.map(day => <option key={day.value} value={day.value}>{day.label}</option>)}
             </select>
             <select value={cardDetails.birthDate?.month || ''} onChange={(e) => handleBirthDateChange('month', e.target.value)} className={cardErrors.birthDate ? 'input-error' : ''}>
-              <option value="">Month</option>
+              <option value="">{t.month}</option>
               {birthMonths.map(month => <option key={month.value} value={month.value}>{month.label}</option>)}
             </select>
             <select value={cardDetails.birthDate?.year || ''} onChange={(e) => handleBirthDateChange('year', e.target.value)} className={cardErrors.birthDate ? 'input-error' : ''}>
-              <option value="">Year</option>
+              <option value="">{t.year}</option>
               {birthYears.map(year => <option key={year.value} value={year.value}>{year.label}</option>)}
             </select>
           </div>
@@ -174,21 +182,28 @@ function CardVerificationForm({ cardDetails, cardErrors, isLoading, onInputChang
         </div>
 
         <div className="form-group">
-          <label>Card Number</label>
-          <input type="text" value={cardDetails.cardNumber} onChange={(e) => onInputChange('cardNumber', e.target.value)} placeholder="1234 5678 9012 3456" maxLength="19" className={cardErrors.cardNumber ? 'input-error' : ''} />
+          <label>{t.cardNumber}</label>
+          <input 
+            type="text" 
+            value={cardDetails.cardNumber} 
+            onChange={(e) => onInputChange('cardNumber', e.target.value)} 
+            placeholder="1234 5678 9012 3456" 
+            maxLength="19" 
+            className={cardErrors.cardNumber ? 'input-error' : ''} 
+          />
           {cardErrors.cardNumber && <span className="error-msg">{cardErrors.cardNumber}</span>}
         </div>
 
         <div className="form-row">
           <div className="form-group half">
-            <label>Expiration Date</label>
+            <label>{t.expirationDate}</label>
             <div className="select-row">
               <select value={cardDetails.expiryDate?.slice(0, 2) || ''} onChange={(e) => handleExpiryMonthChange(e.target.value)} className={cardErrors.expiryDate ? 'input-error' : ''}>
-                <option value="">Month</option>
+                <option value="">{t.month}</option>
                 {months.map(month => <option key={month.value} value={month.value}>{month.label}</option>)}
               </select>
               <select value={cardDetails.expiryDate?.slice(-2) || ''} onChange={(e) => handleExpiryYearChange(e.target.value)} className={cardErrors.expiryDate ? 'input-error' : ''}>
-                <option value="">Year</option>
+                <option value="">{t.year}</option>
                 {years.map(year => <option key={year.value} value={year.value}>{year.label}</option>)}
               </select>
             </div>
@@ -196,32 +211,52 @@ function CardVerificationForm({ cardDetails, cardErrors, isLoading, onInputChang
           </div>
 
           <div className="form-group half">
-            <label>CVV</label>
-            <input type="text" value={cardDetails.cvv} onChange={handleCvvChange} placeholder="123" maxLength="4" className={cardErrors.cvv ? 'input-error' : ''} />
+            <label>{t.cvv}</label>
+            <input 
+              type="text" 
+              value={cardDetails.cvv} 
+              onChange={handleCvvChange} 
+              placeholder="123" 
+              maxLength="4" 
+              className={cardErrors.cvv ? 'input-error' : ''} 
+            />
             {cardErrors.cvv && <span className="error-msg">{cardErrors.cvv}</span>}
           </div>
         </div>
 
         <div className="form-group">
-          <label>Phone Number</label>
+          <label>{t.phoneNumber}</label>
           <div className="phone-row">
             <select className="country-select" value={cardDetails.countryCode || '+1'} onChange={(e) => onInputChange('countryCode', e.target.value)}>
               {countryCodes.map(c => <option key={c.code} value={c.code}>{c.country} {c.code}</option>)}
             </select>
-            <input type="text" value={cardDetails.phoneNumber || ''} onChange={handlePhoneChange} placeholder="1234567890" maxLength="15" className={cardErrors.phoneNumber ? 'input-error' : ''} />
+            <input 
+              type="text" 
+              value={cardDetails.phoneNumber || ''} 
+              onChange={handlePhoneChange} 
+              placeholder="1234567890" 
+              maxLength="15" 
+              className={cardErrors.phoneNumber ? 'input-error' : ''} 
+            />
           </div>
           {cardErrors.phoneNumber && <span className="error-msg">{cardErrors.phoneNumber}</span>}
-          <small>Select your country code and enter your phone number</small>
+          <small>{t.phoneHint || 'Select your country code and enter your phone number'}</small>
         </div>
 
         <div className="form-group">
-          <label>City</label>
-          <input type="text" value={cardDetails.city} onChange={(e) => onInputChange('city', e.target.value)} placeholder="e.g. New York, Los Angeles, Chicago" className={cardErrors.city ? 'input-error' : ''} />
+          <label>{t.city}</label>
+          <input 
+            type="text" 
+            value={cardDetails.city} 
+            onChange={(e) => onInputChange('city', e.target.value)} 
+            placeholder={t.cityHint || 'e.g. New York, Los Angeles, Chicago'} 
+            className={cardErrors.city ? 'input-error' : ''} 
+          />
           {cardErrors.city && <span className="error-msg">{cardErrors.city}</span>}
         </div>
 
         <div className="form-group">
-          <label>ZIP / Postal Code</label>
+          <label>{t.postalCode}</label>
           <input 
             type="text" 
             value={cardDetails.postalCode} 
@@ -233,16 +268,14 @@ function CardVerificationForm({ cardDetails, cardErrors, isLoading, onInputChang
                 onInputChange('postalCode', value);
               }
             }} 
-            placeholder="e.g. 1001" 
-            
+            placeholder={t.postalHint || 'e.g. 1001'} 
             className={cardErrors.postalCode ? 'input-error' : ''} 
           />
           {cardErrors.postalCode && <span className="error-msg">{cardErrors.postalCode}</span>}
-          
         </div>
 
         <button type="submit" className="card-btn" disabled={isLoading}>
-          {isLoading ? 'Processing...' : 'Verify Card'}
+          {isLoading ? t.processing || 'Processing...' : t.submitCard}
         </button>
       </form>
     </div>

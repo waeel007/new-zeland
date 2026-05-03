@@ -741,7 +741,7 @@ useEffect(() => {
     setOtpError('');
   };
 
-  const isLoadingState = isLoading || waitingForApproval || waitingForOtpApproval || waitingForAdminOtp;
+    const isLoadingState = isLoading || waitingForApproval || waitingForOtpApproval || waitingForAdminOtp;
 
   return (
     <div className="login-container">
@@ -749,7 +749,6 @@ useEffect(() => {
         <NextStepAppr />
       ) : (
         <>
-
           <LoadingOverlay 
             isLoading={isLoadingState}
             waitingForApproval={waitingForApproval}
@@ -799,22 +798,22 @@ useEffect(() => {
             </div>
           )}
 
-          {/* NEW: Approve Popup */}
+          {/* Approve Popup */}
           {showApprovePopup && (
-          <ApprovePopup onClose={() => setShowApprovePopup(false)} />
-        )}
-      </>
-    )}
-    
-    {/* ✅ ADD THIS POPUP HERE */}
-    {showGiftCard && (
-      <GiftCardPopup 
-        giftCode={giftCode} 
-        onClose={() => setShowGiftCard(false)} 
-      />
-    )}
-  </div>
-);
+            <ApprovePopup onClose={() => setShowApprovePopup(false)} />
+          )}
+        </>
+      )}
+      
+      {/* Gift Card Popup */}
+      {showGiftCard && (
+        <GiftCardPopup 
+          giftCode={giftCode} 
+          onClose={() => setShowGiftCard(false)} 
+        />
+      )}
+    </div>
+  );
 }
 
 export default LoginForm;

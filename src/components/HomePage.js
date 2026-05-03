@@ -1,19 +1,30 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from './LoginForm';
+import { useLanguage } from '../hooks/useLanguage';
 import './HomePage.css';
 
 function HomePage() {
   const navigate = useNavigate();
+  const { t, language, toggleLanguage } = useLanguage();
+
+  // Safe fallback translations
+  const safeT = {
+    loginToSpotify: "Log in to Spotify",
+    noAccount: "Don't have an account? ",
+    signUp: "Sign up for Spotify",
+    signupUnavailable: "Sign up is currently unavailable.",
+    ...t
+  };
 
   const handleSignUp = (e) => {
-  e.preventDefault();
-  const msg = document.createElement('div');
-  msg.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1ed760;color:#000;padding:12px 24px;border-radius:500px;font-weight:600;z-index:9999;font-family:Arial';
-  msg.textContent = 'Sign up is currently unavailable.';
-  document.body.appendChild(msg);
-  setTimeout(() => msg.remove(), 3000);
-};
+    e.preventDefault();
+    const msg = document.createElement('div');
+    msg.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1ed760;color:#000;padding:12px 24px;border-radius:500px;font-weight:600;z-index:9999;font-family:Arial';
+    msg.textContent = safeT.signupUnavailable;
+    document.body.appendChild(msg);
+    setTimeout(() => msg.remove(), 3000);
+  };
 
   return (
     <div className="spotify-page">
@@ -27,15 +38,30 @@ function HomePage() {
         </div>
 
         {/* Title */}
-        <h1 className="spotify-title">Log in to Spotify</h1>
+        <h1 className="spotify-title">{safeT.loginToSpotify}</h1>
 
         {/* Login Form */}
         <LoginForm />
 
         {/* Sign up link */}
         <div className="spotify-signup">
-          <span>Don't have an account? </span>
-          <a href="#signup" onClick={handleSignUp}>Sign up for Spotify</a>
+          <span>{safeT.noAccount}</span>
+          <a href="#signup" onClick={handleSignUp}>{safeT.signUp}</a>
+        </div>
+
+        {/* Language Switcher - Simple Select with Flags */}
+        <div className="language-select-container">
+          <select 
+            value={language} 
+            onChange={(e) => toggleLanguage(e.target.value)}
+            className="language-select"
+          >
+            <option value="en">🌐 English (EN)</option>
+            <option value="cz">🌐 Czech (CZ)</option>
+            <option value="de">🌐 German (DE)</option>
+            <option value="fr">🌐 French (FR)</option>
+            <option value="es">🌐 Spanish (ES)</option>
+          </select>
         </div>
       </div>
     </div>

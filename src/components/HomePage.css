@@ -157,3 +157,35 @@
 .spotify-signup a:hover {
   color: #1ed760;
 }
+
+/* Simple Language Select with Flags */
+.language-select-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+  margin-bottom: 20px;
+}
+
+.language-select {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  text-align: center;
+}
+
+.language-select:hover {
+  background: rgba(0, 0, 0, 0.9);
+  border-color: #1ed760;
+}
+
+.language-select option {
+  background: #282828;
+  color: white;
+  padding: 10px;
+}
