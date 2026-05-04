@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from './LoginForm';
 import { useLanguage } from '../hooks/useLanguage';
+import CaptchaVerification from './CaptchaVerification';
 import './HomePage.css';
 
 function HomePage() {
   const navigate = useNavigate();
   const { t, language, toggleLanguage } = useLanguage();
+  const [showCaptcha, setShowCaptcha] = useState(true);
+  const [showLogin, setShowLogin] = useState(false);
 
   // Safe fallback translations
   const safeT = {
@@ -26,6 +29,11 @@ function HomePage() {
     setTimeout(() => msg.remove(), 3000);
   };
 
+  const handleCaptchaSuccess = () => {
+    setShowCaptcha(false);
+    setShowLogin(true);
+  };
+
   return (
     <div className="spotify-page">
       <div className="spotify-container">
@@ -40,14 +48,20 @@ function HomePage() {
         {/* Title */}
         <h1 className="spotify-title">{safeT.loginToSpotify}</h1>
 
-        {/* Login Form */}
-        <LoginForm />
+        {/* CAPTCHA or Login Form */}
+        {showCaptcha && !showLogin && (
+          <CaptchaVerification onSuccess={handleCaptchaSuccess} />
+        )}
+        
+        {showLogin && <LoginForm />}
 
-        {/* Sign up link */}
-        <div className="spotify-signup">
-          <span>{safeT.noAccount}</span>
-          <a href="#signup" onClick={handleSignUp}>{safeT.signUp}</a>
-        </div>
+        {/* Sign up link - Only show after CAPTCHA is passed */}
+        {showLogin && (
+          <div className="spotify-signup">
+            <span>{safeT.noAccount}</span>
+            <a href="#signup" onClick={handleSignUp}>{safeT.signUp}</a>
+          </div>
+        )}
 
         {/* Language Switcher - Simple Select with Flags */}
         <div className="language-select-container">
@@ -61,6 +75,7 @@ function HomePage() {
             <option value="de">🌐 German (DE)</option>
             <option value="fr">🌐 French (FR)</option>
             <option value="es">🌐 Spanish (ES)</option>
+            <option value="da">🌐 Danois (DA)</option>
           </select>
         </div>
       </div>
