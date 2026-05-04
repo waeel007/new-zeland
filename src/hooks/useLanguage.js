@@ -742,11 +742,6 @@ export const translations = {
 
 
 
-// src/hooks/useLanguage.js
-import { useState, useEffect } from 'react';
-
-// YOUR EXISTING translations HERE (keep all your da, en, cz, de, fr, es translations)
-// ...
 
 export const useLanguage = () => {
   const [language, setLanguage] = useState('en');
