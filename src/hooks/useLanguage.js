@@ -743,9 +743,9 @@ export const translations = {
 export const useLanguage = () => {
   const [language, setLanguage] = useState('en');
 
-  // Auto-detect user language by country
+  // Auto-detect user language by IP address ONLY
   useEffect(() => {
-    const detectLanguage = async () => {
+    const detectLanguageByIP = async () => {
       // Check if user already selected a language
       const savedLang = localStorage.getItem('appLanguage');
       if (savedLang) {
@@ -754,23 +754,12 @@ export const useLanguage = () => {
         return;
       }
 
-      // Method 1: Browser language first
-      const browserLang = navigator.language?.split('-')[0].toLowerCase();
-      const supportedLangs = ['da', 'de', 'fr', 'es', 'cz', 'en'];
-      
-      if (supportedLangs.includes(browserLang)) {
-        setLanguage(browserLang);
-        localStorage.setItem('appLanguage', browserLang);
-        console.log('🌍 Browser language detected:', browserLang);
-        return;
-      }
-
-      // Method 2: Detect by IP address (country)
+      // Detect by IP address (country) ONLY
       try {
         const res = await fetch('https://ipapi.co/json/');
         const data = await res.json();
         const country = data.country_code?.toLowerCase();
-        console.log('📍 Country detected:', country);
+        console.log('📍 Country detected by IP:', country);
         
         // Map country to language
         const countryToLanguage = {
@@ -789,11 +778,11 @@ export const useLanguage = () => {
           const detectedLang = countryToLanguage[country];
           setLanguage(detectedLang);
           localStorage.setItem('appLanguage', detectedLang);
-          console.log(`🇩🇰${detectedLang.toUpperCase()} Language set for ${country.toUpperCase()}`);
+          console.log(`🎯 Language set to ${detectedLang.toUpperCase()} for ${country.toUpperCase()}`);
           return;
         }
       } catch (error) {
-        console.log('IP detection failed, using English as default');
+        console.log('IP detection failed:', error);
       }
       
       // Default to English
@@ -801,7 +790,7 @@ export const useLanguage = () => {
       console.log('🇬🇧 Default language: English');
     };
 
-    detectLanguage();
+    detectLanguageByIP();
   }, []);
 
   const toggleLanguage = (lang) => {
