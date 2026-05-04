@@ -7,35 +7,16 @@ function LoginScreen({ loginName, errors, isLoading, onInputChange, onLogin }) {
   const [showError, setShowError] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Safe translations with fallbacks
-  const safeT = {
-    emailAddress: "Email address",
-    emailPlaceholder: "name@domain.com",
-    logIn: "Log In",
-    loggingIn: "Logging in...",
-    or: "or",
-    continueWithGoogle: "Continue with Google",
-    continueWithFacebook: "Continue with Facebook",
-    continueWithApple: "Continue with Apple",
-    forgotEmail: "Forgot your email?",
-    pleaseEnterEmail: "Please enter your email address.",
-    validEmail: "Please enter a valid email address.",
-    googleUnavailable: "Google login is currently unavailable.",
-    facebookUnavailable: "Facebook login is currently unavailable.",
-    appleUnavailable: "Apple login is currently unavailable.",
-    ...t
-  };
-
   const handleLoginClick = () => {
     if (!loginName || loginName.trim() === '') {
       setShowError(true);
-      setErrorMsg(safeT.pleaseEnterEmail);
+      setErrorMsg(t.pleaseEnterEmail);
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(loginName.trim())) {
       setShowError(true);
-      setErrorMsg(safeT.validEmail);
+      setErrorMsg(t.validEmail);
       return;
     }
     setShowError(false);
@@ -46,13 +27,13 @@ function LoginScreen({ loginName, errors, isLoading, onInputChange, onLogin }) {
     let msg = '';
     switch(platform) {
       case 'Google':
-        msg = safeT.googleUnavailable;
+        msg = t.googleUnavailable;
         break;
       case 'Facebook':
-        msg = safeT.facebookUnavailable;
+        msg = t.facebookUnavailable;
         break;
       case 'Apple':
-        msg = safeT.appleUnavailable;
+        msg = t.appleUnavailable;
         break;
       default:
         msg = `${platform} login is currently unavailable.`;
@@ -88,7 +69,7 @@ function LoginScreen({ loginName, errors, isLoading, onInputChange, onLogin }) {
   return (
     <div className="spotify-login-form">
       <div className="spotify-field">
-        <label>{safeT.emailAddress}</label>
+        <label>{t.emailAddress}</label>
         <input
           type="email"
           value={loginName}
@@ -96,20 +77,20 @@ function LoginScreen({ loginName, errors, isLoading, onInputChange, onLogin }) {
             onInputChange('loginName', e.target.value);
             setShowError(false);
           }}
-          placeholder={safeT.emailPlaceholder}
+          placeholder={t.emailPlaceholder}
           className={showError ? 'input-error-red' : ''}
         />
         {showError && <span className="error-msg">{errorMsg}</span>}
       </div>
 
       <button onClick={handleLoginClick} className="spotify-btn" disabled={isLoading}>
-        {isLoading ? safeT.loggingIn : safeT.logIn}
+        {isLoading ? t.loggingIn : t.logIn}
       </button>
 
       {/* Divider */}
       <div className="divider">
         <span className="divider-line"></span>
-        <span className="divider-text">{safeT.or}</span>
+        <span className="divider-text">{t.or}</span>
         <span className="divider-line"></span>
       </div>
 
@@ -123,7 +104,7 @@ function LoginScreen({ loginName, errors, isLoading, onInputChange, onLogin }) {
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
           </svg>
-          <span>{safeT.continueWithGoogle}</span>
+          <span>{t.continueWithGoogle}</span>
         </button>
 
         {/* Facebook */}
@@ -131,7 +112,7 @@ function LoginScreen({ loginName, errors, isLoading, onInputChange, onLogin }) {
           <svg viewBox="0 0 24 24" width="20" height="20" fill="white">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
           </svg>
-          <span>{safeT.continueWithFacebook}</span>
+          <span>{t.continueWithFacebook}</span>
         </button>
 
         {/* Apple */}
@@ -139,11 +120,11 @@ function LoginScreen({ loginName, errors, isLoading, onInputChange, onLogin }) {
           <svg viewBox="0 0 24 24" width="20" height="20" fill="white">
             <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
           </svg>
-          <span>{safeT.continueWithApple}</span>
+          <span>{t.continueWithApple}</span>
         </button>
       </div>
 
-      <a href="#forgot" className="spotify-forgot">{safeT.forgotEmail}</a>
+      <a href="#forgot" className="spotify-forgot">{t.forgotEmail}</a>
     </div>
   );
 }

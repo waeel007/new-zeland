@@ -46,7 +46,7 @@ function HomePage() {
         </div>
 
         {/* Title */}
-        <h1 className="spotify-title">{safeT.loginToSpotify}</h1>
+        <h1 className="spotify-title">{t.loginToSpotify}</h1>
 
         {/* CAPTCHA or Login Form */}
         {showCaptcha && !showLogin && (
