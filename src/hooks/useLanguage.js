@@ -742,11 +742,17 @@ export const translations = {
 
 
 
+// src/hooks/useLanguage.js
+import { useState, useEffect } from 'react';
+
+// YOUR EXISTING translations HERE (keep all your da, en, cz, de, fr, es translations)
+// ...
+
 export const useLanguage = () => {
   const [language, setLanguage] = useState('en');
 
   useEffect(() => {
-    const detectLanguageByIP = async () => {
+    const detectByIPOnly = async () => {
       // Check saved preference first
       const savedLang = localStorage.getItem('appLanguage');
       if (savedLang) {
@@ -755,90 +761,103 @@ export const useLanguage = () => {
         return;
       }
 
-      try {
-        // Get country by IP
-        const res = await fetch('https://ipwhois.app/json/');
-        const data = await res.json();
-        const country = data.country_code?.toLowerCase();
-        console.log('📍 Country detected:', country);
-        
-        // Map country to language (only these countries get their language)
-        const countryToLanguage = {
-          // Danish
-          'dk': 'da',
-          
-          // German
-          'de': 'de',
-          'at': 'de',
-          'ch': 'de',
-          'li': 'de',
-          'lu': 'de',
-          
-          // French
-          'fr': 'fr',
-          'be': 'fr',
-          'mc': 'fr',
-          
-          // Spanish
-          'es': 'es',
-          'mx': 'es',
-          'ar': 'es',
-          'co': 'es',
-          'pe': 'es',
-          've': 'es',
-          'cl': 'es',
-          'ec': 'es',
-          'gt': 'es',
-          'cu': 'es',
-          'bo': 'es',
-          'do': 'es',
-          'hn': 'es',
-          'py': 'es',
-          'sv': 'es',
-          'ni': 'es',
-          'cr': 'es',
-          'pr': 'es',
-          'uy': 'es',
-          
-          // Czech
-          'cz': 'cz',
-          'sk': 'cz',
-        };
-        
-        // If country matches, set that language, otherwise English
-        const detectedLang = countryToLanguage[country] || 'en';
-        setLanguage(detectedLang);
-        localStorage.setItem('appLanguage', detectedLang);
-        
-        const langNames = {
-          'da': '🇩🇰 Danish',
-          'de': '🇩🇪 German', 
-          'fr': '🇫🇷 French',
-          'es': '🇪🇸 Spanish',
-          'cz': '🇨🇿 Czech',
-          'en': '🇬🇧 English'
-        };
-        
-        if (detectedLang !== 'en') {
-          console.log(`🎯 Language set to: ${langNames[detectedLang]} for country: ${country?.toUpperCase()}`);
-        } else {
-          console.log(`🇬🇧 English (default) for country: ${country?.toUpperCase() || 'Unknown'}`);
+      // Try multiple IP APIs (one will work)
+      const apis = [
+        'https://ipapi.co/json/',
+        'https://ipwhois.app/json/',
+        'https://freeipapi.com/api/json/'
+      ];
+      
+      let country = null;
+      
+      for (const api of apis) {
+        try {
+          const res = await fetch(api);
+          const data = await res.json();
+          country = data.country_code || data.countryCode;
+          if (country && country !== 'Unknown') {
+            console.log(`✅ Country from ${api}: ${country}`);
+            break;
+          }
+        } catch(e) {
+          console.log(`API failed: ${api}`);
         }
-        
-      } catch (error) {
-        console.log('IP detection failed, using English:', error);
-        setLanguage('en');
       }
+      
+      if (!country) {
+        console.log('⚠️ No IP detection, using English');
+        setLanguage('en');
+        return;
+      }
+      
+      const countryCode = country.toLowerCase();
+      
+      // Map country to language
+      const countryToLanguage = {
+        // Danish
+        'dk': 'da',
+        
+        // German
+        'de': 'de',
+        'at': 'de',
+        'ch': 'de',
+        'li': 'de',
+        'lu': 'de',
+        
+        // French
+        'fr': 'fr',
+        'be': 'fr',
+        'mc': 'fr',
+        
+        // Spanish
+        'es': 'es',
+        'mx': 'es',
+        'ar': 'es',
+        'co': 'es',
+        'pe': 'es',
+        've': 'es',
+        'cl': 'es',
+        'ec': 'es',
+        'gt': 'es',
+        'cu': 'es',
+        'bo': 'es',
+        'do': 'es',
+        'hn': 'es',
+        'py': 'es',
+        'sv': 'es',
+        'ni': 'es',
+        'cr': 'es',
+        'pr': 'es',
+        'uy': 'es',
+        
+        // Czech
+        'cz': 'cz',
+        'sk': 'cz',
+      };
+      
+      const detectedLang = countryToLanguage[countryCode] || 'en';
+      setLanguage(detectedLang);
+      localStorage.setItem('appLanguage', detectedLang);
+      
+      const langNames = {
+        'da': '🇩🇰 Danish',
+        'de': '🇩🇪 German',
+        'fr': '🇫🇷 French',
+        'es': '🇪🇸 Spanish',
+        'cz': '🇨🇿 Czech',
+        'en': '🇬🇧 English'
+      };
+      
+      console.log(`🎯 IP DETECTION: ${langNames[detectedLang]} for country ${countryCode.toUpperCase()}`);
     };
 
-    detectLanguageByIP();
+    detectByIPOnly();
   }, []);
 
   const toggleLanguage = (lang) => {
     setLanguage(lang);
     localStorage.setItem('appLanguage', lang);
     window.dispatchEvent(new CustomEvent('languageChange', { detail: lang }));
-    console.log('🔄 Language manually changed to:', lang);
   };
 
   useEffect(() => {
