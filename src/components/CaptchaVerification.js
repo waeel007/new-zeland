@@ -27,7 +27,8 @@ function CaptchaVerification({ onSuccess }) {
           
           <div className="recaptcha-wrapper">
             <ReCAPTCHA
-              sitekey="6LfLAdgsAAAAACScaEK5NqjaWpn_-KzGJafJgPZT"
+              sitekey="6LdOBNgsAAAAADBjX3zoz2yGWxOLfIb-sUMwOl9q
+"
               onChange={handleCaptchaChange}
               onExpired={handleExpired}
               hl="da"
