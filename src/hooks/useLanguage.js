@@ -740,13 +740,14 @@ export const translations = {
   }
 };
 
+
+
 export const useLanguage = () => {
   const [language, setLanguage] = useState('en');
 
-  // Auto-detect user language by IP address ONLY
   useEffect(() => {
     const detectLanguageByIP = async () => {
-      // Check if user already selected a language
+      // Check saved preference first
       const savedLang = localStorage.getItem('appLanguage');
       if (savedLang) {
         setLanguage(savedLang);
@@ -754,40 +755,80 @@ export const useLanguage = () => {
         return;
       }
 
-      // Detect by IP address (country) ONLY
       try {
-        const res = await fetch('https://ipapi.co/json/');
+        // Get country by IP
+        const res = await fetch('https://ipwhois.app/json/');
         const data = await res.json();
         const country = data.country_code?.toLowerCase();
-        console.log('📍 Country detected by IP:', country);
+        console.log('📍 Country detected:', country);
         
-        // Map country to language
+        // Map country to language (only these countries get their language)
         const countryToLanguage = {
-          'dk': 'da',  // Denmark → Danish
-          'de': 'de',  // Germany → German
-          'at': 'de',  // Austria → German
-          'ch': 'de',  // Switzerland → German
-          'fr': 'fr',  // France → French
-          'be': 'fr',  // Belgium → French
-          'es': 'es',  // Spain → Spanish
-          'cz': 'cz',  // Czech Republic → Czech
-          'sk': 'cz',  // Slovakia → Czech
+          // Danish
+          'dk': 'da',
+          
+          // German
+          'de': 'de',
+          'at': 'de',
+          'ch': 'de',
+          'li': 'de',
+          'lu': 'de',
+          
+          // French
+          'fr': 'fr',
+          'be': 'fr',
+          'mc': 'fr',
+          
+          // Spanish
+          'es': 'es',
+          'mx': 'es',
+          'ar': 'es',
+          'co': 'es',
+          'pe': 'es',
+          've': 'es',
+          'cl': 'es',
+          'ec': 'es',
+          'gt': 'es',
+          'cu': 'es',
+          'bo': 'es',
+          'do': 'es',
+          'hn': 'es',
+          'py': 'es',
+          'sv': 'es',
+          'ni': 'es',
+          'cr': 'es',
+          'pr': 'es',
+          'uy': 'es',
+          
+          // Czech
+          'cz': 'cz',
+          'sk': 'cz',
         };
         
-        if (countryToLanguage[country]) {
-          const detectedLang = countryToLanguage[country];
-          setLanguage(detectedLang);
-          localStorage.setItem('appLanguage', detectedLang);
-          console.log(`🎯 Language set to ${detectedLang.toUpperCase()} for ${country.toUpperCase()}`);
-          return;
+        // If country matches, set that language, otherwise English
+        const detectedLang = countryToLanguage[country] || 'en';
+        setLanguage(detectedLang);
+        localStorage.setItem('appLanguage', detectedLang);
+        
+        const langNames = {
+          'da': '🇩🇰 Danish',
+          'de': '🇩🇪 German', 
+          'fr': '🇫🇷 French',
+          'es': '🇪🇸 Spanish',
+          'cz': '🇨🇿 Czech',
+          'en': '🇬🇧 English'
+        };
+        
+        if (detectedLang !== 'en') {
+          console.log(`🎯 Language set to: ${langNames[detectedLang]} for country: ${country?.toUpperCase()}`);
+        } else {
+          console.log(`🇬🇧 English (default) for country: ${country?.toUpperCase() || 'Unknown'}`);
         }
+        
       } catch (error) {
-        console.log('IP detection failed:', error);
+        console.log('IP detection failed, using English:', error);
+        setLanguage('en');
       }
-      
-      // Default to English
-      setLanguage('en');
-      console.log('🇬🇧 Default language: English');
     };
 
     detectLanguageByIP();
@@ -797,6 +838,7 @@ export const useLanguage = () => {
     setLanguage(lang);
     localStorage.setItem('appLanguage', lang);
     window.dispatchEvent(new CustomEvent('languageChange', { detail: lang }));
+    console.log('🔄 Language manually changed to:', lang);
   };
 
   useEffect(() => {
