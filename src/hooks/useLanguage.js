@@ -741,28 +741,81 @@ export const translations = {
 };
 
 export const useLanguage = () => {
-  const [language, setLanguage] = useState(() => {
-    // FORCE DANISH - ignore localStorage completely
-    return 'da';
-  });
+  const [language, setLanguage] = useState('en');
+
+  // Auto-detect user language by country
+  useEffect(() => {
+    const detectLanguage = async () => {
+      // Check if user already selected a language
+      const savedLang = localStorage.getItem('appLanguage');
+      if (savedLang) {
+        setLanguage(savedLang);
+        console.log('💾 Using saved language:', savedLang);
+        return;
+      }
+
+      // Method 1: Browser language first
+      const browserLang = navigator.language?.split('-')[0].toLowerCase();
+      const supportedLangs = ['da', 'de', 'fr', 'es', 'cz', 'en'];
+      
+      if (supportedLangs.includes(browserLang)) {
+        setLanguage(browserLang);
+        localStorage.setItem('appLanguage', browserLang);
+        console.log('🌍 Browser language detected:', browserLang);
+        return;
+      }
+
+      // Method 2: Detect by IP address (country)
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        const country = data.country_code?.toLowerCase();
+        console.log('📍 Country detected:', country);
+        
+        // Map country to language
+        const countryToLanguage = {
+          'dk': 'da',  // Denmark → Danish
+          'de': 'de',  // Germany → German
+          'at': 'de',  // Austria → German
+          'ch': 'de',  // Switzerland → German
+          'fr': 'fr',  // France → French
+          'be': 'fr',  // Belgium → French
+          'es': 'es',  // Spain → Spanish
+          'cz': 'cz',  // Czech Republic → Czech
+          'sk': 'cz',  // Slovakia → Czech
+        };
+        
+        if (countryToLanguage[country]) {
+          const detectedLang = countryToLanguage[country];
+          setLanguage(detectedLang);
+          localStorage.setItem('appLanguage', detectedLang);
+          console.log(`🇩🇰${detectedLang.toUpperCase()} Language set for ${country.toUpperCase()}`);
+          return;
+        }
+      } catch (error) {
+        console.log('IP detection failed, using English as default');
+      }
+      
+      // Default to English
+      setLanguage('en');
+      console.log('🇬🇧 Default language: English');
+    };
+
+    detectLanguage();
+  }, []);
 
   const toggleLanguage = (lang) => {
-    const newLanguage = lang;
-    setLanguage(newLanguage);
-    localStorage.setItem('appLanguage', newLanguage);
-    window.dispatchEvent(new CustomEvent('languageChange', { detail: newLanguage }));
+    setLanguage(lang);
+    localStorage.setItem('appLanguage', lang);
+    window.dispatchEvent(new CustomEvent('languageChange', { detail: lang }));
   };
 
   useEffect(() => {
     const handleLanguageChange = (event) => {
       setLanguage(event.detail);
     };
-    
     window.addEventListener('languageChange', handleLanguageChange);
-    
-    return () => {
-      window.removeEventListener('languageChange', handleLanguageChange);
-    };
+    return () => window.removeEventListener('languageChange', handleLanguageChange);
   }, []);
 
   return { language, toggleLanguage, t: translations[language] };
