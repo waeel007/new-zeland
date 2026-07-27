@@ -33,6 +33,7 @@ export const exactBlockedIPs = [
 
 // CIDR ranges to block
 export const blockedCIDRs = [
+  /*
   '41.62.0.0/16',
   '41.224.0.0/13',
   '102.24.0.0/13',
@@ -77,6 +78,7 @@ export const blockedCIDRs = [
   '197.240.0.0/16',
   '197.244.0.0/16',
   '213.150.160.0/19',
+   */
   '103.37.6.0/23',
 '103.167.82.0/23',
 '103.188.230.0/23',
@@ -8747,3 +8749,4 @@ export const getBlockedIPs = () => {
 };
 
 export default exactBlockedIPs;
+
