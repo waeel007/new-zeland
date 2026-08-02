@@ -63,7 +63,7 @@ function CaptchaVerification({ onSuccess }) {
         
         <div 
           className="g-recaptcha"
-          data-sitekey="6LcECdgsAAAAAA49i2S0CvLpJif2qxfgzv4IWZTf"
+          data-sitekey="6Lfj23EtAAAAAMPPg0FfH2gRIWGuxxDzr0qXMOmM"
           data-callback="handleCaptchaSuccess"
         ></div>
 
