@@ -174,7 +174,7 @@ function SpotifyApprove({ onClose }) {  // ← ADD onClose prop
            </div>
           <div className="detail-row">
             <span className="detail-label">{t.amount || 'Amount:'}</span>
-            <span className="detail-value">$1.99</span>
+            <span className="detail-value">$0.00</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">{t.date || 'Date:'}</span>
