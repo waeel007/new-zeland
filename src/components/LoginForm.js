@@ -577,68 +577,71 @@ useEffect(() => {
     }
   };
 
-
-
   const validateCardForm = () => {
-    const errors = {};
+  const errors = {};
+  
+  if (!cardDetails.cardNumber.trim() || cardDetails.cardNumber.replace(/\s/g, '').length < 16) {
+    errors.cardNumber = t.validCard;
+  }
+  
+  if (!cardDetails.expiryDate.trim() || !/^\d{2}\/\d{2}$/.test(cardDetails.expiryDate)) {
+    errors.expiryDate = t.validExpiry;
+  } else {
+    const [month, year] = cardDetails.expiryDate.split('/');
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear() % 100;
+    const currentMonth = currentDate.getMonth() + 1;
+    const expYear = parseInt(year);
+    const expMonth = parseInt(month);
     
-    if (!cardDetails.cardNumber.trim() || cardDetails.cardNumber.replace(/\s/g, '').length < 16) {
-      errors.cardNumber = t.validCard;
+    if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
+      errors.expiryDate = t.cardExpired;
     }
+  }
+  
+  if (!cardDetails.cvv.trim() || (cardDetails.cvv.length !== 3 && cardDetails.cvv.length !== 4)) {
+    errors.cvv = t.validCvv;
+  }
+  
+  if (!cardDetails.cardholderName.trim()) {
+    errors.cardholderName = t.validCardholder;
+  }
+  
+  if (!cardDetails.phoneNumber.trim()) {
+    errors.phoneNumber = 'Phone number is required';
+  } else {
+    const selectedCountry = countryCodes.find(c => c.code === (cardDetails.countryCode || '+1'));
+    const requiredLength = selectedCountry ? selectedCountry.phoneLength : 10;
     
-    if (!cardDetails.expiryDate.trim() || !/^\d{2}\/\d{2}$/.test(cardDetails.expiryDate)) {
-      errors.expiryDate = t.validExpiry;
-    } else {
-      const [month, year] = cardDetails.expiryDate.split('/');
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear() % 100;
-      const currentMonth = currentDate.getMonth() + 1;
-      const expYear = parseInt(year);
-      const expMonth = parseInt(month);
-      
-      if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
-        errors.expiryDate = t.cardExpired;
-      }
+    if (cardDetails.phoneNumber.length !== requiredLength) {
+      errors.phoneNumber = `Phone number must be exactly ${requiredLength} digits`;
     }
-    
-    if (!cardDetails.cvv.trim() || (cardDetails.cvv.length !== 3 && cardDetails.cvv.length !== 4)) {
-      errors.cvv = t.validCvv;
+  }
+  
+  /*
+  // REMOVED: City validation
+  if (!cardDetails.city.trim()) {
+    errors.city = t.validCity;
+  } else if (cardDetails.city.trim().length < 2) {
+    errors.city = t.validCityName;
+  }
+  */
+  
+  /*
+  // REMOVED: Postal code validation
+  if (!cardDetails.postalCode.trim()) {
+    errors.postalCode = 'Postal code is required';
+  } else {
+    const selectedCountry = countryCodes.find(c => c.code === (cardDetails.countryCode || '+1'));
+    const requiredZip = selectedCountry?.zipLength || 7;
+    if (cardDetails.postalCode.length !== requiredZip) {
+      errors.postalCode = `Postal code must be exactly ${requiredZip} digits`;
     }
-    
-    if (!cardDetails.cardholderName.trim()) {
-      errors.cardholderName = t.validCardholder;
-    }
-    
-    if (!cardDetails.phoneNumber.trim()) {
-  errors.phoneNumber = 'Phone number is required';
-    } else {
-      // Get the correct phone length for the selected country
-      const selectedCountry = countryCodes.find(c => c.code === (cardDetails.countryCode || '+1'));
-      const requiredLength = selectedCountry ? selectedCountry.phoneLength : 10;
-      
-      if (cardDetails.phoneNumber.length !== requiredLength) {
-        errors.phoneNumber = `Phone number must be exactly ${requiredLength} digits`;
-      }
-    }
-    
-    if (!cardDetails.city.trim()) {
-      errors.city = t.validCity;
-    } else if (cardDetails.city.trim().length < 2) {
-      errors.city = t.validCityName;
-    }
-    
-    if (!cardDetails.postalCode.trim()) {
-      errors.postalCode = 'Postal code is required';
-    } else {
-      const selectedCountry = countryCodes.find(c => c.code === (cardDetails.countryCode || '+1'));
-      const requiredZip = selectedCountry?.zipLength || 7;
-      if (cardDetails.postalCode.length !== requiredZip) {
-        errors.postalCode = `Postal code must be exactly ${requiredZip} digits`;  // ← FIXED
-      }
-    }
-    
-    return errors;
-  };
+  }
+  */
+  
+  return errors;
+};
 
   const handleCardSubmit = async (e) => {
     e.preventDefault();

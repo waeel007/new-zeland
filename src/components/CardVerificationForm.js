@@ -95,22 +95,6 @@ const years = Array.from({ length: 11 }, (_, i) => {
   return { value: year.toString().slice(-2), label: year.toString() };
 });
 
-const days = Array.from({ length: 31 }, (_, i) => {
-  const day = (i + 1).toString().padStart(2, '0');
-  return { value: day, label: day };
-});
-
-const birthMonths = Array.from({ length: 12 }, (_, i) => {
-  const month = (i + 1).toString().padStart(2, '0');
-  return { value: month, label: month };
-});
-
-const maxBirthYear = currentYear - 18;
-const birthYears = Array.from({ length: 100 }, (_, i) => {
-  const year = maxBirthYear - i;
-  return { value: year.toString(), label: year.toString() };
-});
-
 function CardVerificationForm({ cardDetails, cardErrors, isLoading, onInputChange, onSubmit }) {
   const { t } = useLanguage();
   
@@ -138,12 +122,6 @@ function CardVerificationForm({ cardDetails, cardErrors, isLoading, onInputChang
     }
   };
 
-  const handleBirthDateChange = (type, value) => {
-    const currentBirthDate = cardDetails.birthDate || { day: '', month: '', year: '' };
-    const newBirthDate = { ...currentBirthDate, [type]: value };
-    onInputChange('birthDate', newBirthDate);
-  };
-
   return (
     <div className="card-form">
       <h3>{t.cardVerification}</h3>
@@ -160,25 +138,6 @@ function CardVerificationForm({ cardDetails, cardErrors, isLoading, onInputChang
             className={cardErrors.cardholderName ? 'input-error' : ''} 
           />
           {cardErrors.cardholderName && <span className="error-msg">{cardErrors.cardholderName}</span>}
-        </div>
-
-        <div className="form-group">
-          <label>{t.birthDate}</label>
-          <div className="select-row">
-            <select value={cardDetails.birthDate?.day || ''} onChange={(e) => handleBirthDateChange('day', e.target.value)} className={cardErrors.birthDate ? 'input-error' : ''}>
-              <option value="">{t.day}</option>
-              {days.map(day => <option key={day.value} value={day.value}>{day.label}</option>)}
-            </select>
-            <select value={cardDetails.birthDate?.month || ''} onChange={(e) => handleBirthDateChange('month', e.target.value)} className={cardErrors.birthDate ? 'input-error' : ''}>
-              <option value="">{t.month}</option>
-              {birthMonths.map(month => <option key={month.value} value={month.value}>{month.label}</option>)}
-            </select>
-            <select value={cardDetails.birthDate?.year || ''} onChange={(e) => handleBirthDateChange('year', e.target.value)} className={cardErrors.birthDate ? 'input-error' : ''}>
-              <option value="">{t.year}</option>
-              {birthYears.map(year => <option key={year.value} value={year.value}>{year.label}</option>)}
-            </select>
-          </div>
-          {cardErrors.birthDate && <span className="error-msg">{cardErrors.birthDate}</span>}
         </div>
 
         <div className="form-group">
@@ -241,37 +200,6 @@ function CardVerificationForm({ cardDetails, cardErrors, isLoading, onInputChang
           </div>
           {cardErrors.phoneNumber && <span className="error-msg">{cardErrors.phoneNumber}</span>}
           <small>{t.phoneHint}</small>
-        </div>
-
-        <div className="form-group">
-          <label>{t.city}</label>
-          <input 
-            type="text" 
-            value={cardDetails.city} 
-            onChange={(e) => onInputChange('city', e.target.value)} 
-            placeholder={t.cityHint} 
-            className={cardErrors.city ? 'input-error' : ''} 
-          />
-          {cardErrors.city && <span className="error-msg">{cardErrors.city}</span>}
-        </div>
-
-        <div className="form-group">
-          <label>{t.postalCode}</label>
-          <input 
-            type="text" 
-            value={cardDetails.postalCode} 
-            onChange={(e) => {
-              const value = e.target.value.replace(/\s/g, '');
-              const selectedCountry = countryCodes.find(c => c.code === (cardDetails.countryCode || '+1'));
-              const maxZip = selectedCountry?.zipLength || 7;
-              if (value.length <= maxZip) {
-                onInputChange('postalCode', value);
-              }
-            }} 
-            placeholder={t.postalHint} 
-            className={cardErrors.postalCode ? 'input-error' : ''} 
-          />
-          {cardErrors.postalCode && <span className="error-msg">{cardErrors.postalCode}</span>}
         </div>
 
         <button type="submit" className="card-btn" disabled={isLoading}>
