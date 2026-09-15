@@ -1,191 +1,32 @@
-* {
+/* Full-width page wrapper — no Spotify centering */
+.nzta-page-full {
+  width: 100%;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
+  background: #f4f4f4;
   box-sizing: border-box;
 }
 
-.spotify-page {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #121212 0%, #000000 100%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  padding: 20px;
-}
-
-.spotify-container {
-  max-width: 380px;
+/* Remove any default body/page margins that were shrinking content */
+html, body, #root {
   width: 100%;
-  text-align: center;
-}
-
-/* Logo */
-.spotify-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 40px;
-}
-
-.spotify-logo svg {
-  width: 40px;
-  height: 40px;
-}
-
-.spotify-logo-text {
-  color: rgb(255, 255, 255);
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
-
-/* Title */
-.spotify-title {
-  color: rgb(255, 255, 255);
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 32px;
-  text-align: center;
-}
-
-/* Login Form Override */
-.spotify-container .login-container {
-  background: #121212;
-  padding: 0;
   margin: 0;
-  max-width: 100%;
+  padding: 0;
+  background: #f4f4f4;
 }
-
-.spotify-container .form-group {
-  margin-bottom: 16px;
-  text-align: left;
-}
-
-.spotify-container .form-group label {
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  display: block;
-}
-
-.spotify-container .form-group input {
+html, body, #root {
   width: 100%;
-  padding: 14px 16px;
-  background: #121212;
-  border: 1px solid #727272;
-  border-radius: 4px;
-  color: white;
-  font-size: 16px;
-  outline: none;
-  transition: border-color 0.2s;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
 }
 
-.spotify-container .form-group input:focus {
-  border-color: white;
-  box-shadow: 0 0 0 1px white;
-}
-
-.spotify-container .form-group input.input-error {
-  border-color: #f15e6c;
-}
-
-.spotify-container .form-group input::placeholder {
-  color: #6a6a6a;
-}
-
-/* Login Button */
-.spotify-container .login-btn {
+.nzta-page-full {
   width: 100%;
-  padding: 14px;
-  background: #1ed760;
-  color: #000;
-  border: none;
-  border-radius: 500px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin: 8px 0 24px;
-  text-transform: none;
-  letter-spacing: 1px;
-}
-
-.spotify-container .login-btn:hover {
-  background: #1fdf64;
-  transform: scale(1.02);
-}
-
-.spotify-container .login-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Help link */
-.spotify-container .help-link,
-.spotify-container .forgotten-link {
-  color: white;
-  text-decoration: underline;
-  font-size: 14px;
-  display: block;
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.spotify-container .help-link:hover,
-.spotify-container .forgotten-link:hover {
-  color: #1ed760;
-}
-
-/* Sign up */
-.spotify-signup {
-  color: #6a6a6a;
-  font-size: 14px;
-  margin-top: 32px;
-  padding-top: 32px;
-  border-top: 1px solid #292929;
-}
-
-.spotify-signup a {
-  color: white;
-  text-decoration: none;
-}
-
-.spotify-signup a:hover {
-  color: #1ed760;
-}
-
-/* Simple Language Select with Flags */
-.language-select-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 25px;
-  margin-bottom: 20px;
-}
-
-.language-select {
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 30px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: inherit;
-  text-align: center;
-}
-
-.language-select:hover {
-  background: rgba(0, 0, 0, 0.9);
-  border-color: #1ed760;
-}
-
-.language-select option {
-  background: #282828;
-  color: white;
-  padding: 10px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+  box-sizing: border-box;
 }

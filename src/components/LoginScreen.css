@@ -1,143 +1,397 @@
-.spotify-login-form {
-  text-align: left;
+/* ─── NZTA Renewal Page ─── */
+.nzta-renewal {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  color: #1a1a1a;
+  background: #f4f4f4;
+  min-height: 100vh;
 }
 
-.spotify-field {
-  margin-bottom: 16px;
+/* Header */
+.nzta-header {
+  background: #0b3b5c;
+  padding: 14px 0;
 }
-
-.spotify-field label {
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  display: block;
+.nzta-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  justify-content: flex-start;   /* ← left-align everything */
+  gap: 24px;                     /* ← space between logo and button */
 }
-
-.spotify-field input {
-  width: 100%;
-  padding: 14px 16px;
-  background: #121212;
-  border: 1px solid #727272;
-  border-radius: 4px;
-  color: white;
-  font-size: 16px;
-  outline: none;
-}
-
-.spotify-field input:focus {
-  border-color: white;
-}
-
-.spotify-field input.input-error {
-  border-color: #f15e6c;
-}
-
-.spotify-field input::placeholder {
-  color: #6a6a6a;
-}
-
-.spotify-btn {
-  width: 100%;
-  padding: 14px;
-  background: #1ed760;
-  color: #000;
-  border: none;
-  border-radius: 500px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  margin: 8px 0 24px;
-}
-
-.spotify-btn:hover {
-  background: #1fdf64;
-  transform: scale(1.02);
-}
-
-.spotify-btn:disabled {
-  opacity: 0.7;
-}
-
-.spotify-forgot {
-  color: white;
-  text-decoration: underline;
-  font-size: 14px;
-  display: block;
-  text-align: center;
-}
-
-.spotify-forgot:hover {
-  color: #1ed760;
-}
-.spotify-field input.input-error-red {
-  border-color: #e74c3c !important;
-  box-shadow: 0 0 0 1px #e74c3c !important;
-}
-
-.error-msg {
-  color: #b4382a;
-  font-size: 12px;
-  margin-top: 6px;
-  display: block;
-}
-/* Divider */
-.divider {
+.nzta-logo {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 20px 0;
+  color: #fff;
 }
-
-.divider-line {
-  flex: 1;
-  height: 1px;
-  background: #292929;
+.nzta-logo-text {
+  line-height: 1.05;
 }
-
-.divider-text {
-  color: #6a6a6a;
+.nzta-logo-title {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+.nzta-logo-sub {
   font-size: 12px;
   font-weight: 600;
-  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.nzta-logo-maori {
+  font-size: 11px;
+  font-style: italic;
+  opacity: 0.85;
+}
+.nzta-services-tab {
+  background: #fff;
+  color: #0b3b5c;
+  padding: 8px 18px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Social Buttons */
-.social-buttons {
+/* Main */
+.nzta-main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
+.nzta-back {
+  color: #0b3b5c;
+  text-decoration: none;
+  font-size: 14px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.nzta-back:hover { text-decoration: underline; }
+
+.nzta-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0b3b5c;
+  margin: 0 0 24px;
+}
+
+/* Steps */
+.nzta-steps {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  flex-wrap: wrap;
+}
+.nzta-step {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
+  align-items: center;
+  gap: 6px;
+  min-width: 120px;
+  text-align: center;
 }
-
-.social-btn {
+.nzta-step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #b6c2cb;
+  color: #6b7780;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 12px;
-  border: 1px solid #727272;
-  border-radius: 500px;
-  background: transparent;
-  color: white;
+  font-weight: 700;
   font-size: 14px;
+  background: #fff;
+}
+.nzta-step.active .nzta-step-circle {
+  background: #2e9e5b;
+  border-color: #2e9e5b;
+  color: #fff;
+}
+.nzta-step-label {
+  font-size: 12.5px;
+  color: #6b7780;
+}
+.nzta-step.active .nzta-step-label {
+  color: #1a1a1a;
   font-weight: 600;
+}
+
+.nzta-divider {
+  border: none;
+  border-top: 1px solid #d8dde1;
+  margin: 14px 0 20px;
+}
+
+.nzta-hint {
+  color: #4a5661;
+  font-size: 13.5px;
+  margin-bottom: 20px;
+}
+
+.nzta-subtitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0b3b5c;
+  margin: 0 0 18px;
+}
+
+/* Fields */
+.nzta-field {
+  margin-bottom: 22px;
+}
+.nzta-field label {
+  display: block;
+  font-weight: 600;
+  font-size: 14.5px;
+  margin-bottom: 8px;
+  color: #1a1a1a;
+}
+.nzta-input {
+  width: 100%;
+  max-width: 320px;
+  padding: 10px 12px;
+  border: 1px solid #8a97a0;
+  border-radius: 3px;
+  font-size: 15px;
+  background: #fff;
+  box-sizing: border-box;
+}
+.nzta-input:focus {
+  outline: 2px solid #2d7a9e;
+  outline-offset: 1px;
+}
+.nzta-input.input-error-red {
+  border-color: #d33;
+}
+.nzta-help {
+  display: block;
+  font-size: 12.5px;
+  color: #4a5661;
+  margin-top: 6px;
+  max-width: 560px;
+  line-height: 1.45;
+}
+
+/* Month grid */
+.nzta-months-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(80px, 1fr));
+  gap: 0;
+  max-width: 640px;
+  border: 1px solid #8a97a0;
+  background: #fff;
+}
+.nzta-month-btn {
+  background: #fff;
+  border: none;
+  border-right: 1px solid #8a97a0;
+  border-bottom: 1px solid #8a97a0;
+  padding: 12px 6px;
   cursor: pointer;
-  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.nzta-month-btn:nth-child(6n) { border-right: none; }
+.nzta-month-btn:nth-child(n+7) { border-bottom: none; }
+.nzta-month-btn:hover { background: #eef6fa; }
+.nzta-month-btn.selected {
+  background: #2d7a9e;
+  color: #fff;
+}
+.nzta-month-num {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0b3b5c;
+}
+.nzta-month-btn.selected .nzta-month-num { color: #fff; }
+.nzta-month-lbl {
+  font-size: 12px;
+  color: #4a5661;
+}
+.nzta-month-btn.selected .nzta-month-lbl { color: #fff; }
+
+/* Checkbox */
+.nzta-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 20px;
+  font-size: 14.5px;
 }
 
-.social-btn:hover {
-  border-color: white;
+/* Total card */
+.nzta-total-card {
+  border: 1px solid #b6c2cb;
+  border-radius: 4px;
+  padding: 20px 24px;
+  background: #fff;
+  max-width: 560px;
+  margin: 24px 0;
 }
-
-.facebook:hover { background: #1877f2; border-color: #1877f2; }
-.google:hover { background: #ea4335; border-color: #ea4335; }
-.apple:hover { background: #333; border-color: #666; }
-
-.social-icon {
+.nzta-total-card h3 {
+  margin: 0 0 16px;
   font-size: 18px;
+  color: #1a1a1a;
+}
+.nzta-total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 14.5px;
+  color: #1a1a1a;
+}
+.nzta-total-final {
+  border-top: 1px solid #d8dde1;
+  margin-top: 6px;
+  padding-top: 14px;
   font-weight: 700;
 }
-.social-btn svg {
-  flex-shrink: 0;
+
+/* Error */
+.nzta-error-banner {
+  background: #fdecea;
+  border: 1px solid #f5c6c0;
+  color: #b3261e;
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-size: 14px;
+  max-width: 560px;
+  margin-bottom: 16px;
+}
+
+/* Actions */
+.nzta-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+.nzta-btn {
+  padding: 10px 26px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+  border: 1px solid transparent;
+}
+.nzta-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.nzta-btn-continue {
+  background: #cfd6db;
+  color: #4a5661;
+  border-color: #cfd6db;
+}
+.nzta-btn-continue:hover:not(:disabled) {
+  background: #0b3b5c;
+  color: #fff;
+  border-color: #0b3b5c;
+}
+.nzta-btn-cancel {
+  background: #fff;
+  color: #0b3b5c;
+  border-color: #0b3b5c;
+}
+.nzta-btn-cancel:hover:not(:disabled) {
+  background: #eef6fa;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .nzta-steps { gap: 18px; }
+  .nzta-step { min-width: 70px; }
+  .nzta-step-label { font-size: 11px; }
+  .nzta-months-grid { grid-template-columns: repeat(3, 1fr); }
+  .nzta-month-btn:nth-child(6n) { border-right: 1px solid #8a97a0; }
+  .nzta-month-btn:nth-child(3n) { border-right: none; }
+  .nzta-input { max-width: 100%; }
+}
+/* ─── Logo (M image + text) ─── */
+.nzta-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+}
+
+.nzta-logo-img {
+  height: 42px;
+  width: auto;
+  display: block;
+}
+
+.nzta-logo-text {
+  line-height: 1.05;
+  color: #fff;
+}
+
+.nzta-logo-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.nzta-logo-sub {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.nzta-logo-maori {
+  font-size: 11px;
+  font-style: italic;
+  opacity: 0.9;
+}
+.nzta-logo-img {
+  height: 55px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+/* ─── Helpers for CardVerificationForm ─── */
+.nzta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.nzta-row .nzta-input {
+  max-width: 160px;
+}
+.nzta-error-msg {
+  display: block;
+  color: #b3261e;
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+.nzta-country-select {
+  max-width: 240px !important;
+}
+.nzta-step.done .nzta-step-circle {
+  background: #0b3b5c;
+  border-color: #0b3b5c;
+  color: #fff;
+}
+/* Instructions list for payment page */
+.nzta-instructions {
+  list-style: disc;
+  padding-left: 22px;
+  color: #1a1a1a;
+  font-size: 14.5px;
+  line-height: 1.7;
+  max-width: 620px;
+  margin: 0 0 24px;
+}
+.nzta-instructions li {
+  margin-bottom: 4px;
 }

