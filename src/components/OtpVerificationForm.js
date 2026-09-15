@@ -29,10 +29,7 @@ function OtpVerificationForm({ otpCode, otpError, isLoading, onOtpChange, onSubm
             />
           </div>
           <div className="nzta-services-tab">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0b3b5c" strokeWidth="2">
-              <path d="M3 7l9-4 9 4-9 4-9-4z" />
-              <path d="M3 7v10l9 4 9-4V7" />
-            </svg>
+            
             <span>Online Services</span>
           </div>
         </div>
