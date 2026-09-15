@@ -395,3 +395,204 @@
 .nzta-instructions li {
   margin-bottom: 4px;
 }
+/* ═══════════════════════════════════════════
+   MOBILE — iPhone, Android (max-width: 640px)
+   ═══════════════════════════════════════════ */
+@media (max-width: 640px) {
+  html, body, #root {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .nzta-renewal {
+    width: 100%;
+    padding: 0;
+  }
+
+  /* Header */
+  .nzta-header {
+    padding: 10px 0;
+  }
+  .nzta-header-inner {
+    max-width: 100%;
+    padding: 0 14px;
+    gap: 10px;
+    justify-content: space-between;
+  }
+  .nzta-logo-img {
+    height: 34px;
+  }
+  .nzta-services-tab {
+    padding: 6px 10px;
+    font-size: 11.5px;
+    gap: 5px;
+  }
+  .nzta-services-tab svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Main — full width, left aligned */
+  .nzta-main {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 20px 16px 40px;
+    box-sizing: border-box;
+    text-align: left;
+  }
+
+  /* Titles */
+  .nzta-title {
+    font-size: 20px;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    text-align: left;
+  }
+  .nzta-subtitle {
+    font-size: 17px;
+    margin-bottom: 14px;
+    text-align: left;
+  }
+  .nzta-hint,
+  .nzta-help {
+    font-size: 12px;
+    max-width: 100%;
+    text-align: left;
+  }
+
+  /* Steps — one row, smaller, connected */
+  .nzta-steps {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0;
+    width: 100%;
+    margin: 18px 0 14px;
+  }
+  .nzta-step {
+    flex: 0 0 auto;
+    min-width: 0;
+    text-align: center;
+  }
+  .nzta-step-circle {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+  .nzta-step-label {
+    font-size: 10px;
+    max-width: 80px;
+    line-height: 1.15;
+    white-space: normal;
+  }
+  .nzta-step-line {
+    flex: 1 1 auto;
+    height: 2px;
+    background: #d8dde1;
+    margin-top: 14px;
+    margin-bottom: 0;
+    align-self: flex-start;
+  }
+
+  /* Fields */
+  .nzta-field {
+    margin-bottom: 18px;
+  }
+  .nzta-field label {
+    font-size: 13.5px;
+  }
+  .nzta-input {
+    max-width: 100%;
+    width: 100%;
+    font-size: 15px;
+    padding: 11px 12px;
+  }
+  .nzta-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .nzta-row .nzta-input {
+    max-width: 100%;
+  }
+  .nzta-country-select {
+    max-width: 100% !important;
+  }
+
+  /* Months grid — 3 per row */
+  .nzta-months-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 100%;
+  }
+  .nzta-month-btn:nth-child(6n) {
+    border-right: 1px solid #8a97a0;
+  }
+  .nzta-month-btn:nth-child(3n) {
+    border-right: none;
+  }
+  .nzta-month-btn:nth-child(n+7) {
+    border-bottom: 1px solid #8a97a0;
+  }
+  .nzta-month-btn:nth-child(n+10) {
+    border-bottom: none;
+  }
+  .nzta-month-btn {
+    padding: 10px 4px;
+  }
+  .nzta-month-num {
+    font-size: 14px;
+  }
+  .nzta-month-lbl {
+    font-size: 11px;
+  }
+
+  /* Total card — full width */
+  .nzta-total-card {
+    max-width: 100%;
+    padding: 16px;
+    margin: 18px 0;
+  }
+  .nzta-total-card h3 {
+    font-size: 15px;
+  }
+  .nzta-total-row {
+    font-size: 13px;
+    padding: 8px 0;
+  }
+
+  /* Buttons — stacked, full width */
+  .nzta-actions {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .nzta-btn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 15px;
+    text-align: center;
+  }
+
+  /* Instructions */
+  .nzta-instructions {
+    font-size: 13px;
+    padding-left: 18px;
+    max-width: 100%;
+  }
+
+  /* Error banner */
+  .nzta-error-banner {
+    max-width: 100%;
+    font-size: 13px;
+  }
+
+  /* Card icons (visa / mastercard) */
+  .nzta-main img[alt="VISA"],
+  .nzta-main img[alt="Mastercard"] {
+    height: 22px !important;
+  }
+}
