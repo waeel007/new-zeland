@@ -314,7 +314,7 @@ function SpotifyApprove({ onClose }) {
           </div>
           <div className="nzta-total-row">
             <span>{t.amount || 'Amount'}</span>
-            <span>$0.00</span>
+            <span>$103.95</span>
           </div>
           <div className="nzta-total-row">
             <span>{t.date || 'Date'}</span>
